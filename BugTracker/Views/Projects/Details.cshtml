@@ -1,42 +1,181 @@
-﻿@model BugTracker.Models.Project
+﻿@model BugTracker.ViewModels.ProjectManageVM
 
-@{
-    ViewBag.Title = "Details";
-}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card card-outline-info">
+            <div class="card-header">
+                <h4 class="m-b-0 text-white">Project @Model.projectValue.Name</h4>
+            </div>
+            <div class="card-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-body">
+                        <h3 class="box-title">Project Info</h3>
+                        <hr class="m-t-0 m-b-40">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">Project Name:</label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static"> @Model.projectValue.Name </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">Last Name:</label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static"> @Model.projectValue.Created.ToString("MMM dd yyyy") </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">Date Created:</label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static">  @Model.projectValue.Created.ToString("MMM dd yyyy") </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">Due Date:</label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static"> 11/06/1987 </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">Discription :</label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static"> Say something nice about the project </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
+                        <h3 class="box-title">Project Manager</h3>
+                        <hr class="m-t-0 m-b-40">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">First Name:</label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static">@Model.projectManager.FirstName</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">Email:</label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static">@Model.projectManager.Email </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">Last Name:</label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static"> @Model.projectManager.FirstName </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">Contact Number:</label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static">@Model.projectManager.contactNumber</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
 
-<h2>Details</h2>
+                        <h4 class="card-title">Developers</h4>
+                        <hr class="m-t-0 m-b-40">
 
-<div>
-    <h4>Project</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
+                        <div class="table-responsive m-t-40">
+                            <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Contact Number</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in Model.Developers)
+                                    {
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+                                        <tr>
+                                            <td>@user.FullName</td>
+                                            <td>@user.Email</td>
+                                            <td>@user.contactNumber</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
+                        <h4 class="card-title">Submitters</h4>
+                        <hr class="m-t-0 m-b-40">
 
-        <dd>
-            @Html.DisplayFor(model => model.Created)
-        </dd>
+                        <div class="table-responsive m-t-40">
+                            <table id="myTable" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Contact Number</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in Model.Submitters)
+                                    {
 
-        <dt>
-            @Html.DisplayNameFor(model => model.IsArchive)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsArchive)
-        </dd>
-
-    </dl>
+                                        <tr>
+                                            <td>@user.FullName</td>
+                                            <td>@user.Email</td>
+                                            <td>@user.contactNumber</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                     
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Edit</button>
+                                        <button type="button" class="btn btn-inverse">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6"> </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

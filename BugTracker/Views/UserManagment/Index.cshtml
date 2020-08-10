@@ -1,9 +1,12 @@
 ﻿@*@model IEnumerable<BugTracker.Models.ApplicationUser>*@
-@model IPagedList<BugTracker.Models.ApplicationUser>
 @using Microsoft.AspNet.Identity;
 @using System.Data.Entity;
 @using System.Linq;
 @using BugTracker.Helpers;
+@using PagedList.Mvc;
+@using PagedList;
+@model IPagedList<BugTracker.Models.ApplicationUser>
+
 @{ var roleHelper = new UserRoleHelper(); }
 @{ var projectHelper = new ProjectHelper(); }
 
@@ -30,6 +33,7 @@
                             @foreach (var user in Model)
                             {
                                 <tr>
+
                                     <td> @Html.DisplayFor(modelItem => user.FullName)</td>
                                     <td>@Html.DisplayFor(modelItem => user.Email)</td>
                                     <td>2011/04/25</td>
@@ -37,20 +41,21 @@
                                     <td> @Html.DropDownListFor(modelItem => user.Id, new SelectList(user.Projects, "id", "Name", "-- NO Project --"))</td>
                                     <td>
                                         @Html.ActionLink("Manage User", "ManageUser", new { userid = user.Id }) |
-                                        @Html.ActionLink("Details", "Details", new { userid = user.Id }) |
                                         @Html.ActionLink("Delete", "Delete", new { userid = user.Id })
                                     </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
+                    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+                    @Html.ActionLink("Add User", "AddUser", "UserManagment", null ,new { @class= "btn btn-success" })
                 </div>
             </div>
         </div>
     </div>
 </div>
- page @(Model.PageCount < Model.PageNumber? 0 : Model.PageNumber)
-@Html.PagedListPager(Model, page => Url.Action("Index", new { Page }))
+
 @*<
         @foreach (var user in Model)
         {

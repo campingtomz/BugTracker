@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using BugTracker.Helpers;
 using BugTracker.Models;
 using BugTracker.ViewModels;
+using PagedList;
+using PagedList.Mvc;
 
 namespace BugTracker.Controllers
 {
@@ -19,9 +21,20 @@ namespace BugTracker.Controllers
         private UserRoleHelper roleHelper = new UserRoleHelper();
         private ProjectHelper projectHelper = new ProjectHelper();
         // GET: Projects
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            return View(db.Projects.ToList());
+            var projectList = new List<ProjectManageVM>();
+            foreach(var project in db.Projects.ToList())
+            {
+                var projectVm = new ProjectManageVM(project);
+                projectList.Add(projectVm);
+            }
+            
+            int pageSize = 10; //Specifies the number of posts per page
+            int pageNumber = (page ?? 1); //?? null coalescing operator
+            var model = projectList.OrderBy(p => p.projectValue.Created).ToPagedList(pageNumber, pageSize);
+            return View(model);
+            
         }
 
         // GET: Projects/Details/5
@@ -35,39 +48,13 @@ namespace BugTracker.Controllers
             if (project == null)
             {
                 return HttpNotFound();
+
             }
-            ViewBag.ProjectManagerId = new List<ApplicationUser>(projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager"));
-            ViewBag.DeveloperIds = new List<ApplicationUser>(projectHelper.ListUserOnProjectInRole(project.Id, "Developer"));
-            ViewBag.SubmitterIds = new List<ApplicationUser>(projectHelper.ListUserOnProjectInRole(project.Id, "Submitter"));
-            return View(project);
+            var model = new ProjectManageVM(project);
+            return View(model);
         }
 
-        // GET: Projects/Create
-        [Authorize(Roles ="Admin ")]
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Projects/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        
-        public ActionResult Create([Bind(Include = "Id,Name")] Project project)
-        {
-            if (ModelState.IsValid)
-            {
-                project.Created = DateTime.Now;
-                project.IsArchive = false;
-                db.Projects.Add(project);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(project);
-        }
+       
         public ActionResult ProjectWizard()
         {
             ViewBag.ProjectManagerId = new SelectList(roleHelper.UsersInRole("ProjectManager"), "Id", "FullName");
