@@ -1,0 +1,76 @@
+﻿@*@model IEnumerable<BugTracker.Models.ApplicationUser>*@
+@model IPagedList<BugTracker.Models.ApplicationUser>
+@using Microsoft.AspNet.Identity;
+@using System.Data.Entity;
+@using System.Linq;
+@using BugTracker.Helpers;
+@{ var roleHelper = new UserRoleHelper(); }
+@{ var projectHelper = new ProjectHelper(); }
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">User Data</h4>
+                <div class="table-responsive m-t-40">
+                    <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Contact Number</th>
+                                <th>Role</th>
+                                <th>Projects</th>
+
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var user in Model)
+                            {
+                                <tr>
+                                    <td> @Html.DisplayFor(modelItem => user.FullName)</td>
+                                    <td>@Html.DisplayFor(modelItem => user.Email)</td>
+                                    <td>2011/04/25</td>
+                                    <td> @roleHelper.ListUserRoles(user.Id).FirstOrDefault()</td>
+                                    <td> @Html.DropDownListFor(modelItem => user.Id, new SelectList(user.Projects, "id", "Name", "-- NO Project --"))</td>
+                                    <td>
+                                        @Html.ActionLink("Manage User", "ManageUser", new { userid = user.Id }) |
+                                        @Html.ActionLink("Details", "Details", new { userid = user.Id }) |
+                                        @Html.ActionLink("Delete", "Delete", new { userid = user.Id })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ page @(Model.PageCount < Model.PageNumber? 0 : Model.PageNumber)
+@Html.PagedListPager(Model, page => Url.Action("Index", new { Page }))
+@*<
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => user.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Email)
+                </td>
+                <td>
+             @Html.ActionLink("Manage Role", "ManageUserRoles",new { id = user.Id})
+                </td>
+
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = user.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = user.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = user.Id })
+                </td>
+            </tr>
+        }
+
+    </table>*@
