@@ -15,6 +15,7 @@ namespace BugTracker.ViewModels
 
         public List<ApplicationUser> Developers { get; set; }
         public List<ApplicationUser> Submitters { get; set; }
+      
         public ProjectManageVM(Project projectValue)
         {
             this.projectValue = projectValue;
@@ -31,11 +32,9 @@ namespace BugTracker.ViewModels
                 {
                     Developers.Add(user);
                 }
-
             }
             return Developers;
         }
-
         public ApplicationUser getProjectManager(int projectId, List<ApplicationUser> projectUsers)
         {
             foreach (var user in projectValue.Users)
@@ -48,5 +47,6 @@ namespace BugTracker.ViewModels
             }
             return null;
         }
+  
     }
 }

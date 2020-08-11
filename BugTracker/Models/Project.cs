@@ -15,7 +15,9 @@ namespace BugTracker.Models
 
         #region Actual Properties
         public string Name { get; set; }
+        public string Description { get; set; }
         public DateTime Created { get; set; }
+        public DateTime DueDate { get; set; }
         public bool IsArchive { get; set; }
 
         #endregion

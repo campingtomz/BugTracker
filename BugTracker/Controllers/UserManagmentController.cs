@@ -66,7 +66,8 @@ namespace BugTracker.Controllers
             userVM.user.UserName = userVM.user.Email;
             db.Entry(userVM.user).State = EntityState.Modified;
             db.SaveChanges();
-            {
+
+           
                 foreach (var role in roleHelper.ListUserRoles(userVM.user.Id))
                 {
                     roleHelper.RemoveUserFromRole(userVM.user.Id, role);
@@ -75,7 +76,7 @@ namespace BugTracker.Controllers
                 {
                     roleHelper.AddUserToRole(userVM.user.Id, roleName);
                 }
-            }
+           
 
             return RedirectToAction("Index");
         }

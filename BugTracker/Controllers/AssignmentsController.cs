@@ -22,12 +22,7 @@ namespace BugTracker.Controllers
 
             return View();
         }
-        public ActionResult ManageUserRoles()
-        {
-            return View();
-        }
-
-
+     
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ManageRoles(List<string> userIds, string roleName)
@@ -51,36 +46,6 @@ namespace BugTracker.Controllers
         }
         #endregion
 
-        #region Project Assignment
 
-        public ActionResult ManageProjectUsers()
-        {
-            ViewBag.UserIds = new MultiSelectList(db.Users, "Id", "Email");
-            ViewBag.ProjectIds = new MultiSelectList(db.Projects, "Id", "Name");
-
-            return View(db.Users.ToList());
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult ManageProjectUsers(List<string> userIds, List<int> projectIds) 
-        {
-        
-            if (userIds == null || projectIds == null)
-            {
-                return RedirectToAction("ManageProjectUsers");
-            }
-          //iterate over each user and add to each project
-          foreach(var userId in userIds)
-            {
-                foreach(var projectId in projectIds)
-                {
-                    projectHelper.AddUserToProject(userId, projectId);
-                }
-            }
-            return RedirectToAction("ManageProjectUsers");
-        }
-
-        #endregion
     }
 }

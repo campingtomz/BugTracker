@@ -14,6 +14,7 @@ using PagedList.Mvc;
 
 namespace BugTracker.Controllers
 {
+    [Authorize]
     public class ProjectsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -21,20 +22,19 @@ namespace BugTracker.Controllers
         private UserRoleHelper roleHelper = new UserRoleHelper();
         private ProjectHelper projectHelper = new ProjectHelper();
         // GET: Projects
-        public ActionResult Index(int? page)
+        public ActionResult Index()
         {
             var projectList = new List<ProjectManageVM>();
-            foreach(var project in db.Projects.ToList())
+            foreach (var project in db.Projects.ToList())
             {
                 var projectVm = new ProjectManageVM(project);
                 projectList.Add(projectVm);
             }
-            
-            int pageSize = 10; //Specifies the number of posts per page
-            int pageNumber = (page ?? 1); //?? null coalescing operator
-            var model = projectList.OrderBy(p => p.projectValue.Created).ToPagedList(pageNumber, pageSize);
+
+
+            var model = projectList;
             return View(model);
-            
+
         }
 
         // GET: Projects/Details/5
@@ -51,10 +51,12 @@ namespace BugTracker.Controllers
 
             }
             var model = new ProjectManageVM(project);
+            ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name");
+            ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name");
             return View(model);
         }
 
-       
+
         public ActionResult ProjectWizard()
         {
             ViewBag.ProjectManagerId = new SelectList(roleHelper.UsersInRole("ProjectManager"), "Id", "FullName");
@@ -71,7 +73,7 @@ namespace BugTracker.Controllers
         {
             #region fail cases
             ViewBag.Errors = "";
-            if(model.ProjectManagerId == null)
+            if (model.ProjectManagerId == null)
             {
                 ViewBag.Errors += "<p> You must select a Project Manager</p>";
             }
@@ -83,12 +85,12 @@ namespace BugTracker.Controllers
             {
                 ViewBag.Errors += "<p> You must select at least one Submmiter</p>";
             }
-            if(ViewBag.Errors.Length > 0)
+            if (ViewBag.Errors.Length > 0)
             {
                 ViewBag.ProjectManagerId = new SelectList(roleHelper.UsersInRole("ProjectManager"), "Id", "FullName");
                 ViewBag.DeveloperIds = new MultiSelectList(roleHelper.UsersInRole("Developer"), "Id", "FullName");
                 ViewBag.SubmitterIds = new MultiSelectList(roleHelper.UsersInRole("Submitter"), "Id", "FullName");
-               
+
                 return View(model);
             }
             #endregion
@@ -102,7 +104,7 @@ namespace BugTracker.Controllers
                 db.SaveChanges();
 
                 projectHelper.AddUserToProject(model.ProjectManagerId, project.Id);
-                foreach(var userId in model.DeveloperIds)
+                foreach (var userId in model.DeveloperIds)
                 {
                     projectHelper.AddUserToProject(userId, project.Id);
                 }
@@ -110,7 +112,7 @@ namespace BugTracker.Controllers
                 {
                     projectHelper.AddUserToProject(userId, project.Id);
                 }
-               
+
                 return RedirectToAction("Index");
             }
             else
@@ -119,16 +121,14 @@ namespace BugTracker.Controllers
                 ViewBag.ProjectManagerId = new SelectList(roleHelper.UsersInRole("ProjectManager"), "Id", "FullName");
                 ViewBag.DeveloperIds = new MultiSelectList(roleHelper.UsersInRole("Developer"), "Id", "FullName");
                 ViewBag.SubmitterIds = new MultiSelectList(roleHelper.UsersInRole("Submitter"), "Id", "FullName");
-                
+
                 return View(model);
             }
         }
 
 
-
-
         // GET: Projects/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id, string userId, int? AddRemoveUser)
         {
             if (id == null)
             {
@@ -139,8 +139,24 @@ namespace BugTracker.Controllers
             {
                 return HttpNotFound();
             }
-            
-            return View(project);
+            if (AddRemoveUser != null && !String.IsNullOrWhiteSpace(userId))
+            {
+                if (AddRemoveUser == 0)
+                {
+                    projectHelper.AddUserToProject(userId, project.Id);
+                }
+                else if (AddRemoveUser == 1)
+                {
+                    projectHelper.RemoveUserFromProject(userId, project.Id);
+                }
+            }
+            ViewBag.UsersNotInProject = new List<ApplicationUser>(projectHelper.ListUsersNotOnProject(project.Id));
+            ViewBag.ProjectManagers = new SelectList(roleHelper.UsersInRole("ProjectManager"), "Id", "FullName");
+            var model = new ProjectManageVM(project);
+            //ViewBag.ProjectManagerId = new SelectList(roleHelper.UsersInRole("ProjectManager"), "Id", "FullName");
+            //ViewBag.DeveloperIds = new MultiSelectList(roleHelper.UsersInRole("Developer"), "Id", "FullName");
+            //ViewBag.SubmitterIds = new MultiSelectList(roleHelper.UsersInRole("Submitter"), "Id", "FullName");
+            return View("~/Views/Projects/Edit.cshtml", model);
         }
 
         // POST: Projects/Edit/5
@@ -148,16 +164,17 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name")] Project project)
+        public ActionResult Edit(ProjectManageVM projectVM, string ProjectManagers)
         {
-            if (ModelState.IsValid)
-            {
-                project.IsArchive = false;
-                db.Entry(project).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(project);
+
+            //projectVM.projectValue.IsArchive = false;
+            db.Entry(projectVM.projectValue).State = EntityState.Modified;
+            db.SaveChanges();
+
+            projectHelper.RemoveUserFromProject(projectVM.projectManager.Id, projectVM.projectValue.Id);
+            projectHelper.AddUserToProject(ProjectManagers, projectVM.projectValue.Id);
+
+            return RedirectToAction("Index"); 
         }
 
         // GET: Projects/Delete/5

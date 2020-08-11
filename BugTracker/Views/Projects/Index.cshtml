@@ -1,7 +1,7 @@
 ﻿
 @using PagedList.Mvc;
 @using PagedList;
-@model IPagedList<BugTracker.ViewModels.ProjectManageVM>
+@model IEnumerable<BugTracker.ViewModels.ProjectManageVM>
 
 
 <div class="row">
@@ -18,6 +18,7 @@
                                 <th>Project Developers</th>
                                 <th>Project Submitters</th>
                                 <th>Project Created Date</th>
+                                <th>Project Due Date</th>
                                 <th>Number Of Tickets</th>
                                 <th>Action</th>
 
@@ -27,38 +28,61 @@
                         <tbody>
                             @foreach (var project in Model)
                             {
-                                <tr>
-                                    <td>@Html.Label(project.projectValue.Name)</td>
-                                    <td>@Html.Label(project.projectManager.FullName)</td>
-                                    <td>
+                            <tr>
+                                <td>@Html.Label(project.projectValue.Name)</td>
+                                <td>
+                                    @if (project.projectManager != null)
+                                    {
+                                        @Html.Label(project.projectManager.FullName) }
+                                    else
+                                    {
+                                        <span>No Project Manager Assigned</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (project.Developers.Count > 0)
+                                    {
                                         <select class="form-control custom-select" tabindex="1">
                                             @foreach (var user in project.Developers)
                                             {
                                                 <option>@user.FullName</option>
                                             }
                                         </select>
-                                    </td>
-                                    <td>
+                                    }
+                                    else
+                                    {
+                                        <span>No Developers Assigned</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (project.Submitters.Count > 0)
+                                    {
                                         <select class="form-control custom-select" tabindex="1">
                                             @foreach (var user in project.Submitters)
                                             {
                                                 <option>@user.FullName</option>
                                             }
                                         </select>
-                                    </td>
-                                    <td>@Html.Label(project.projectValue.Created.ToString("MMM dd yyyy"))</td>
-                                    <td></td>
-                                    <td>
-                                        @Html.ActionLink("Edit", "Edit", new { id = project.projectValue.Id }) |
-                                        @Html.ActionLink("Details", "Details", new { id = project.projectValue.Id }) |
-                                        @Html.ActionLink("Delete", "Delete", new { id = project.projectValue.Id })
-                                    </td>
-                                </tr>
+                                    }
+                                    else
+                                    {
+                                        <span>No Submitters Assigned</span>
+                                    }
+
+                                </td>
+                                <td>@Html.Label(project.projectValue.Created.ToString("MMM dd yyyy"))</td>
+                                <td>@Html.Label(project.projectValue.DueDate.ToString("MMM dd yyyy"))</td>
+                                <td>@project.projectValue.Tickets.Count</td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", new { id = project.projectValue.Id }) |
+                                    @Html.ActionLink("Details", "Details", new { id = project.projectValue.Id }) |
+
+                                </td>
+                            </tr>
                             }
                         </tbody>
                     </table>
-                    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+
                     @Html.ActionLink("Create New", "ProjectWizard", "Projects", null, new { @class = "btn btn-success" })
                 </div>
             </div>

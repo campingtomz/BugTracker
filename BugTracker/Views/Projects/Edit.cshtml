@@ -1,103 +1,359 @@
 ﻿@model BugTracker.ViewModels.ProjectManageVM
 
-@{
-    ViewBag.Title = "Edit";
-}
+@using BugTracker.Helpers;
+@{ var roleHelper = new UserRoleHelper(); }
 
-<h2>Edit</h2>
-
-
-@using (Html.BeginForm())
+@*<link href="~/Content/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrap-select.min.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrap-tagsinput.css" rel="stylesheet" />
+    <link href="~/Content/css/jquery.bootstrap-touchspin.min.css" rel="stylesheet" />
+    <link href="~/Content/css/multi-select.css" rel="stylesheet" />
+    <link href="~/Content/css/select2.min.css" rel="stylesheet" />
+    <link href="~/Content/css/switchery.min.css" rel="stylesheet" />*@
+@using (Html.BeginForm("Edit", "Projects", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => Model.projectValue.Id)
 
-<div class="form-horizontal">
-    <h4>Project</h4>
+
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(model => model.Id)
-    @Html.HiddenFor(model => model.IsArchive)
+    @Html.HiddenFor(model => model.projectValue.Id)
+    @Html.HiddenFor(model => model.projectValue.IsArchive)
+    @Html.HiddenFor(model => model.projectValue.Created)
+    @Html.HiddenFor(model => model.projectValue.DueDate)
     <div class="row">
-        <div class="col-12">
-            <div class="card">
+        <div class="col-lg-12">
+            <div class="card card-outline-info">
+                <div class="card-header">
+                    <h4 class="m-b-0 text-white">Edit Project @Model.projectValue.Name</h4>
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title">Developerst</h4>
-                    <h6 class="card-subtitle">Export data to Copy, CSV, Excel, PDF & Print</h6>
-                    <div class="table-responsive m-t-40">
-                        <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Contact Number</th>
-                                    
-                                </tr>
-                            </thead>
-                            
-                            <tbody>
-                                @foreach (var user in Model.Users)
-                                {
-                                    <tr>
-                                        @*<td>@Html.Label(user.Name )</td>*@
-                                        <td>Tiger Nixon</td>
-                                        <td>System Architect</td>
-                                        <td>Edinburgh</td>
-                                        <td>61</td>
-                                        <td>2011/04/25</td>
-                                        <td>$320,800</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                    <form action="#" class="form-horizontal">
+                        <div class="form-body">
+                            <hr class="m-t-0 m-b-40">
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Project Name:</label>
+
+                                        @Html.EditorFor(model => model.projectValue.Name, new { htmlAttributes = new { @class = "form-control", @placehoder = "@Model.Name" } })
+                                        @Html.ValidationMessageFor(model => model.projectValue.Name, "", new { @class = "text-danger" })
+
+                                    </div>
+                                </div>
+                                <!--/span-->
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Due Date:</label>
+                                        <div class="col-md-9">
+                                            <input type="date" class="form-control" placeholder="dd/mm/yyyy">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                            </div>
+                            <!--/row-->
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Description</label>
+                                        <div class="col-md-9">
+                                            <div class="form-group">
+                                                @Html.EditorFor(model => model.projectValue.Description, new { htmlAttributes = new { @class = "textarea_editor form-control", @placeholder = "Enter a Description" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                                <!--/span-->
+                            </div>
+                            <!--/row-->
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <h4 class="box-title">Project Manager</h4>
+                                <hr class="m-t-0 m-b-40">
+                                <div class="row p-t-20">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="col-md-6">
+                                                @Html.DropDownList("ProjectManagers")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <hr class="m-t-0 m-b-40">
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <label class="control-label text-right col-md-3">Submitters</label>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Users</th>
+                                                                        <th>Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var user in Model.Submitters)
+                                                                    {
+                                                                        <tr>
+
+                                                                            <td>@user.FullName</td>
+                                                                            <td class="text-nowrap">
+                                                                                <a href="@Url.Action("Edit","Projects", new {userId = user.Id, AddRemoveUser = 1, id = Model.projectValue.Id})" class="submit" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-close text-danger"></i> </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Submitters not in project</th>
+                                                                        <th>Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var user in ViewBag.UsersNotInProject)
+                                                                    {
+                                                                        if (roleHelper.IsUserInRole(user.Id, "Submitter"))
+                                                                        {
+                                                                            <tr>
+                                                                                <td>@user.FirstName</td>
+                                                                                <td class="text-nowrap">
+                                                                                    <a href="@Url.Action("Edit", "Projects", new { userId = user.Id, AddRemoveUser = 0, id = Model.projectValue.Id })" class="submit" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-plus text-danger"></i> </a>
+                                                                                </td>
+                                                                            </tr>
+                                                                        }
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="control-label text-right col-md-3">Developers</label>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Users</th>
+                                                                        <th>Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var user in Model.Developers)
+                                                                    {
+                                                                        <tr>
+
+                                                                            <td>@user.FullName</td>
+                                                                            <td class="text-nowrap">
+                                                                                <a href="@Url.Action("Edit","Projects", new {userId = user.Id, AddRemoveUser = 1, id = Model.projectValue.Id})" class="submit" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-close text-danger"></i> </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Developers not in project</th>
+                                                                        <th>Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var user in ViewBag.UsersNotInProject)
+                                                                    {
+                                                                        if (roleHelper.IsUserInRole(user.Id, "Developer"))
+                                                                        {
+                                                                            <tr>
+                                                                                <td>@user.FirstName</td>
+                                                                                <td class="text-nowrap">
+                                                                                    <a href="@Url.Action("Edit", "Projects", new { userId = user.Id, AddRemoveUser = 0, id = Model.projectValue.Id })" class="submit" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-plus text-danger"></i> </a>
+                                                                                </td>
+                                                                            </tr>
+                                                                        }
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-offset-3 col-md-9">
+                                                <button type="submit" class="btn btn-success">Submit</button>
+                                                @Html.ActionLink("Cancel", "Details", new { id = Model.projectValue.Id }, new { @type = "button", @class = "btn btn-inverse" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts{
+    <script>
+    $(document).ready(function () {
+            $('.textarea_editor').wysihtml5();
+        });
+    </script>
+}
+@*@Ssection Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/select2.full.min.js"></script>
+    <script src="~/Scripts/bootstrap-select.min.js"></script>
+    <script src="~/Scripts/bootstrap-tagsinput.min.js"></script>
+    <script src="~/Scripts/jquery.bootstrap-touchspin.js"></script>
+    <script src="~/Scripts/dff.js"></script>
+
+
+    <script type="text/javascript" src="~/Scripts/jquery.multi-select.js"></script>
+    <script type="text/javascript" src="~/Scripts/CustomForm-Addon.js"></script>
+    }*@
+@*<div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Created, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Created, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Created, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsArchive, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsArchive)
+                    @Html.ValidationMessageFor(model => model.IsArchive, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
 
-    </div>
-</div>
-    }
-
-    <div>
-        @Html.ActionLink("Back to List", "Index")
-    </div>
-
-    @section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
-    }
-
-
-    @*<div class="form-group">
-                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-                </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
             </div>
+        </div>
+    </div>*@
+@*  <h3 class="box-title">Users</h3>
+    <hr class="m-t-0 m-b-40">
+    <!--/row-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Multiple Select</h4>
+                    <h6 class="card-subtitle"> Use a <code>"ProjectManagerId"</code> as your input element.</h6>
+                    <div class="row">
+                        <div class="col-lg-6 col-xlg-4  m-b-30">
+                            <h5 class="box-title">All Developer Users</h5><code>"ProjectManagerId"</code>
+                            <select id='pre-selected-options1' multiple='multiple'>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.Created, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Created, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Created, "", new { @class = "text-danger" })
-                </div>
-            </div>
+                                <option value='elem_1'>elem 1</option>
+                                <option value='elem_2'>elem 2</option>
+                                <option value='elem_3'>elem 3</option>
+                                <option value='elem_4' selected>elem 4</option>
+                                <option value='elem_5' selected>elem 5</option>
+                                <option value="elem_6">elem 6</option>
+                                <option value="elem_7">elem 7</option>
+                                <option value="elem_8">elem 8</option>
+                                <option value="elem_9">elem 9</option>
+                                <option value="elem_10">elem 10</option>
+                                <option value="elem_11">elem 11</option>
+                                <option value="elem_12">elem 12</option>
+                                <option value="elem_13">elem 13</option>
+                                <option value="elem_14">elem 14</option>
+                                <option value="elem_15">elem 15</option>
+                                <option value="elem_16">elem 16</option>
+                                <option value="elem_17">elem 17</option>
+                                <option value="elem_18">elem 18</option>
+                                <option value="elem_19">elem 19</option>
+                                <option value="elem_20">elem 20</option>
+                            </select>
+                        </div>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.IsArchive, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <div class="checkbox">
-                        @Html.EditorFor(model => model.IsArchive)
-                        @Html.ValidationMessageFor(model => model.IsArchive, "", new { @class = "text-danger" })
+                        <div class="col-lg-6 col-xlg-4  m-b-30">
+                            <h5 class="box-title">All Submitter Users</h5>
+                            <select id='pre-selected-options2' multiple='multiple'>
+                                <option value='elem_1'>elem 1</option>
+                                <option value='elem_2'>elem 2</option>
+                                <option value='elem_3'>elem 3</option>
+                                <option value='elem_4' selected>elem 4</option>
+                                <option value='elem_5' selected>elem 5</option>
+                                <option value="elem_6">elem 6</option>
+                                <option value="elem_7">elem 7</option>
+                                <option value="elem_8">elem 8</option>
+                                <option value="elem_9">elem 9</option>
+                                <option value="elem_10">elem 10</option>
+                                <option value="elem_11">elem 11</option>
+                                <option value="elem_12">elem 12</option>
+                                <option value="elem_13">elem 13</option>
+                                <option value="elem_14">elem 14</option>
+                                <option value="elem_15">elem 15</option>
+                                <option value="elem_16">elem 16</option>
+                                <option value="elem_17">elem 17</option>
+                                <option value="elem_18">elem 18</option>
+                                <option value="elem_19">elem 19</option>
+                                <option value="elem_20">elem 20</option>
+                            </select>
+                        </div>
+
                     </div>
                 </div>
             </div>
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-default" />
-                </div>
-            </div>
-        </div>*@
+        </div>
+    </div> *@

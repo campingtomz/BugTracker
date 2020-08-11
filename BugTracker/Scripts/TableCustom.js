@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
     $('#myTable').DataTable();
+
     $(document).ready(function () {
         var table = $('#example').DataTable({
             "columnDefs": [{
@@ -36,10 +37,17 @@
             }
         });
     });
-});
+
 $('#example23').DataTable({
     dom: 'Bfrtip',
     buttons: [
         'copy', 'csv', 'excel', 'pdf', 'print'
     ]
+});
+$('.example24').DataTable({
+    dom: 'Bfrtip',
+    buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+    ]
+});
 });

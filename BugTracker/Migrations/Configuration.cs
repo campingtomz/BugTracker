@@ -17,6 +17,8 @@ namespace BugTracker.Migrations
 
         protected override void Seed(BugTracker.Models.ApplicationDbContext context)
         {
+            #region User Roles
+
             var roleManager = new RoleManager<IdentityRole>(
                 new RoleStore<IdentityRole>(context));
             if (!context.Roles.Any(r => r.Name == "Admin"))
@@ -24,7 +26,7 @@ namespace BugTracker.Migrations
                 roleManager.Create(new IdentityRole { Name = "Admin" });
             }
             if (!context.Roles.Any(r => r.Name == "Moderator"))
-            { 
+            {
                 roleManager.Create(new IdentityRole { Name = "Moderator" });
             }
             if (!context.Roles.Any(r => r.Name == "ProjectManager"))
@@ -39,7 +41,7 @@ namespace BugTracker.Migrations
             {
                 roleManager.Create(new IdentityRole { Name = "Developer" });
             }
-
+            #endregion
             #region demo-roles
             if (!context.Roles.Any(r => r.Name == "Demo-Admin"))
             {
@@ -62,8 +64,49 @@ namespace BugTracker.Migrations
                 roleManager.Create(new IdentityRole { Name = "Demo-Developer" });
             }
             #endregion
+            context.SaveChanges();
+            #region TicketType Seed
+            context.TicketTypes.AddOrUpdate(
+                tt => tt.Name,
+                new TicketType() { Name = "Software" },
+                 new TicketType() { Name = "Hardware" },
+                  new TicketType() { Name = "UI" },
+                   new TicketType() { Name = "Defect" },
+                    new TicketType() { Name = "Feature Request" },
+                    new TicketType() { Name = "Other" }
+                );
 
-
+            #endregion
+            #region TicketPriority Seed
+            context.TicketPriorities.AddOrUpdate(
+                tp => tp.Name,
+                new TicketPriority() { Name = "Low" },
+                 new TicketPriority() { Name = "Medium" },
+                  new TicketPriority() { Name = "High" },
+                   new TicketPriority() { Name = "On Hold" }
+                );
+            #endregion
+            #region TicketStatus Seed
+            context.TicketStatuses.AddOrUpdate(
+                ts => ts.Name,
+                new TicketStatus() { Name = "Open" },
+                 new TicketStatus() { Name = "Assigned" },
+                  new TicketStatus() { Name = "Resolved" },
+                   new TicketStatus() { Name = "Reopened" },
+                    new TicketStatus() { Name = "Archived" }
+                );
+            #endregion
+            #region Project Seed
+            context.Projects.AddOrUpdate(
+                p => p.Name,
+                new Project() { Name="Seed1", Created = DateTime.Now.AddDays(-60), DueDate = DateTime.Now.AddDays(-10),IsArchive = true},
+                new Project() { Name = "Seed2", Created = DateTime.Now.AddDays(-10), DueDate = DateTime.Now.AddDays(+100) },
+                new Project() { Name = "Seed3", Created = DateTime.Now.AddDays(-45), DueDate = DateTime.Now.AddDays(+100) },
+                new Project() { Name = "Seed4", Created = DateTime.Now.AddDays(-30), DueDate = DateTime.Now.AddDays(+100) },
+                new Project() { Name = "Seed5", Created = DateTime.Now.AddDays(-4), DueDate = DateTime.Now.AddDays(+100) }
+                );
+            #endregion
+            context.SaveChanges();
 
             var userManager = new UserManager<ApplicationUser>(
                new UserStore<ApplicationUser>(context));
@@ -128,7 +171,8 @@ namespace BugTracker.Migrations
             userManager.AddToRole(userId, "Moderator");
 
 
-            for(int i = 0; i< 10; i++) {
+            for (int i = 0; i < 10; i++)
+            {
                 var emailCurr = $"bugtrackerdev{i}@mailinator.com";
                 if (!context.Users.Any(u => u.Email == emailCurr))
                 {
@@ -165,7 +209,7 @@ namespace BugTracker.Migrations
                         contactNumber = "111111111"
 
                     },
-                    "123456Abc$"); 
+                    "123456Abc$");
 
 
                 }
@@ -184,7 +228,7 @@ namespace BugTracker.Migrations
                         UserName = $"bugtrackersub{i}@mailinator.com",
                         FirstName = $"sub{i}",
                         LastName = "sub",
-                        AvatarPath ="",
+                        AvatarPath = "",
                         contactNumber = "111111111"
 
                     },
@@ -207,4 +251,3 @@ namespace BugTracker.Migrations
     }
 }
 
-   
