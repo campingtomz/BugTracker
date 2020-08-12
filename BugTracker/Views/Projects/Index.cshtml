@@ -1,9 +1,6 @@
 ﻿
-@using PagedList.Mvc;
-@using PagedList;
+
 @model IEnumerable<BugTracker.ViewModels.ProjectManageVM>
-
-
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -24,7 +21,6 @@
 
                             </tr>
                         </thead>
-
                         <tbody>
                             @foreach (var project in Model)
                             {
@@ -68,7 +64,6 @@
                                     {
                                         <span>No Submitters Assigned</span>
                                     }
-
                                 </td>
                                 <td>@Html.Label(project.projectValue.Created.ToString("MMM dd yyyy"))</td>
                                 <td>@Html.Label(project.projectValue.DueDate.ToString("MMM dd yyyy"))</td>
@@ -76,37 +71,14 @@
                                 <td>
                                     @Html.ActionLink("Edit", "Edit", new { id = project.projectValue.Id }) |
                                     @Html.ActionLink("Details", "Details", new { id = project.projectValue.Id }) |
-
                                 </td>
                             </tr>
                             }
                         </tbody>
                     </table>
-
                     @Html.ActionLink("Create New", "ProjectWizard", "Projects", null, new { @class = "btn btn-success" })
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-
-@*@foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Created)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsArchive)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-            </td>
-        </tr>*@

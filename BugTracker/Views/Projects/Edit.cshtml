@@ -1,8 +1,9 @@
-﻿@model BugTracker.ViewModels.ProjectManageVM
+﻿@*@model BugTracker.ViewModels.ProjectManageVM*@
+@model BugTracker.Models.Project
 
 @using BugTracker.Helpers;
 @{ var roleHelper = new UserRoleHelper(); }
-
+@{ var projectHelper = new ProjectHelper(); }
 @*<link href="~/Content/css/bootstrap-datepicker.min.css" rel="stylesheet" />
     <link href="~/Content/css/bootstrap-select.min.css" rel="stylesheet" />
     <link href="~/Content/css/bootstrap-tagsinput.css" rel="stylesheet" />
@@ -13,20 +14,17 @@
 @using (Html.BeginForm("Edit", "Projects", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(m => Model.projectValue.Id)
-
-
-    <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(model => model.projectValue.Id)
-    @Html.HiddenFor(model => model.projectValue.IsArchive)
-    @Html.HiddenFor(model => model.projectValue.Created)
-    @Html.HiddenFor(model => model.projectValue.DueDate)
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.IsArchive)
+    @Html.HiddenFor(model => model.Created)
+    @Html.HiddenFor(model => model.DueDate)
+    <hr />
     <div class="row">
         <div class="col-lg-12">
             <div class="card card-outline-info">
                 <div class="card-header">
-                    <h4 class="m-b-0 text-white">Edit Project @Model.projectValue.Name</h4>
+                    <h4 class="m-b-0 text-white">Edit Project @Model.Name</h4>
                 </div>
                 <div class="card-body">
                     <form action="#" class="form-horizontal">
@@ -37,8 +35,8 @@
                                     <div class="form-group">
                                         <label class="control-label">Project Name:</label>
 
-                                        @Html.EditorFor(model => model.projectValue.Name, new { htmlAttributes = new { @class = "form-control", @placehoder = "@Model.Name" } })
-                                        @Html.ValidationMessageFor(model => model.projectValue.Name, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @placehoder = "@Model.Name" } })
+                                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
 
                                     </div>
                                 </div>
@@ -47,7 +45,7 @@
                                     <div class="form-group ">
                                         <label class="control-label">Due Date:</label>
                                         <div class="col-md-9">
-                                            <input type="date" class="form-control" placeholder="dd/mm/yyyy">
+                                            <input type="date" class="form-control" placeholder="@Model.DueDate.ToString("MMM dd yyyy")">
                                         </div>
                                     </div>
                                 </div>
@@ -60,7 +58,8 @@
                                         <label class="control-label">Description</label>
                                         <div class="col-md-9">
                                             <div class="form-group">
-                                                @Html.EditorFor(model => model.projectValue.Description, new { htmlAttributes = new { @class = "textarea_editor form-control", @placeholder = "Enter a Description" } })
+                                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control editorHtml", @placeholder = "Enter a Description" } })
+                                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
@@ -102,13 +101,13 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    @foreach (var user in Model.Submitters)
+                                                                    @foreach (var user in ViewBag.Submitters)
                                                                     {
                                                                         <tr>
 
                                                                             <td>@user.FullName</td>
                                                                             <td class="text-nowrap">
-                                                                                <a href="@Url.Action("Edit","Projects", new {userId = user.Id, AddRemoveUser = 1, id = Model.projectValue.Id})" class="submit" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-close text-danger"></i> </a>
+                                                                                <a href="@Url.Action("Edit","Projects", new {userId = user.Id, AddRemoveUser = 1, id = Model.Id})" class="submit" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-close text-danger"></i> </a>
                                                                             </td>
                                                                         </tr>
                                                                     }
@@ -137,7 +136,7 @@
                                                                             <tr>
                                                                                 <td>@user.FirstName</td>
                                                                                 <td class="text-nowrap">
-                                                                                    <a href="@Url.Action("Edit", "Projects", new { userId = user.Id, AddRemoveUser = 0, id = Model.projectValue.Id })" class="submit" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-plus text-danger"></i> </a>
+                                                                                    <a href="@Url.Action("Edit", "Projects", new { userId = user.Id, AddRemoveUser = 0, id = Model.Id })" class="submit" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-plus text-danger"></i> </a>
                                                                                 </td>
                                                                             </tr>
                                                                         }
@@ -146,7 +145,6 @@
                                                             </table>
                                                         </div>
                                                     </div>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -168,13 +166,13 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    @foreach (var user in Model.Developers)
+                                                                    @foreach (var user in ViewBag.Developers)
                                                                     {
                                                                         <tr>
-
+                                                                            
                                                                             <td>@user.FullName</td>
                                                                             <td class="text-nowrap">
-                                                                                <a href="@Url.Action("Edit","Projects", new {userId = user.Id, AddRemoveUser = 1, id = Model.projectValue.Id})" class="submit" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-close text-danger"></i> </a>
+                                                                                <a href="@Url.Action("Edit","Projects", new {userId = user.Id, AddRemoveUser = 1, id = Model.Id})" class="submit" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-close text-danger"></i> </a>
                                                                             </td>
                                                                         </tr>
                                                                     }
@@ -203,7 +201,7 @@
                                                                             <tr>
                                                                                 <td>@user.FirstName</td>
                                                                                 <td class="text-nowrap">
-                                                                                    <a href="@Url.Action("Edit", "Projects", new { userId = user.Id, AddRemoveUser = 0, id = Model.projectValue.Id })" class="submit" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-plus text-danger"></i> </a>
+                                                                                    <a href="@Url.Action("Edit", "Projects", new { userId = user.Id, AddRemoveUser = 0, id = Model.Id })" class="submit" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-plus text-danger"></i> </a>
                                                                                 </td>
                                                                             </tr>
                                                                         }
@@ -225,13 +223,15 @@
                                         <div class="row">
                                             <div class="col-md-offset-3 col-md-9">
                                                 <button type="submit" class="btn btn-success">Submit</button>
-                                                @Html.ActionLink("Cancel", "Details", new { id = Model.projectValue.Id }, new { @type = "button", @class = "btn btn-inverse" })
+                                                @Html.ActionLink("Cancel", "Details", new { id = Model.Id }, new { @type = "button", @class = "btn btn-inverse" })
 
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
                     </form>
                 </div>
             </div>
@@ -239,12 +239,16 @@
     </div>
 }
 @section Scripts{
-    <script>
-    $(document).ready(function () {
-            $('.textarea_editor').wysihtml5();
+    <script src="~/Scripts/tinymce/tinymce.js"></script>
+    <script src="~/Scripts/tinymce/jquery.tinymce.min.js"></script>
+    <script type="text/javascript">
+        tinymce.init({
+
+            selector: "#Description"
         });
     </script>
 }
+
 @*@Ssection Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script src="~/Scripts/select2.full.min.js"></script>

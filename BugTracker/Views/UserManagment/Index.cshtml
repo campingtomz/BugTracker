@@ -3,9 +3,8 @@
 @using System.Data.Entity;
 @using System.Linq;
 @using BugTracker.Helpers;
-@using PagedList.Mvc;
-@using PagedList;
-@model IPagedList<BugTracker.Models.ApplicationUser>
+
+@model IEnumerable<BugTracker.Models.ApplicationUser>
 
 @{ var roleHelper = new UserRoleHelper(); }
 @{ var projectHelper = new ProjectHelper(); }
@@ -16,7 +15,7 @@
             <div class="card-body">
                 <h4 class="card-title">User Data</h4>
                 <div class="table-responsive m-t-40">
-                    <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                    <table class="example25 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>Full Name</th>
@@ -24,8 +23,7 @@
                                 <th>Contact Number</th>
                                 <th>Role</th>
                                 <th>Projects</th>
-
-
+                                <th>Action</th>
                             </tr>
                         </thead>
 
@@ -36,7 +34,7 @@
 
                                     <td> @Html.DisplayFor(modelItem => user.FullName)</td>
                                     <td>@Html.DisplayFor(modelItem => user.Email)</td>
-                                    <td>2011/04/25</td>
+                                    <td>@Html.DisplayFor(modelItem => user.contactNumber)</td>
                                     <td> @roleHelper.ListUserRoles(user.Id).FirstOrDefault()</td>
                                     <td> @Html.DropDownListFor(modelItem => user.Id, new SelectList(user.Projects, "id", "Name", "-- NO Project --"))</td>
                                     <td>
@@ -47,35 +45,23 @@
                             }
                         </tbody>
                     </table>
-                    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
-                    @Html.ActionLink("Add User", "AddUser", "UserManagment", null ,new { @class= "btn btn-success" })
+                    @Html.ActionLink("Add User", "AddUser", "UserManagment", null, new { @class = "btn btn-success" })
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@*<
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => user.FullName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => user.Email)
-                </td>
-                <td>
-             @Html.ActionLink("Manage Role", "ManageUserRoles",new { id = user.Id})
-                </td>
-
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = user.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = user.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = user.Id })
-                </td>
-            </tr>
-        }
-
-    </table>*@
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.example25').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+            });
+        });
+    </script>
+}

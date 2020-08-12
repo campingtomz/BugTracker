@@ -1,10 +1,12 @@
-﻿@model BugTracker.ViewModels.ProjectManageVM
-
+﻿@*@model BugTracker.ViewModels.ProjectManageVM*@
+@model BugTracker.Models.Project
+@using BugTracker.Helpers;
+@{var projectHelper = new ProjectHelper(); }
 <div class="row">
     <div class="col-lg-12">
         <div class="card card-outline-info">
             <div class="card-header">
-                <h4 class="m-b-0 text-white">Project @Model.projectValue.Name</h4>
+                <h4 class="m-b-0 text-white">Project @Model.Name</h4>
             </div>
             <div class="card-body">
                 <form class="form-horizontal" role="form">
@@ -16,7 +18,7 @@
                                 <div class="form-group row">
                                     <label class="control-label text-right col-md-3">Project Name:</label>
                                     <div class="col-md-9">
-                                        <p class="form-control-static"> @Model.projectValue.Name </p>
+                                        <p class="form-control-static"> @Model.Name </p>
                                     </div>
                                 </div>
                             </div>
@@ -25,7 +27,7 @@
                                 <div class="form-group row">
                                     <label class="control-label text-right col-md-3">Last Name:</label>
                                     <div class="col-md-9">
-                                        <p class="form-control-static"> @Model.projectValue.Created.ToString("MMM dd yyyy") </p>
+                                        <p class="form-control-static"> @Model.Created.ToString("MMM dd yyyy") </p>
                                     </div>
                                 </div>
                             </div>
@@ -37,7 +39,7 @@
                                 <div class="form-group row">
                                     <label class="control-label text-right col-md-3">Date Created:</label>
                                     <div class="col-md-9">
-                                        <p class="form-control-static">  @Model.projectValue.Created.ToString("MMM dd yyyy") </p>
+                                        <p class="form-control-static">  @Model.Created.ToString("MMM dd yyyy") </p>
                                     </div>
                                 </div>
                             </div>
@@ -46,7 +48,7 @@
                                 <div class="form-group row">
                                     <label class="control-label text-right col-md-3">Due Date:</label>
                                     <div class="col-md-9">
-                                        <p class="form-control-static"> 11/06/1987 </p>
+                                        <p class="form-control-static">  @Model.DueDate.ToString("MMM dd yyyy") </p>
                                     </div>
                                 </div>
                             </div>
@@ -68,7 +70,8 @@
                         <!--/row-->
                         <h3 class="box-title">Project Manager</h3>
                         <hr class="m-t-0 m-b-40">
-                        @if (@Model.projectManager != null)
+                        @{var projectManager = projectHelper.ListUserOnProjectInRole(Model.Id, "ProjectManager").FirstOrDefault();}
+                        @if (projectManager != null)
                         {
                             <div class="row">
 
@@ -76,7 +79,7 @@
                                     <div class="form-group row">
                                         <label class="control-label text-right col-md-3">First Name:</label>
                                         <div class="col-md-9">
-                                            <p class="form-control-static">@Model.projectManager.FirstName</p>
+                                            <p class="form-control-static">@projectManager.FirstName</p>
                                         </div>
                                     </div>
                                 </div>
@@ -84,7 +87,7 @@
                                     <div class="form-group row">
                                         <label class="control-label text-right col-md-3">Email:</label>
                                         <div class="col-md-9">
-                                            <p class="form-control-static">@Model.projectManager.Email </p>
+                                            <p class="form-control-static">@projectManager.Email </p>
                                         </div>
                                     </div>
                                 </div>
@@ -94,7 +97,7 @@
                                     <div class="form-group row">
                                         <label class="control-label text-right col-md-3">Last Name:</label>
                                         <div class="col-md-9">
-                                            <p class="form-control-static"> @Model.projectManager.LastName </p>
+                                            <p class="form-control-static"> @projectManager.LastName </p>
                                         </div>
                                     </div>
                                 </div>
@@ -103,7 +106,7 @@
                                     <div class="form-group row">
                                         <label class="control-label text-right col-md-3">Contact Number:</label>
                                         <div class="col-md-9">
-                                            <p class="form-control-static">@Model.projectManager.contactNumber</p>
+                                            <p class="form-control-static">@projectManager.contactNumber</p>
                                         </div>
                                     </div>
                                 </div>
@@ -137,7 +140,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var user in Model.Developers)
+                                    @foreach (var user in projectHelper.ListUserOnProjectInRole(Model.Id, "Developer").ToList())
                                     {
                                         <tr>
                                             <td>@user.FullName</td>
@@ -160,7 +163,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var user in Model.Submitters)
+                                    @foreach (var user in projectHelper.ListUserOnProjectInRole(Model.Id, "Submitter").ToList())
                                     {
 
                                         <tr>
@@ -174,13 +177,69 @@
                         </div>
                     </div>
 
+
+                    @if (User.IsInRole("Submitter"))
+                    {
+                        <div class="row">
+                            @using (Html.BeginForm("Create", "Tickets", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                @Html.Hidden("ProjectId", @Model.Id)
+                                @Html.Hidden("obnPage", true)
+                                <div class="row justify-content-center">
+                                    <div class="col-md-4">
+                                        <div class="card card-body">
+                                            <h3 class="box-title m-b-0">Create Ticket</h3>
+                                            <div class="row">
+                                                <div class="col-sm-12 col-xs-12">
+                                                    <form>
+
+                                                        <div class="form-group">
+                                                            @Html.Label("Ticket Priority", "TicketPriorityId")
+                                                            @Html.DropDownList("TicketPriorityId", null, htmlAttributes: new { @class = "form-control" })
+                                                            @Html.ValidationMessage("TicketPriorityId", "", new { @class = "text-danger" })
+
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            @Html.Label("Ticket Type", "TicketTypeId")
+                                                            @Html.DropDownList("TicketTypeId", null, htmlAttributes: new { @class = "form-control" })
+                                                            @Html.ValidationMessage("TicketTypeId", "", new { @class = "text-danger" })
+                                                        </div>
+                                                        <div class="form-group">
+                                                            @Html.Label("Issue")
+                                                            @Html.TextBox("Issue", new { @class = "form-control" })
+                                                            @Html.ValidationMessage("Issue", "", new { @class = "text-danger" })
+                                                        </div>
+                                                        <div class="form-group">
+                                                            @Html.Label("IssueDiscription")
+                                                            @Html.TextArea("IssueDiscription", new { @class = "form-control", @id = "IssueDiscription" })
+                                                            @Html.ValidationMessage("IssueDiscription", "", new { @class = "text-danger" })
+
+                                                        </div>
+                                                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Create</button>
+                                                        @*@Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-inverse waves-effect waves-light" })*@
+                                                        @*<button type="submit" class="btn btn-inverse waves-effect waves-light">Cancel</button>*@
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            }
+                        </div>
+                    }
+
                     <div class="form-actions">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-md-offset-3 col-md-9">
-                                        @Html.ActionLink("Edit", "Edit", new { id = Model.projectValue.Id }, new { @class = "btn btn-success" })
-                                        @Html.ActionLink("Back to List", "Index",null, new { @class = "btn btn-inverse" })
+                                        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" })
+                                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-inverse" })
                                         @*<button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Edit</button>*@
                                         @*<button type="button" class="btn btn-inverse">Cancel</button>*@
                                     </div>
@@ -193,57 +252,3 @@
         </div>
     </div>
 </div>
-@if (User.IsInRole("Submitter"))
-{
-    <div class="row">
-        @using (Html.BeginForm("Create", "Tickets", FormMethod.Post))
-        {
-            @Html.AntiForgeryToken()
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            @Html.Hidden("ProjectId", @Model.projectValue.Id)
-            @Html.Hidden("obnPage", true)
-            <div class="row justify-content-center">
-                <div class="col-md-4">
-                    <div class="card card-body">
-                        <h3 class="box-title m-b-0">Create Ticket</h3>
-                        <div class="row">
-                            <div class="col-sm-12 col-xs-12">
-                                <form>
-
-                                    <div class="form-group">
-                                        @Html.Label("Ticket Priority", "TicketPriorityId")
-                                        @Html.DropDownList("TicketPriorityId", null, htmlAttributes: new { @class = "form-control" })
-                                        @Html.ValidationMessage("TicketPriorityId", "", new { @class = "text-danger" })
-
-                                    </div>
-
-                                    <div class="form-group">
-                                        @Html.Label("Ticket Type", "TicketTypeId")
-                                        @Html.DropDownList("TicketTypeId", null, htmlAttributes: new { @class = "form-control" })
-                                        @Html.ValidationMessage("TicketTypeId", "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group">
-                                        @Html.Label("Issue")
-                                        @Html.TextBox("Issue", new { @class = "form-control" })
-                                        @Html.ValidationMessage("Issue", "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group">
-                                        @Html.Label("IssueDiscription")
-                                        @Html.TextArea("IssueDiscription", new { @class = "form-control", @id = "IssueDiscription" })
-                                        @Html.ValidationMessage("IssueDiscription", "", new { @class = "text-danger" })
-
-                                    </div>
-                                    <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Create</button>
-                                    @*@Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-inverse waves-effect waves-light" })*@
-                                    @*<button type="submit" class="btn btn-inverse waves-effect waves-light">Cancel</button>*@
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-        }
-    </div>
-}

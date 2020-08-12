@@ -11,24 +11,21 @@ using BugTracker.Helpers;
 using BugTracker.Models;
 using BugTracker.ViewModels;
 using Microsoft.AspNet.Identity;
-using PagedList;
-using PagedList.Mvc;
 
 namespace BugTracker.Controllers
 {
+    [Authorize]
     public class UserManagmentController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private UserRoleHelper roleHelper = new UserRoleHelper();
         private ProjectHelper projectHelper = new ProjectHelper();
         // GET: UserManagment
-        public ActionResult Index(int? page)
+        public ActionResult Index()
         {
 
-            var users = db.Users.ToList();
-            int pageSize = 10; //Specifies the number of posts per page
-            int pageNumber = (page ?? 1); //?? null coalescing operator
-            var model = users.OrderBy(u => u.Email).ToPagedList(pageNumber, pageSize);
+            var model = db.Users.ToList();
+            
             return View(model);
         }
 
@@ -53,7 +50,7 @@ namespace BugTracker.Controllers
             model.NotUserProjects = projectHelper.ListUserNotOnProjects(userId).ToList();
 
 
-            return View("~/Views/UserManagment/ManageUser.cshtml", model);
+            return View(model);
         }
 
 

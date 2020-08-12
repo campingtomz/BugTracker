@@ -16,6 +16,10 @@ namespace BugTracker.ViewModels
         public List<ApplicationUser> Developers { get; set; }
         public List<ApplicationUser> Submitters { get; set; }
       
+         public ProjectManageVM()
+        {
+
+        }
         public ProjectManageVM(Project projectValue)
         {
             this.projectValue = projectValue;

@@ -11,6 +11,8 @@ using Microsoft.Owin.Security;
 using BugTracker.Models;
 using System.Net.Mail;
 using System.Web.Configuration;
+using System.IO;
+using BugTracker.Helpers;
 namespace BugTracker.Controllers
 {
     [Authorize]
@@ -18,6 +20,7 @@ namespace BugTracker.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private UserRoleHelper roleHelper = new UserRoleHelper();
 
         public AccountController()
         {
@@ -152,8 +155,16 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, AvatarPath = "/Images/Default_Avatar.png"};
+                if(model.Avatar != null)
+                {
+                    var fileName = Path.GetFileName(model.Avatar.FileName);
+                    model.Avatar.SaveAs(Path.Combine(Server.MapPath("~/Avatars/"), fileName));
+                    user.AvatarPath = "~/Avatars/" + fileName;
+                }
+               
                 var result = await UserManager.CreateAsync(user, model.Password);
+                UserManager.AddToRole(user.Id, "No-Role");
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
@@ -185,7 +196,7 @@ namespace BugTracker.Controllers
 
                     //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Account");
                 }
                 AddErrors(result);
             }

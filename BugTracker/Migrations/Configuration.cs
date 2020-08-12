@@ -41,6 +41,10 @@ namespace BugTracker.Migrations
             {
                 roleManager.Create(new IdentityRole { Name = "Developer" });
             }
+            if (!context.Roles.Any(r => r.Name == "No-Role"))
+            {
+                roleManager.Create(new IdentityRole { Name = "No-Role" });
+            }
             #endregion
             #region demo-roles
             if (!context.Roles.Any(r => r.Name == "Demo-Admin"))
@@ -118,7 +122,7 @@ namespace BugTracker.Migrations
                     UserName = "AndrewRussell@coderfoundry.com",
                     FirstName = "Andrew",
                     LastName = "Russell",
-                    AvatarPath = "",
+                    AvatarPath = "/Images/Default_Avatar.png",
                     contactNumber = "111111111"
 
 
@@ -139,7 +143,7 @@ namespace BugTracker.Migrations
                     UserName = "thomas.j.zanis@gmail.com",
                     FirstName = "Thomas",
                     LastName = "Zanis",
-                    AvatarPath = "",
+                    AvatarPath = "/Images/Default_Avatar.png",
                     contactNumber = "111111111"
 
 
@@ -158,7 +162,7 @@ namespace BugTracker.Migrations
                     Email = "moderator@coderfoundry.com",
                     UserName = "moderator@coderfoundry.com",
                     FirstName = "moderator",
-                    AvatarPath = "",
+                    AvatarPath = "/Images/Default_Avatar.png",
                     contactNumber = "111111111"
 
 
@@ -182,7 +186,7 @@ namespace BugTracker.Migrations
                         UserName = $"bugtrackerdev{i}@mailinator.com",
                         FirstName = $"dev{i}",
                         LastName = "dev",
-                        AvatarPath = "",
+                        AvatarPath = "/Images/Default_Avatar.png",
                         contactNumber = "111111111"
 
                     },
@@ -205,7 +209,7 @@ namespace BugTracker.Migrations
                         UserName = $"bugtrackerpm{i}@mailinator.com",
                         FirstName = $"pm{i}",
                         LastName = "pm",
-                        AvatarPath = "",
+                        AvatarPath = "/Images/Default_Avatar.png",
                         contactNumber = "111111111"
 
                     },
@@ -228,7 +232,7 @@ namespace BugTracker.Migrations
                         UserName = $"bugtrackersub{i}@mailinator.com",
                         FirstName = $"sub{i}",
                         LastName = "sub",
-                        AvatarPath = "",
+                        AvatarPath = "/Images/Default_Avatar.png",
                         contactNumber = "111111111"
 
                     },

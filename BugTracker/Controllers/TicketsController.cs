@@ -12,7 +12,7 @@ using Microsoft.AspNet.Identity;
 
 namespace BugTracker.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class TicketsController : Controller
     {
         private UserRoleHelper roleHelper = new UserRoleHelper();

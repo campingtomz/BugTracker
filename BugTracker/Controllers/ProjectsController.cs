@@ -44,13 +44,13 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Project project = db.Projects.Find(id);
-            if (project == null)
+            var model = db.Projects.Find(id);
+            if (model == null)
             {
                 return HttpNotFound();
 
             }
-            var model = new ProjectManageVM(project);
+          
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name");
             ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name");
             return View(model);
@@ -134,8 +134,8 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Project project = db.Projects.Find(id);
-            if (project == null)
+            var model = db.Projects.Find(id);
+            if (model == null)
             {
                 return HttpNotFound();
             }
@@ -143,20 +143,18 @@ namespace BugTracker.Controllers
             {
                 if (AddRemoveUser == 0)
                 {
-                    projectHelper.AddUserToProject(userId, project.Id);
+                    projectHelper.AddUserToProject(userId, model.Id);
                 }
                 else if (AddRemoveUser == 1)
                 {
-                    projectHelper.RemoveUserFromProject(userId, project.Id);
+                    projectHelper.RemoveUserFromProject(userId, model.Id);
                 }
             }
-            ViewBag.UsersNotInProject = new List<ApplicationUser>(projectHelper.ListUsersNotOnProject(project.Id));
-            ViewBag.ProjectManagers = new SelectList(roleHelper.UsersInRole("ProjectManager"), "Id", "FullName");
-            var model = new ProjectManageVM(project);
-            //ViewBag.ProjectManagerId = new SelectList(roleHelper.UsersInRole("ProjectManager"), "Id", "FullName");
-            //ViewBag.DeveloperIds = new MultiSelectList(roleHelper.UsersInRole("Developer"), "Id", "FullName");
-            //ViewBag.SubmitterIds = new MultiSelectList(roleHelper.UsersInRole("Submitter"), "Id", "FullName");
-            return View("~/Views/Projects/Edit.cshtml", model);
+            ViewBag.UsersNotInProject = new List<ApplicationUser>(projectHelper.ListUsersNotOnProject(model.Id)); 
+             ViewBag.ProjectManagers = new SelectList(roleHelper.UsersInRole("ProjectManager"), "Id", "FullName", projectHelper.ListUserOnProjectInRole(model.Id, "ProjectManager").FirstOrDefault().Id);
+            ViewBag.Submitters = new List<ApplicationUser>(projectHelper.ListUserOnProjectInRole(model.Id, "Submitter"));
+            ViewBag.Developers = new List<ApplicationUser>(projectHelper.ListUserOnProjectInRole(model.Id, "Developer"));
+            return View(model);
         }
 
         // POST: Projects/Edit/5
@@ -164,15 +162,14 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ProjectManageVM projectVM, string ProjectManagers)
+        public ActionResult Edit(Project project, string ProjectManagers)
         {
 
             //projectVM.projectValue.IsArchive = false;
-            db.Entry(projectVM.projectValue).State = EntityState.Modified;
+            db.Entry(project).State = EntityState.Modified;
             db.SaveChanges();
-
-            projectHelper.RemoveUserFromProject(projectVM.projectManager.Id, projectVM.projectValue.Id);
-            projectHelper.AddUserToProject(ProjectManagers, projectVM.projectValue.Id);
+            projectHelper.RemoveUserFromProject(projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager").FirstOrDefault().Id, project.Id);
+            projectHelper.AddUserToProject(ProjectManagers, project.Id);
 
             return RedirectToAction("Index"); 
         }

@@ -31,6 +31,11 @@ namespace BugTracker.Helpers
             var user = db.Users.Find(userId);
             return user.Email;
         }
-      
+        public string GetAvatar(string userId)
+        {
+            var user = db.Users.Find(userId);
+            return user.AvatarPath;
+        }
+
     }
 }
