@@ -215,6 +215,9 @@
     <Compile Include="ViewModels\ProjectWizardVM.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Fonts\dropify.eot" />
+    <Content Include="Content\Fonts\dropify.ttf" />
+    <Content Include="Content\Fonts\dropify.woff" />
     <None Include="Images\Default_Avatar" />
     <Content Include="Content\css\animate.css" />
     <Content Include="Content\css\bootstrap-datepicker.min.css" />
@@ -233,6 +236,7 @@
     <Content Include="Content\css\colors\purple.css" />
     <Content Include="Content\css\colors\red-dark.css" />
     <Content Include="Content\css\colors\red.css" />
+    <Content Include="Content\css\dropify.min.css" />
     <Content Include="Content\css\jquery.bootstrap-touchspin.min.css" />
     <Content Include="Content\css\material.css" />
     <Content Include="Content\css\morris.css" />
@@ -242,14 +246,18 @@
     <Content Include="Content\css\steps.css" />
     <Content Include="Content\css\sweetalert.css" />
     <Content Include="Content\css\switchery.min.css" />
+    <Content Include="Content\Fonts\dropify.svg" />
     <Content Include="Content\images\switch.png" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Scripts\bootstrap-select.min.js" />
     <Content Include="Scripts\bootstrap-tagsinput.min.js" />
     <Content Include="Scripts\CustomForm-Addon.js" />
     <Content Include="Scripts\dff.js" />
+    <Content Include="Scripts\dropify.min.js" />
     <Content Include="Scripts\jquery.bootstrap-touchspin.js" />
+    <Content Include="Scripts\jquery.inputmask.bundle.js" />
     <Content Include="Scripts\jquery.multi-select.js" />
+    <Content Include="Scripts\MaskInpu.js" />
     <Content Include="Scripts\select2.full.min.js" />
     <Content Include="Scripts\TableCustom.js" />
     <Content Include="Scripts\jquery.dataTables.min.js" />
@@ -1050,6 +1058,7 @@
     <Content Include="Views\Account\ResendEmailConfirmation.cshtml" />
     <Content Include="Views\Account\ConfirmationSent.cshtml" />
     <Content Include="Private.config" />
+    <Content Include="Views\Account\CreateNewUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,0 +1,200 @@
+﻿
+@model BugTracker.Models.CreateNewUserViewModel
+
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body wizard-content ">
+                <h4 class="card-title">Create New User</h4>
+                @using (Html.BeginForm("CreateNewUser", "Account", FormMethod.Post, new { @class = "tab-wizard vertical wizard-circle" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <!-- Step 1 -->
+                    <h6>Personal Info</h6>
+                    <section>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>First Name :</label>
+                                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @type = "text" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Last Name :</label>
+                                    @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @type = "text" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Email Address :</label>
+                                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @type = "Email" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Phone Number :</label>
+                                    @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control phone-inputmask", @placeholder="Enter A phone number" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-6">
+                                <label>Avatar Image Upload :</label>
+                                <input name="image" type="file" class=" dropify form-control" id="fileUpload" />
+                                @Html.ValidationMessageFor(model => model.Avatar, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Step 2 -->
+                    <h6>User Access</h6>
+                    <section>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Project Role :</label>
+                                    @Html.DropDownList("RoleName", null, new { @class = "custom-select" })
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Assign Projects :</label>
+                                    @Html.ListBox("AllProjects", null, new { @class = " form-control", @multiple = "" })
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            // Basic
+            $('.dropify').dropify();
+        });
+    </script>
+    
+}
+
+
+
+
+@*
+
+
+            <section id="wrapper">
+                <div class="login-register" style="background-image: url(~/Content/images/background/login-register.jpg);">
+                    <div class="login-box card">
+                        <div class="card-body">
+                            <form class="form-horizontal form-material" id="loginform" action="index.html">
+                                <h3 class="box-title m-b-20">Sign Up</h3>
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @type = "text", @placeholder = "First Name" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @type = "text", @placeholder = "Last Name" })
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <div class="col-xs-12">
+                                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @type = "Email", @placeholder = "Email" })
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <div class="col-xs-12">
+                                        @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @type = "password", @placeholder = "Password" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                        @Html.TextBoxFor(m => m.ConfirmPassword, new { @class = "form-control", @type = "password", @placeholder = "Confirm Password" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                        @Html.LabelFor(model => model.Avatar, htmlAttributes: new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                        <input name="image" type="file" class="form-control" id="fileUpload" />
+                                        @Html.ValidationMessageFor(model => model.Avatar, "", new { @class = "text-danger" })
+                                    </div>
+
+                                </div>
+                                <div class="form-group text-center m-t-20">
+                                    <div class="col-xs-12">
+                                        <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Register</button>
+                                    </div>
+                                </div>
+                                <div class="form-group m-b-0">
+                                    <div class="col-sm-12 text-center">
+                                        <div>Already have an account? <a href="pages-login.html" class="text-info m-l-5"><b>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</b></a></div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </body>
+
+    </html>
+        @model BugTracker.Models.RegisterViewModel
+        @{
+            ViewBag.Title = "Register";
+        }
+
+        <h2>@ViewBag.Title.</h2>
+
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <h4>Create a new account.</h4>
+            <hr />
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" class="btn btn-default" value="Register" />
+                </div>
+            </div>
+        }
+
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+        }*@

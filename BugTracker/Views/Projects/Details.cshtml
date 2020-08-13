@@ -106,7 +106,8 @@
                                     <div class="form-group row">
                                         <label class="control-label text-right col-md-3">Contact Number:</label>
                                         <div class="col-md-9">
-                                            <p class="form-control-static">@projectManager.contactNumber</p>
+                                         
+                                            <p class="form-control-static" type="tel">@String.Format("{0: (###) ###-####}", int.Parse(projectManager.PhoneNumber))</p>
                                         </div>
                                     </div>
                                 </div>
@@ -142,11 +143,13 @@
                                 <tbody>
                                     @foreach (var user in projectHelper.ListUserOnProjectInRole(Model.Id, "Developer").ToList())
                                     {
-                                        <tr>
-                                            <td>@user.FullName</td>
-                                            <td>@user.Email</td>
-                                            <td>@user.contactNumber</td>
-                                        </tr>
+                                    <tr>
+                                        <td>@user.FullName</td>
+                                        <td>@user.Email</td>
+                                        
+                                        <td>@Html.Display( user.PhoneNumber, new { @type = "tel" })</td>
+                                        
+                                    </tr>
                                     }
                                 </tbody>
                             </table>
@@ -166,11 +169,12 @@
                                     @foreach (var user in projectHelper.ListUserOnProjectInRole(Model.Id, "Submitter").ToList())
                                     {
 
-                                        <tr>
-                                            <td>@user.FullName</td>
-                                            <td>@user.Email</td>
-                                            <td>@user.contactNumber</td>
-                                        </tr>
+                                    <tr>
+                                        <td>@user.FullName</td>
+                                        <td>@user.Email</td>                                     
+                                        <td>@String.Format("{0: (###) ###-####}", int.Parse(user.PhoneNumber))</td>
+
+                                    </tr>
                                     }
                                 </tbody>
                             </table>

@@ -10,7 +10,10 @@ namespace BugTracker.Helpers
     public class UserHelper
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-    
+        public ApplicationUser getUser(string userId)
+        {
+            return db.Users.Find(userId);
+        }
         public string GetFirstName(string userId)
         {
             var user = db.Users.Find(userId);

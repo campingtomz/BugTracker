@@ -13,6 +13,9 @@ using System.Net.Mail;
 using System.Web.Configuration;
 using System.IO;
 using BugTracker.Helpers;
+using System.Collections.Generic;
+using System.Web.Security;
+
 namespace BugTracker.Controllers
 {
     [Authorize]
@@ -21,12 +24,13 @@ namespace BugTracker.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private UserRoleHelper roleHelper = new UserRoleHelper();
-
+        private ProjectHelper projectHelper = new ProjectHelper();
+        private ApplicationDbContext db = new ApplicationDbContext();
         public AccountController()
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -38,9 +42,9 @@ namespace BugTracker.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -124,7 +128,7 @@ namespace BugTracker.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -155,19 +159,27 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, AvatarPath = "/Images/Default_Avatar.png"};
-                if(model.Avatar != null)
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    AvatarPath = "/Images/Default_Avatar.png"
+                };
+                if (model.Avatar != null)
                 {
                     var fileName = Path.GetFileName(model.Avatar.FileName);
                     model.Avatar.SaveAs(Path.Combine(Server.MapPath("~/Avatars/"), fileName));
-                    user.AvatarPath = "~/Avatars/" + fileName;
+                    user.AvatarPath = "/Avatars/" + fileName;
                 }
-               
+
                 var result = await UserManager.CreateAsync(user, model.Password);
-                UserManager.AddToRole(user.Id, "No-Role");
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                    UserManager.AddToRole(user.Id, "Default");
+
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
@@ -205,6 +217,93 @@ namespace BugTracker.Controllers
             return View(model);
         }
 
+
+        [Authorize]
+        public ActionResult CreateNewUser()
+        {
+            ViewBag.AllProjects = new MultiSelectList(db.Projects.ToList(), "Id", "Name");
+            ViewBag.RoleName = new SelectList(db.Roles, "Name", "Name", "Default");
+
+            return View();
+        }
+
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateNewUser(CreateNewUserViewModel model, List<int> AllProjects, string RoleName)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    AvatarPath = "/Images/Default_Avatar.png",
+                    PhoneNumber = model.PhoneNumber
+
+                };
+                if (model.Avatar != null)
+                {
+                    var fileName = Path.GetFileName(model.Avatar.FileName);
+                    model.Avatar.SaveAs(Path.Combine(Server.MapPath("~/Avatars/"), fileName));
+                    user.AvatarPath = "/Avatars/" + fileName;
+                }
+
+                var result = await UserManager.CreateAsync(user, Membership.GeneratePassword(12, 1));
+                if (result.Succeeded)
+                {
+                    
+                    roleHelper.AddUserToRole(user.Id, RoleName);
+
+                    foreach (var projectId in AllProjects)
+                    {
+                        projectHelper.AddUserToProject(user.Id, projectId);
+                    }
+
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                    // Send an email with this link
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+
+                    try
+                    {
+                        var from = "BugTracker Admin<admin@bugTracker.com>";
+                        var email = new MailMessage(from, model.Email)
+                        {
+                            Subject = "Confirm Your Account",
+                            Body = "Please confirm your account by Clicking here <a href=\"" + callbackUrl + "\">here</a> ",
+                            IsBodyHtml = true
+                        };
+                        var svc = new EmailService();
+                        await svc.SendAsync(email);
+
+                        //return View(new EmailModel());
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        await Task.FromResult(0);
+                    }
+
+                    //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                    return RedirectToAction("Login", "Account");
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            ViewBag.AllProjects = new MultiSelectList(db.Projects.ToList(), "Id", "Name");
+            ViewBag.RoleName = new SelectList(db.Roles, "Name", "Name", "Default");
+            return View(model);
+        }
+
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
@@ -218,11 +317,11 @@ namespace BugTracker.Controllers
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
-        [HttpGet] 
-        [AllowAnonymous] 
+        [HttpGet]
+        [AllowAnonymous]
         public ActionResult ResendEmailConfirmation()
-        { 
-            return View(); 
+        {
+            return View();
         }
 
         [HttpPost]
@@ -231,9 +330,9 @@ namespace BugTracker.Controllers
         public async Task<ActionResult> ResendEmailConfirmation(ForgotPasswordViewModel model)
         {
             var user = await UserManager.FindByNameAsync(model.Email);
-            if (user != null) 
-            { 
-                string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id); 
+            if (user != null)
+            {
+                string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                 var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                 try
                 {
@@ -279,7 +378,7 @@ namespace BugTracker.Controllers
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null )
+                if (user == null)
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
@@ -291,7 +390,7 @@ namespace BugTracker.Controllers
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                 try
                 {
-                    
+
                     var from = "BugTracker Admin<admin@bugTracker.com";
                     var email = new MailMessage(from, model.Email)
                     {

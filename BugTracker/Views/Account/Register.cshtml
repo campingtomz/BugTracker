@@ -17,27 +17,15 @@
         <!-- Favicon icon -->
         <link rel="icon" type="image/png" sizes="16x16" href="~/Content/favicon/zanis-logo.png">
         <title>Registration</title>
-        <!-- Bootstrap Core CSS -->
         <link href="~/Content/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Custom CSS -->
+        <link href="~/Content/css/dropify.min.css" rel="stylesheet" />
         <link href="~/Content/css/style.css" rel="stylesheet">
-        <!-- You can change the theme colors from here -->
         <link href="~/Content/css/colors/blue.css" id="theme" rel="stylesheet">
 
     </head>
 
     <body>
-        <!-- ============================================================== -->
-        <!-- Preloader - style you can find in spinners.css -->
-        <!-- ============================================================== -->
-        @*<div class="preloader">
-                <svg class="circular" viewBox="25 25 50 50">
-                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
-                </svg>
-            </div>*@
-        <!-- ============================================================== -->
-        <!-- Main wrapper - style you can find in pages.scss -->
-        <!-- ============================================================== -->
+
         <section id="wrapper">
             <div class="login-register" style="background-image: url(~/Content/images/background/login-register.jpg);">
                 <div class="login-box card">
@@ -69,18 +57,18 @@
                                     @Html.TextBoxFor(m => m.ConfirmPassword, new { @class = "form-control", @type = "password", @placeholder = "Confirm Password" })
                                 </div>
                             </div>
+
+                            <hr />
                             <div class="form-group">
                                 <div class="col-xs-12">
-                                    @Html.LabelFor(model => model.Avatar, htmlAttributes: new { @class = "form-control" })
+                                    <label>Avatar Image Upload :</label>
+                                    <input name="image" type="file" class=" dropify form-control" id="fileUpload" />
+                                    @Html.ValidationMessageFor(model => model.Avatar, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                                <div class="form-group">
-                                    <div class="col-xs-12">
-                                        <input name="image" type="file" class="form-control" id="fileUpload" />
-                                        @Html.ValidationMessageFor(model => model.Avatar, "", new { @class = "text-danger" })
-                                    </div>
-                                
-                            </div>
+
+                            <hr />
+
                             <div class="form-group text-center m-t-20">
                                 <div class="col-xs-12">
                                     <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Register</button>
@@ -96,11 +84,27 @@
                 </div>
             </div>
         </section>
-
     </body>
-
 </html>
+<script src="~/Scripts/jquery.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/dropify.min.js"></script>
+<script src="~/Scripts/jquery.inputmask.bundle.js"></script>
+<script>
+    $(document).ready(function () {
+        // Basic
+        $('.dropify').dropify();
+    });
+</script>
+<script>
+    $(function (e) {
+        "use strict";
+        $(".date-inputmask").inputmask("dd/mm/yyyy"),
+            $(".phone-inputmask").inputmask("(999) 999-9999")
+
+</script>
 }
+
 
 
 

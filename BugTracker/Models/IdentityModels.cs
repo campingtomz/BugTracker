@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Security.Claims;
@@ -17,12 +18,14 @@ namespace BugTracker.Models
         public virtual ICollection<TicketComment> Comments { get; set; }
         public virtual ICollection<TicketHistory> Histories { get; set; }
         public virtual ICollection<TicketNotification> Notifications { get; set; }
+
         #endregion
         #region Actuall Properties
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string AvatarPath { get; set; }
-        public string contactNumber { get; set; }
+        [Phone]
+        public string PhoneNumber { get; set; }
         [NotMapped]
         public string FullName
         {

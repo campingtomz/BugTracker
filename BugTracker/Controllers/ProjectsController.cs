@@ -150,8 +150,17 @@ namespace BugTracker.Controllers
                     projectHelper.RemoveUserFromProject(userId, model.Id);
                 }
             }
-            ViewBag.UsersNotInProject = new List<ApplicationUser>(projectHelper.ListUsersNotOnProject(model.Id)); 
-             ViewBag.ProjectManagers = new SelectList(roleHelper.UsersInRole("ProjectManager"), "Id", "FullName", projectHelper.ListUserOnProjectInRole(model.Id, "ProjectManager").FirstOrDefault().Id);
+            ViewBag.UsersNotInProject = new List<ApplicationUser>(projectHelper.ListUsersNotOnProject(model.Id));
+            var projectPM = projectHelper.ListUserOnProjectInRole(model.Id, "ProjectManager");
+            if(projectPM.Count > 0)
+            {
+                ViewBag.ProjectManagers = new SelectList(roleHelper.UsersInRole("ProjectManager"), "Id", "FullName", projectPM.FirstOrDefault().Id);
+            }
+            else
+            {
+                ViewBag.ProjectManagers = new SelectList(roleHelper.UsersInRole("ProjectManager"), "Id", "FullName");
+            }
+             
             ViewBag.Submitters = new List<ApplicationUser>(projectHelper.ListUserOnProjectInRole(model.Id, "Submitter"));
             ViewBag.Developers = new List<ApplicationUser>(projectHelper.ListUserOnProjectInRole(model.Id, "Developer"));
             return View(model);
@@ -168,7 +177,11 @@ namespace BugTracker.Controllers
             //projectVM.projectValue.IsArchive = false;
             db.Entry(project).State = EntityState.Modified;
             db.SaveChanges();
-            projectHelper.RemoveUserFromProject(projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager").FirstOrDefault().Id, project.Id);
+            var projectPm = projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager");
+            if (projectPm.Count > 0)
+            {
+                projectHelper.RemoveUserFromProject(projectPm.FirstOrDefault().Id, project.Id);
+            }
             projectHelper.AddUserToProject(ProjectManagers, project.Id);
 
             return RedirectToAction("Index"); 

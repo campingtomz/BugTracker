@@ -3,34 +3,13 @@
 @using Microsoft.AspNet.Identity
 @using BugTracker.Helpers;
 @{ var userHelper = new UserHelper(); }
-@{
-    ViewBag.Title = "Manage";
-}
+@{ var userRoleHelper = new UserRoleHelper(); }
+@{ var projectHelper = new ProjectHelper(); }
+@{ var user = userHelper.getUser(User.Identity.GetUserId());}
 
-<h2>@ViewBag.Title.</h2>
 
-<p class="text-success">@ViewBag.StatusMessage</p>
-<div class="row page-titles">
-    <div class="col-md-5 align-self-center">
-        <h3 class="text-themecolor">Profile</h3>
-    </div>
-    <div class="col-md-7 align-self-center">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-            <li class="breadcrumb-item">pages</li>
-            <li class="breadcrumb-item active">Profile</li>
-        </ol>
-    </div>
-    <div>
-        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
-    </div>
-</div>
-<!-- ============================================================== -->
-<!-- End Bread crumb and right sidebar toggle -->
-<!-- ============================================================== -->
-<!-- ============================================================== -->
-<!-- Container fluid  -->
-<!-- ============================================================== -->
+
+
 <div class="container-fluid">
     <!-- ============================================================== -->
     <!-- Start Page Content -->
@@ -42,13 +21,13 @@
             <div class="card">
                 <div class="card-body">
                     <center class="m-t-30">
-                        <img src="../assets/images/users/5.jpg" class="img-circle" width="150" />
-                        <h4 class="card-title m-t-10">@userHelper.GetFullName(User.Identity.GetUserId())</h4>
-                        <h6 class="card-subtitle">Place to add get role</h6>
+                        <img src="@user.AvatarPath" class="img-circle" width="150" />
+                        <h4 class="card-title m-t-10">@user.FullName</h4>
+                        <h6 class="card-subtitle">@userRoleHelper.ListUserRoles(user.Id).FirstOrDefault()</h6>
                         <div class="row text-center justify-content-md-center">
-                            <h4>Add links to tickets/projecst?</h4>
-                            <div class="col-4"><a href="javascript:void(0)" class="link"><i class="icon-people"></i> <font class="font-medium">254</font></a></div>
-                            <div class="col-4"><a href="javascript:void(0)" class="link"><i class="icon-picture"></i> <font class="font-medium">54</font></a></div>
+                            <h4>Add links to tickets/projects?</h4>
+                            <div class="col-4"><a href="javascript:void(0)" class="link"><i class="icon-people"></i> <font class="fas fa-ticket-alt">45</font></a></div>
+                            <div class="col-4"><a href="javascript:void(0)" class="link"><i class="icon-picture"></i> <font class="fas fa-project-diagram">@user.Projects.Count</font></a></div>
                         </div>
                     </center>
                 </div>
@@ -57,8 +36,8 @@
                 </div>
                 <div class="card-body">
                     <small class="text-muted">Email address </small>
-                    <h6>@userHelper.GetEmail(User.Identity.GetUserId())</h6> <small class="text-muted p-t-30 db">Phone</small>
-                    <h6>Place to add Phone Number</h6>
+                    <h6>@user.Email</h6> <small class="text-muted p-t-30 db">Phone</small>
+                    <h6>@String.Format("{0: (###) ###-####}", int.Parse(user.PhoneNumber))</h6>
                     <button class="btn btn-circle btn-secondary"><i class="fa fa-facebook"></i></button>
                     <button class="btn btn-circle btn-secondary"><i class="fa fa-twitter"></i></button>
                     <button class="btn btn-circle btn-secondary"><i class="fa fa-youtube"></i></button>
@@ -77,48 +56,23 @@
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    @*<div class="tab-pane active" id="home" role="tabpanel">
-                            <div class="card-body">
-                                <div class="profiletimeline">
-                                    <div class="sl-item">
-                                        <div class="sl-left"> <img src="../assets/images/users/1.jpg" alt="user" class="img-circle" /> </div>
-                                        <div class="sl-right">
-                                            <div>
-                                                <a href="#" class="link">John Doe</a> <span class="sl-date">5 minutes ago</span>
-                                                <p>assign a new task <a href="#"> Design weblayout</a></p>
-                                                <div class="row">
-                                                    <div class="col-lg-3 col-md-6 m-b-20"><img src="../assets/images/big/img1.jpg" class="img-responsive radius" /></div>
-                                                    <div class="col-lg-3 col-md-6 m-b-20"><img src="../assets/images/big/img2.jpg" class="img-responsive radius" /></div>
-                                                    <div class="col-lg-3 col-md-6 m-b-20"><img src="../assets/images/big/img3.jpg" class="img-responsive radius" /></div>
-                                                    <div class="col-lg-3 col-md-6 m-b-20"><img src="../assets/images/big/img4.jpg" class="img-responsive radius" /></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-
-                                </div>
-                            </div>
-                        </div>*@
-                    <!--second tab-->
                     <div class="tab-pane active" id="profile" role="tabpanel">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-3 col-xs-6 b-r">
                                     <strong>Full Name</strong>
                                     <br>
-                                    <p class="text-muted">@userHelper.GetFullName(User.Identity.GetUserId())</p>
+                                    <p class="text-muted">@user.FullName</p>
                                 </div>
                                 <div class="col-md-3 col-xs-6 b-r">
                                     <strong>Mobile</strong>
                                     <br>
-                                    <p class="text-muted">Add get phone number</p>
+                                    <p class="text-muted">@String.Format("{0: (###) ###-####}", int.Parse(user.PhoneNumber))</p>
                                 </div>
                                 <div class="col-md-3 col-xs-6 b-r">
                                     <strong>Email</strong>
                                     <br>
-                                    <p class="text-muted">@userHelper.GetEmail(User.Identity.GetUserId())</p>
+                                    <p class="text-muted">@user.Email</p>
                                 </div>
 
                             </div>
@@ -148,47 +102,42 @@
                         <div class="card-body">
                             <form class="form-horizontal form-material">
                                 <div class="form-group">
-                                    <label class="col-md-12">Full Name</label>
+                                    <label class="col-md-12">First Name</label>
                                     <div class="col-md-12">
-                                        <input type="text" placeholder="Johnathan Doe" class="form-control form-control-line">
+                                        @Html.EditorFor(m => m.user.FirstName, new { htmlAttributes = new { @class = "form-control form-control-line" } })
+                                        @Html.ValidationMessageFor(m => m.user.FirstName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">Last Name</label>
+                                    <div class="col-md-12">
+                                        @Html.EditorFor(m => m.user.LastName, new { htmlAttributes = new { @class = "form-control form-control-line" } })
+                                        @Html.ValidationMessageFor(m => m.user.LastName, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="example-email" class="col-md-12">Email</label>
                                     <div class="col-md-12">
-                                        <input type="email" placeholder="johnathan@admin.com" class="form-control form-control-line" name="example-email" id="example-email">
+                                        @Html.EditorFor(m => m.user.Email, new { htmlAttributes = new { @class = "form-control form-control-line" } })
+                                        @Html.ValidationMessageFor(m => m.user.Email, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-md-12">Password</label>
-                                    <div class="col-md-12">
-                                        <input type="password" value="password" class="form-control form-control-line">
-                                    </div>
-                                </div>
+
                                 <div class="form-group">
                                     <label class="col-md-12">Phone No</label>
                                     <div class="col-md-12">
-                                        <input type="text" placeholder="123 456 7890" class="form-control form-control-line">
+                                        <i @Html.EditorFor(m => m.user.PhoneNumber, new { htmlAttributes = new { @class = "form-control form-control-line phone-inputmask", value = "@user.PhoneNumber" } })
+                                           @Html.ValidationMessageFor(m => m.user.PhoneNumber, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-md-12">Message</label>
-                                    <div class="col-md-12">
-                                        <textarea rows="5" class="form-control form-control-line"></textarea>
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">Avatar Image Upload</label>
+                                    <div class="col-md-3">
+                                        <input name="image" type="file" class=" dropify form-control form-control-line" id="fileUpload" />
+                                        @Html.ValidationMessageFor(m => m.user.AvatarPath, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-sm-12">Select Country</label>
-                                    <div class="col-sm-12">
-                                        <select class="form-control form-control-line">
-                                            <option>London</option>
-                                            <option>India</option>
-                                            <option>Usa</option>
-                                            <option>Canada</option>
-                                            <option>Thailand</option>
-                                        </select>
-                                    </div>
-                                </div>
+                              
                                 <div class="form-group">
                                     <div class="col-sm-12">
                                         <button class="btn btn-success">Update Profile</button>
@@ -202,85 +151,87 @@
         </div>
         <!-- Column -->
     </div>
-    <!-- Row -->
-    <!-- ============================================================== -->
-    <!-- End PAge Content -->
-    @*<div>
-        <h4>Change your account settings</h4>
-        <hr />
-        <dl class="dl-horizontal">
-            <dt>Password:</dt>
-            <dd>
-                [
-                @if (Model.HasPassword)
-                {
-                    @Html.ActionLink("Change your password", "ChangePassword")
-                }
-                else
-                {
-                    @Html.ActionLink("Create", "SetPassword")
-                }
-                ]
-            </dd>
-            <dt>External Logins:</dt>
-            <dd>
-                @Model.Logins.Count [
-                @Html.ActionLink("Manage", "ManageLogins") ]
-            </dd>*@
-    @*
-        Phone Numbers can used as a second factor of verification in a two-factor authentication system.
+</div>
 
-         See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
-            for details on setting up this ASP.NET application to support two-factor authentication using SMS.
-
-         Uncomment the following block after you have set up two-factor authentication
-    *@
-    @*
-        <dt>Phone Number:</dt>
+<!-- Row -->
+<!-- ============================================================== -->
+<!-- End PAge Content -->
+@*<div>
+    <h4>Change your account settings</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Password:</dt>
         <dd>
-            @(Model.PhoneNumber ?? "None")
-            @if (Model.PhoneNumber != null)
+            [
+            @if (Model.HasPassword)
             {
-                <br />
-                <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
-                using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                {
-                    @Html.AntiForgeryToken()
-                    <text>[<input type="submit" value="Remove" class="btn-link" />]</text>
-                }
+                @Html.ActionLink("Change your password", "ChangePassword")
             }
             else
             {
-                <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
+                @Html.ActionLink("Create", "SetPassword")
             }
+            ]
         </dd>
-    *@
-    @*<dt>Two-Factor Authentication:</dt>
+        <dt>External Logins:</dt>
         <dd>
-            <p>
-                There are no two-factor authentication providers configured. See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
-                for details on setting up this ASP.NET application to support two-factor authentication.
-            </p>*@
-    @*@if (Model.TwoFactor)
+            @Model.Logins.Count [
+            @Html.ActionLink("Manage", "ManageLogins") ]
+        </dd>*@
+@*
+    Phone Numbers can used as a second factor of verification in a two-factor authentication system.
+
+     See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
+        for details on setting up this ASP.NET application to support two-factor authentication using SMS.
+
+     Uncomment the following block after you have set up two-factor authentication
+*@
+@*
+    <dt>Phone Number:</dt>
+    <dd>
+        @(Model.PhoneNumber ?? "None")
+        @if (Model.PhoneNumber != null)
         {
-            using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            <br />
+            <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
+            using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {
                 @Html.AntiForgeryToken()
-                <text>Enabled
-                <input type="submit" value="Disable" class="btn btn-link" />
-                </text>
+                <text>[<input type="submit" value="Remove" class="btn-link" />]</text>
             }
         }
         else
         {
-            using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                <text>Disabled
-                <input type="submit" value="Enable" class="btn btn-link" />
-                </text>
-            }
-        }*@
-    @*</dd>
-            </dl>
-        </div>*@
+            <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
+        }
+    </dd>
+*@
+@*<dt>Two-Factor Authentication:</dt>
+    <dd>
+        <p>
+            There are no two-factor authentication providers configured. See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
+            for details on setting up this ASP.NET application to support two-factor authentication.
+        </p>*@
+@*@if (Model.TwoFactor)
+    {
+        using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <text>Enabled
+            <input type="submit" value="Disable" class="btn btn-link" />
+            </text>
+        }
+    }
+    else
+    {
+        using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <text>Disabled
+            <input type="submit" value="Enable" class="btn btn-link" />
+            </text>
+        }
+    }*@
+@*</dd>
+        </dl>
+    </div>*@

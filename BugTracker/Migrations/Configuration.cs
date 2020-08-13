@@ -43,7 +43,7 @@ namespace BugTracker.Migrations
             }
             if (!context.Roles.Any(r => r.Name == "No-Role"))
             {
-                roleManager.Create(new IdentityRole { Name = "No-Role" });
+                roleManager.Create(new IdentityRole { Name = "Default" });
             }
             #endregion
             #region demo-roles
@@ -123,7 +123,7 @@ namespace BugTracker.Migrations
                     FirstName = "Andrew",
                     LastName = "Russell",
                     AvatarPath = "/Images/Default_Avatar.png",
-                    contactNumber = "111111111"
+                    PhoneNumber = "1111111111"
 
 
                 },
@@ -144,7 +144,7 @@ namespace BugTracker.Migrations
                     FirstName = "Thomas",
                     LastName = "Zanis",
                     AvatarPath = "/Images/Default_Avatar.png",
-                    contactNumber = "111111111"
+                    PhoneNumber = "1111111111"
 
 
                 },
@@ -163,7 +163,7 @@ namespace BugTracker.Migrations
                     UserName = "moderator@coderfoundry.com",
                     FirstName = "moderator",
                     AvatarPath = "/Images/Default_Avatar.png",
-                    contactNumber = "111111111"
+                    PhoneNumber = "1111111111"
 
 
                 },
@@ -187,7 +187,7 @@ namespace BugTracker.Migrations
                         FirstName = $"dev{i}",
                         LastName = "dev",
                         AvatarPath = "/Images/Default_Avatar.png",
-                        contactNumber = "111111111"
+                        PhoneNumber = "1111111111"
 
                     },
                     "123456Abc$");
@@ -210,7 +210,7 @@ namespace BugTracker.Migrations
                         FirstName = $"pm{i}",
                         LastName = "pm",
                         AvatarPath = "/Images/Default_Avatar.png",
-                        contactNumber = "111111111"
+                        PhoneNumber = "1111111111"
 
                     },
                     "123456Abc$");
@@ -233,7 +233,7 @@ namespace BugTracker.Migrations
                         FirstName = $"sub{i}",
                         LastName = "sub",
                         AvatarPath = "/Images/Default_Avatar.png",
-                        contactNumber = "111111111"
+                        PhoneNumber = "1111111111"
 
                     },
                     "123456Abc$");

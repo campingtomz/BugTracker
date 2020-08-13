@@ -61,6 +61,7 @@ namespace BugTracker.Controllers
         {
 
             userVM.user.UserName = userVM.user.Email;
+
             db.Entry(userVM.user).State = EntityState.Modified;
             db.SaveChanges();
 
