@@ -24,15 +24,15 @@ namespace BugTracker.Controllers
         // GET: Projects
         public ActionResult Index()
         {
-            var projectList = new List<ProjectManageVM>();
-            foreach (var project in db.Projects.ToList())
-            {
-                var projectVm = new ProjectManageVM(project);
-                projectList.Add(projectVm);
-            }
+            var model = db.Projects.ToList().OrderByDescending(p => p.Created);
+            //foreach (var project in db.Projects.ToList())
+            //{
+            //    var projectVm = new ProjectManageVM(project);
+            //    projectList.Add(projectVm);
+            //}
 
 
-            var model = projectList;
+            
             return View(model);
 
         }

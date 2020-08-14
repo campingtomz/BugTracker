@@ -242,11 +242,14 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-md-offset-3 col-md-9">
-                                        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" })
-                                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-inverse" })
-                                        @*<button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Edit</button>*@
-                                        @*<button type="button" class="btn btn-inverse">Cancel</button>*@
-                                    </div>
+                                        @if (User.IsInRole("Admin, ProjectManager"))
+                                        {
+                                            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" })
+                                        }
+                                            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-inverse" })
+                                            @*<button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Edit</button>*@
+                                            @*<button type="button" class="btn btn-inverse">Cancel</button>*@
+                                        </div>
                                 </div>
                             </div>
                         </div>

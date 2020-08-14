@@ -68,7 +68,7 @@
                                 <!--/span-->
                             </div>
                             <!--/row-->
-                            @if (User.IsInRole("Admin"))
+                            @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
                             {
                                 <h4 class="box-title">Project Manager</h4>
                                 <hr class="m-t-0 m-b-40">

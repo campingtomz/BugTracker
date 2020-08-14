@@ -28,7 +28,7 @@ namespace BugTracker.Controllers
             
             return View(model);
         }
-
+        [Authorize]
         public ActionResult ManageUser(string userId, int? addRemove, int? projectId)
         {
             if (addRemove != null && projectId != null)
@@ -78,93 +78,5 @@ namespace BugTracker.Controllers
 
             return RedirectToAction("Index");
         }
-
-        //public ActionResult ManageUserRoles(string id)
-        //{
-        //    var userRole = roleHelper.ListUserRoles(id).FirstOrDefault();
-        //    ViewBag.RoleName = new SelectList(db.Roles, "Name", "Name", userRole);
-        //    return View(db.Users.Find(id));
-        //}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult ManageUserRoles(string id, string roleName)
-        //{
-        //    foreach (var role in roleHelper.ListUserRoles(id))
-        //    {
-        //        roleHelper.RemoveUserFromRole(id, role);
-        //    }
-        //    if (!string.IsNullOrEmpty(roleName))
-        //    {
-        //        roleHelper.AddUserToRole(id, roleName);
-        //    }
-        //    return RedirectToAction("ManageUserRoles", new { id });
-        //}
-
-        #region create new user
-        //[AllowAnonymous]
-        //public ActionResult Register()
-        //{
-        //    return View();
-        //}
-
-        ////
-        //// POST: /Account/Register
-        //[HttpPost]
-        //[AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Register(ExtendedRegisterViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName };
-        //        var result = await UserManager.CreateAsync(user, model.Password);
-        //        if (result.Succeeded)
-        //        {
-        //            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
-        //            // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-        //            // Send an email with this link
-        //            string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-        //            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-
-        //            try
-        //            {
-        //                var from = "BugTracker Admin<admin@bugTracker.com>";
-        //                var email = new MailMessage(from, model.Email)
-        //                {
-        //                    Subject = "Confirm Your Account",
-        //                    Body = "Please confirm your account by Clicking here <a href=\"" + callbackUrl + "\">here</a> ",
-        //                    IsBodyHtml = true
-        //                };
-        //                var svc = new EmailService();
-        //                await svc.SendAsync(email);
-
-        //                //return View(new EmailModel());
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                Console.WriteLine(ex.Message);
-        //                await Task.FromResult(0);
-        //            }
-
-        //            //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
-        //            return RedirectToAction("Index", "Home");
-        //        }
-        //        AddErrors(result);
-        //    }
-
-        //    // If we got this far, something failed, redisplay form
-        //    return View(model);
-        //}
-        #endregion
     }
 }
-//Things i want to do here
-//    add user
-//    edit user
-//    index= View all users
-//    delete user
-// paging 
-// search
-//    view User Profile

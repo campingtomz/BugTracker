@@ -1,6 +1,12 @@
 ﻿
+@model IEnumerable<BugTracker.Models.Project>
+@using BugTracker.Helpers;
+@using Microsoft.AspNet.Identity;
+@{ UserRoleHelper roleHelper = new UserRoleHelper();
+    ProjectHelper projectHelper = new ProjectHelper();
+    var userHelper = new UserHelper();
+}
 
-@model IEnumerable<BugTracker.ViewModels.ProjectManageVM>
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -24,59 +30,155 @@
                         <tbody>
                             @foreach (var project in Model)
                             {
-                            <tr>
-                                <td>@Html.Label(project.projectValue.Name)</td>
-                                <td>
-                                    @if (project.projectManager != null)
-                                    {
-                                        @Html.Label(project.projectManager.FullName) }
-                                    else
-                                    {
-                                        <span>No Project Manager Assigned</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (project.Developers.Count > 0)
-                                    {
-                                        <select class="form-control custom-select" tabindex="1">
-                                            @foreach (var user in project.Developers)
-                                            {
-                                                <option>@user.FullName</option>
-                                            }
-                                        </select>
-                                    }
-                                    else
-                                    {
-                                        <span>No Developers Assigned</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (project.Submitters.Count > 0)
-                                    {
-                                        <select class="form-control custom-select" tabindex="1">
-                                            @foreach (var user in project.Submitters)
-                                            {
-                                                <option>@user.FullName</option>
-                                            }
-                                        </select>
-                                    }
-                                    else
-                                    {
-                                        <span>No Submitters Assigned</span>
-                                    }
-                                </td>
-                                <td>@Html.Label(project.projectValue.Created.ToString("MMM dd yyyy"))</td>
-                                <td>@Html.Label(project.projectValue.DueDate.ToString("MMM dd yyyy"))</td>
-                                <td>@project.projectValue.Tickets.Count</td>
-                                <td>
-                                    @Html.ActionLink("Edit", "Edit", new { id = project.projectValue.Id }) |
-                                    @Html.ActionLink("Details", "Details", new { id = project.projectValue.Id }) |
-                                </td>
-                            </tr>
+                                var projectManager = projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager");
+                                var Submitters = projectHelper.ListUserOnProjectInRole(project.Id, "Submitter");
+                                var Developers = projectHelper.ListUserOnProjectInRole(project.Id, "Developer");
+                                <tr>
+                                    <td>@Html.Label(project.Name)</td>
+                                    <td>
+                                        @if (projectManager.Count > 0)
+                                        {
+                                            @Html.Label(projectManager.FirstOrDefault().FullName) }
+                                        else
+                                        {
+                                            <span>No Project Manager Assigned</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (Developers.Count > 0)
+                                        {
+                                            <select class="form-control custom-select" tabindex="1">
+                                                @foreach (var user in Developers)
+                                                {
+                                                    <option>@user.FullName</option>
+                                                }
+                                            </select>
+                                        }
+                                        else
+                                        {
+                                            <span>No Developers Assigned</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (Submitters.Count > 0)
+                                        {
+                                            <select class="form-control custom-select" tabindex="1">
+                                                @foreach (var user in Submitters)
+                                                {
+                                                    <option>@user.FullName</option>
+                                                }
+                                            </select>
+                                        }
+                                        else
+                                        {
+                                            <span>No Submitters Assigned</span>
+                                        }
+                                    </td>
+                                    <td>@Html.Label(project.Created.ToString("MMM dd yyyy"))</td>
+                                    <td>@Html.Label(project.DueDate.ToString("MMM dd yyyy"))</td>
+                                    <td>@project.Tickets.Count</td>
+                                    <td>
+                                        @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                                        {
+                                            @Html.ActionLink("Edit", "Edit", new { id = project.Id }) <span>|</span>
+                                        }
+                                        @Html.ActionLink("Details", "Details", new { id = project.Id })
+                                    </td>
+                                </tr>
                             }
                         </tbody>
                     </table>
-                    @Html.ActionLink("Create New", "ProjectWizard", "Projects", null, new { @class = "btn btn-success" })
+                    @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                    {
+                        @Html.ActionLink("Create New", "ProjectWizard", "Projects", null, new { @class = "btn btn-success" })
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Projects Assinged to @userHelper.getUser(User.Identity.GetUserId()).FullName</h4>
+                <div class="table-responsive m-t-40">
+                    <table  class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Project Manager</th>
+                                <th>Project Developers</th>
+                                <th>Project Submitters</th>
+                                <th>Project Created Date</th>
+                                <th>Project Due Date</th>
+                                <th>Number Of Tickets</th>
+                                <th>Action</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var project in projectHelper.ListUserProjects(User.Identity.GetUserId()).ToList())
+                            {
+                                var projectManager = projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager");
+                                var Submitters = projectHelper.ListUserOnProjectInRole(project.Id, "Submitter");
+                                var Developers = projectHelper.ListUserOnProjectInRole(project.Id, "Developer");
+                                <tr>
+                                    <td>@Html.Label(project.Name)</td>
+                                    <td>
+                                        @if (projectManager.Count > 0)
+                                        {
+                                            @Html.Label(projectManager.FirstOrDefault().FullName) }
+                                        else
+                                        {
+                                            <span>No Project Manager Assigned</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (Developers.Count > 0)
+                                        {
+                                            <select class="form-control custom-select" tabindex="1">
+                                                @foreach (var user in Developers)
+                                                {
+                                                    <option>@user.FullName</option>
+                                                }
+                                            </select>
+                                        }
+                                        else
+                                        {
+                                            <span>No Developers Assigned</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (Submitters.Count > 0)
+                                        {
+                                            <select class="form-control custom-select" tabindex="1">
+                                                @foreach (var user in Submitters)
+                                                {
+                                                    <option>@user.FullName</option>
+                                                }
+                                            </select>
+                                        }
+                                        else
+                                        {
+                                            <span>No Submitters Assigned</span>
+                                        }
+                                    </td>
+                                    <td>@Html.Label(project.Created.ToString("MMM dd yyyy"))</td>
+                                    <td>@Html.Label(project.DueDate.ToString("MMM dd yyyy"))</td>
+                                    <td>@project.Tickets.Count</td>
+                                    <td>
+                                        @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                                        {
+                                            @Html.ActionLink("Edit", "Edit", new { id = project.Id }) <span>|</span>
+                                        }
+                                        @Html.ActionLink("Details", "Details", new { id = project.Id })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

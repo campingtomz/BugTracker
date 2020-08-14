@@ -43,6 +43,36 @@ namespace BugTracker.Controllers
             return View(tickets.ToList());
         }
 
+        public ActionResult GetProjectTickers()
+        {
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            var ticketList = new List<Ticket>();
+            ticketList = user.Projects.SelectMany(p => p.Tickets).ToList();
+            return (View("Index", ticketList));
+        }
+
+        public ActionResult GetMyTickets()
+        {
+            var userId = User.Identity.GetUserId(); 
+            var ticketList = new List<Ticket>();
+            if (User.IsInRole("Developer"))
+            {
+                ticketList = db.Tickets.Where(t => t.DeveloperId == userId).ToList();
+                return (View("Index", ticketList));
+            }
+            if (User.IsInRole("Submitter"))
+            {
+                ticketList = db.Tickets.Where(t => t.SubmitterId == userId).ToList();
+                return (View("Index", ticketList));
+            }
+            else
+            {
+                return RedirectToAction("GetProjectTickets");
+            }
+            
+            return (View("Index", ticketList));
+        }
         // GET: Tickets/Details/5
         public ActionResult Details(int? id)
         {
