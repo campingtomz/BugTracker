@@ -54,15 +54,15 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (chatHelper.chatExists(User2Id))
-                {
-                    userChat.Created = DateTime.Now;
-                    userChat.UsersId.Add(User.Identity.GetUserId());
-                    userChat.UsersId.Add(User2Id);
-                    db.UserChats.Add(userChat);
-                    db.SaveChanges();
+                //if (chatHelper.chatExists(User2Id))
+                //{
+                //    userChat.Created = DateTime.Now;
+                //    userChat.UsersId.Add(User.Identity.GetUserId());
+                //    userChat.UsersId.Add(User2Id);
+                //    db.UserChats.Add(userChat);
+                //    db.SaveChanges();
                     
-                }
+                //}
             } 
             return View();
         }

@@ -19,8 +19,9 @@
                         <ul class="chatonline style-none ">
                             @foreach (var chatSession in Model)
                             {
+                                @*@{ var user2 = }*@
                                 <li>
-                                    <a href="javascript:void(0)"><img src="@chatSession.User2.AvatarPath" alt="user-img" class="img-circle"> <span>@chatSession.User2.FullName <small class="text-success">online</small></span></a>
+                                    @*<a href="javascript:void(0)"><img src="@chatSession.User2.AvatarPath" alt="user-img" class="img-circle"> <span>@chatSession.User2.FullName <small class="text-success">online</small></span></a>*@
                                 </li>
 
                             }
@@ -72,7 +73,7 @@
                     </div>
                     @using (Html.BeginForm("Create", "ChatMessages", FormMethod.Post, new { enctype = "multipart/form-data" }))
                     {
-                        @Html.Hidden("UserChatId", Model.)
+                        @*@Html.Hidden("UserChatId", Model.)*@
                         <div class="card-body b-t">
                             <div class="row">
                                 <div class="col-8">

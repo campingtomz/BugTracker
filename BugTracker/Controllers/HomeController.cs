@@ -27,7 +27,10 @@ namespace BugTracker.Controllers
 
             return View();
         }
-
+        public ActionResult Chat()
+        {
+            return View();
+        }
         //[HttpPost]
         //[ValidateAntiForgeryToken]
         //[ValidateInput(false)]

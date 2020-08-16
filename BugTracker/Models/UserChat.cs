@@ -28,7 +28,7 @@ namespace BugTracker.Models
         {
             Messages = new HashSet<ChatMessage>();
             Users = new HashSet<ApplicationUser>();
-            userIds = new List<string>();
+            UsersId = new List<string>();
         }
     }
 }
