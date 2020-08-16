@@ -5,7 +5,7 @@ using System.Web;
 
 namespace BugTracker.Models
 {
-    public class TicketAttahment
+    public class TicketAttachments
     {
         public int Id { get; set; }
         #region Parents/Children
@@ -19,6 +19,7 @@ namespace BugTracker.Models
 
         #region Actual Property
         public string FilePath { get; set; }
+        public string FileName { get; set; }
         public string Description { get; set; }
         public DateTime Created { get; set; }
 

@@ -1,11 +1,17 @@
 ﻿@model IEnumerable<BugTracker.Models.Ticket>
 @using Microsoft.AspNet.Identity;
+@using BugTracker.Helpers;
+
+
 @{
     ViewBag.Title = "Index";
 }
 
 <h2>Tickets</h2>
-
+@{TicketHelper ticketHelper = new TicketHelper();
+    UserRoleHelper roleHelper = new UserRoleHelper();
+    ProjectHelper projectHelper = new ProjectHelper();
+}
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -16,30 +22,44 @@
                         <thead>
                             <tr>
                                 <th>Project Name</th>
+                                <th>Project Manager</th>
                                 <th>Ticket Priority</th>
                                 <th>Ticket Status</th>
+                                <th>Ticket Type</th>
                                 <th>Submitter</th>
+                                <th>Developer</th>
                                 <th>Issue</th>
                                 <th>Created Data</th>
-                                <th>Due Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            @foreach (var ticket in Model.Where(t => t.DeveloperId == User.Identity.GetUserId()))
+                            @foreach (var ticket in Model)
                             {
                                 <tr>
-                                    <td>@Html.DisplayNameFor(model => model.project.Name)</td>
-                                    <td>@Html.DisplayNameFor(model => model.TicketPriority)</td>
-                                    <td>@Html.DisplayNameFor(model => model.TicketStatusId)</td>
-                                    <td>@Html.DisplayNameFor(model => model.TicketStatusId)</td>
-                                    <td>@Html.DisplayNameFor(model => model.SubmitterId)</td>
-                                    <td>@Html.DisplayNameFor(model => model.DeveloperId)</td>
-                                    <td>@Html.DisplayNameFor(model => model.Created.ToString("MMM dd yyyy"))</td>
+                                    <td>@Html.DisplayName(ticket.project.Name)</td>
+                                    <td>@Html.DisplayName(projectHelper.ListUserOnProjectInRole(ticket.ProjectId, "ProjectManager").FirstOrDefault().FullName)</td>
+                                    <td>@Html.DisplayName(ticket.TicketPriority.Name)</td>
+                                    <td>@Html.DisplayName(ticket.TicketStatus.Name)</td>
+                                    <td>@Html.DisplayName(ticket.TicketType.Name)</td>
+                                    <td>@Html.DisplayName(ticket.Submitter.FullName)</td>
+                                    @if (ticket.Developer != null)
+                                    {
+                                        <td>@Html.DisplayName(ticket.Developer.FullName)</td>
+                                    }
+                                    else
+                                    {
+                                        <td>No User assinged to Developer</td>
+                                    }
+                                    <td>@Html.DisplayName(ticket.Issue)</td>
+                                    <td>@Html.DisplayName(ticket.Created.ToString("MMM dd yyyy"))</td>
                                     <td>
-                                        @Html.ActionLink("Edit", "Edit", new { id = ticket.Id }) |
-                                        @Html.ActionLink("Details", "Details", new { id = ticket.Id }) |
+                                        @if (roleHelper.IsUserInRole(HttpContext.Current.User.Identity.GetUserId(), "Admin"))
+                                        {
+                                            @Html.ActionLink("Edit", "Edit", new { id = ticket.Id }) <span>|</span>
+                                        }
+                                        @Html.ActionLink("Details", "DashBoard", new { id = ticket.Id }) |
                                     </td>
                                 </tr>
                             }
@@ -50,58 +70,74 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">All Project Ticket List</h4>
-                <div class="table-responsive m-t-40">
-                    <table class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                        <thead>
-                            <tr>
-                                <th>Project Name</th>
-                                <th>Ticket Priority</th>
-                                <th>Ticket Status</th>
-                                <th>Submitter</th>
-                                <th>Issue</th>
-                                <th>Created Data</th>
-                                <th>Due Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            @foreach (var ticket in Model.Where(t => t.DeveloperId == User.Identity.GetUserId()))
-                            {
+@if (!roleHelper.IsUserInRole(HttpContext.Current.User.Identity.GetUserId(), "Admin"))
+{ 
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">All Assigned to You</h4>
+                    <div class="table-responsive m-t-40">
+                        <table class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
                                 <tr>
-                                    <td>@Html.DisplayNameFor(model => model.project.Name)</td>
-                                    <td>@Html.DisplayNameFor(model => model.TicketPriority)</td>
-                                    <td>@Html.DisplayNameFor(model => model.TicketStatusId)</td>
-                                    <td>@Html.DisplayNameFor(model => model.TicketStatusId)</td>
-                                    <td>@Html.DisplayNameFor(model => model.SubmitterId)</td>
-                                    <td>
-                                        @if (ticket.DeveloperId != null)
+                                    <th>Project Name</th>
+                                    <th>Project Manager</th>
+                                    <th>Ticket Priority</th>
+                                    <th>Ticket Status</th>
+                                    <th>Submitter</th>
+                                    <th>Issue</th>
+                                    <th>Created Data</th>
+                                    <th>Due Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var ticket in ticketHelper.GetMyTickets())
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayName(ticket.project.Name)</td>
+                                        <td>@Html.DisplayName(projectHelper.ListUserOnProjectInRole(ticket.ProjectId, "ProjectManager").FirstOrDefault().FullName)</td>
+                                        <td>@Html.DisplayName(ticket.TicketPriority.Name)</td>
+                                        <td>@Html.DisplayName(ticket.TicketStatus.Name)</td>
+                                        <td>@Html.DisplayName(ticket.TicketType.Name)</td>
+                                        <td>@Html.DisplayName(ticket.Submitter.FullName)</td>
+                                        @if (ticket.Developer != null)
                                         {
-                                            @Html.DisplayFor(modelItem => ticket.Developer.FullName) }
+                                            <td>@Html.DisplayName(ticket.Developer.FullName)</td>
+                                        }
                                         else
                                         {
-                                            <span>No Developer Assigned</span>
+                                            <td>No User assinged to Developer</td>
                                         }
+                                        @if (ticket.Issue != null)
+                                        {
+                                            <td>@Html.DisplayName(ticket.Issue)</td>
+                                        }
+                                        else
+                                        {
+                                            <td>No issue</td>
+                                        }
+                                        <td>@Html.DisplayName(ticket.Created.ToString("MMM dd yyyy"))</td>
+                                        <td>
+
+                                            @if (!roleHelper.IsUserInRole(HttpContext.Current.User.Identity.GetUserId(), "Submitter"))
+                                            {
+                                                @Html.ActionLink("Edit", "Edit", new { id = ticket.Id }) <span>|</span>
+                                            }
+                                            @Html.ActionLink("Details", "Dashboard", new { id = ticket.Id }) |
                                         </td>
-                                    <td>@Html.DisplayNameFor(model => model.Created.ToString("MMM dd yyyy"))</td>
-                                    <td>
-                                        @Html.ActionLink("Edit", "Edit", new { id = ticket.Id }) |
-                                        @Html.ActionLink("Details", "Details", new { id = ticket.Id }) |
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+    }
 <p>
     @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-success waves-effect waves-light m-r-10" })
 </p>

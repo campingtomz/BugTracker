@@ -2,6 +2,7 @@
 
 @using Microsoft.AspNet.Identity
 @using BugTracker.Helpers;
+
 @{ var userHelper = new UserHelper(); }
 @{ var userRoleHelper = new UserRoleHelper(); }
 @{ var projectHelper = new ProjectHelper(); }
@@ -10,7 +11,7 @@
 
 
 
-<div class="container-fluid">
+<div class="container-fluid p-t-10">
     <!-- ============================================================== -->
     <!-- Start Page Content -->
     <!-- ============================================================== -->
@@ -37,7 +38,7 @@
                 <div class="card-body">
                     <small class="text-muted">Email address </small>
                     <h6>@user.Email</h6> <small class="text-muted p-t-30 db">Phone</small>
-                    <h6>@String.Format("{0: (###) ###-####}", int.Parse(user.PhoneNumber))</h6>
+                    <h6> @user.PhoneNumber</h6>
                     <button class="btn btn-circle btn-secondary"><i class="fa fa-facebook"></i></button>
                     <button class="btn btn-circle btn-secondary"><i class="fa fa-twitter"></i></button>
                     <button class="btn btn-circle btn-secondary"><i class="fa fa-youtube"></i></button>
@@ -70,7 +71,7 @@
                                 <div class="col-md-3 col-xs-6 b-r">
                                     <strong>Mobile</strong>
                                     <br>
-                                    <p class="text-muted">@String.Format("{0: (###) ###-####}", int.Parse(user.PhoneNumber))</p>
+                                    <p class="text-muted">@user.PhoneNumber</p>
                                 </div>
                                 <div class="col-md-3 col-xs-6 b-r">
                                     <strong>Email</strong>
@@ -101,7 +102,7 @@
                                 </div> *@
                         </div>
                     </div>
-                    <div class="tab-pane active" id="Projects" role="tabpanel">
+                    <div class="tab-pane " id="Projects" role="tabpanel">
                         <div class="card-body">
                             <div class="row">
                                 <div class="table-responsive m-t-40">
@@ -141,7 +142,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane active" id="Settings" role="tabpanel">
+                    <div class="tab-pane " id="Settings" role="tabpanel">
                         <div class="card-body">
                             <h4>Change your account settings</h4>
                             <div class="row">

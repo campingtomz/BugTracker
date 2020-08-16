@@ -22,59 +22,11 @@ namespace BugTracker.Controllers
         // GET: Tickets
         public ActionResult Index()
         {
-            var userId = User.Identity.GetUserId();
-            var myRole = roleHelper.ListUserRoles(userId).FirstOrDefault();
-            List<Ticket> model = new List<Ticket>();
-            switch (myRole)
-            {
-                case "Admin":
-                     model = db.Tickets.ToList();
-                    break;
-                case "Project Manager":
-                case "Developer":
-                    model = db.Tickets.Where(t => t.SubmitterId == userId).ToList();
-                    break;
-                case "Submitter":
-                    break;
-                default:
-                    return RedirectToAction("Index", "Home");
-            }
-            var tickets = db.Tickets.Include(t => t.project);
-            return View(tickets.ToList());
+            return View(db.Tickets.ToList());
         }
 
-        public ActionResult GetProjectTickers()
-        {
-            var userId = User.Identity.GetUserId();
-            var user = db.Users.Find(userId);
-            var ticketList = new List<Ticket>();
-            ticketList = user.Projects.SelectMany(p => p.Tickets).ToList();
-            return (View("Index", ticketList));
-        }
 
-        public ActionResult GetMyTickets()
-        {
-            var userId = User.Identity.GetUserId(); 
-            var ticketList = new List<Ticket>();
-            if (User.IsInRole("Developer"))
-            {
-                ticketList = db.Tickets.Where(t => t.DeveloperId == userId).ToList();
-                return (View("Index", ticketList));
-            }
-            if (User.IsInRole("Submitter"))
-            {
-                ticketList = db.Tickets.Where(t => t.SubmitterId == userId).ToList();
-                return (View("Index", ticketList));
-            }
-            else
-            {
-                return RedirectToAction("GetProjectTickets");
-            }
-            
-            return (View("Index", ticketList));
-        }
-        // GET: Tickets/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Dashboard(int? id)
         {
             if (id == null)
             {
@@ -85,11 +37,12 @@ namespace BugTracker.Controllers
             {
                 return HttpNotFound();
             }
+            //ViewBag.ProjectDevelopers = List<ApplicationUser>(projectHelper.ListUserOnProjectInRole)
             return View(ticket);
         }
 
         // GET: Tickets/Create
-        [Authorize(Roles ="Submitter")]
+        //[Authorize(Roles ="Submitter")]
         public ActionResult Create()
         {
             var userId = User.Identity.GetUserId();
@@ -109,7 +62,7 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,ProjectId,TicketPriority,TicketTypeId,Issue,IssueDiscription")] Ticket ticket, bool onPage)
+        public ActionResult Create([Bind(Include = "Id,ProjectId,TicketPriorityId,TicketTypeId,Issue,IssueDiscription")] Ticket ticket, bool onPage)
         {
             var userId = User.Identity.GetUserId();
             if (ModelState.IsValid)

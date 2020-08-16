@@ -1,0 +1,279 @@
+﻿
+
+@model BugTracker.Models.Ticket
+@using BugTracker.Helpers;
+@{
+    ViewBag.Title = "DashBoard";
+}
+@{TicketHelper ticketHelper = new TicketHelper();
+    UserRoleHelper roleHelper = new UserRoleHelper();
+    ProjectHelper projectHelper = new ProjectHelper();
+}
+<div class="container-fluid p-t-20">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs profile-tab" role="tablist">
+                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#Ticket" role="tab">Ticket</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#ProjectInfo" role="tab">Project Info</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#TicketAttachments" role="tab">Ticket Attachments</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Comments" role="tab">Comments</a> </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane tabcontent-border active" id="Ticket" role="tabpanel">
+                        <div class="card-body">
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label ">Ticket Issue:</label>
+                                        <p class="form-control-static">@Html.DisplayFor(model => model.Issue)</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label ">Ticket Discription:</label>
+                                        @Html.DisplayFor(model => model.IssueDiscription, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.IssueDiscription, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Ticket Submitter :</label>
+                                        <p class="form-control-static"> @Html.DisplayFor(model => model.Submitter.FullName)  </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Ticket Developer :</label>
+                                        <p class="form-control-static">@Html.DisplayFor(model => model.Developer.FullName)  </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label ">Ticket Type:</label>
+                                        <p class="form-control-static">  @Html.DisplayFor(model => model.TicketType.Name) </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Created Date:</label>
+                                        <p class="form-control-static"> @Model.Created.ToString("MMM dd yyyy") </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Ticket Priority:</label>
+                                        <p class="form-control-static"> @Html.DisplayFor(model => model.TicketPriority.Name) </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">last Update:</label>
+                                        @if (Model.Updated != null)
+                                        {
+                                            <p class="form-control-static"> @Model.Updated.GetValueOrDefault().ToString("MMM dd yyyy") </p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Ticket Priority:</label>
+                                        <p class="form-control-static"> @Html.DisplayFor(model => model.TicketStatus.Name) </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane  tabcontent-border" id="ProjectInfo" role="tabpanel">
+                        <div class="card-body">
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Project Name :</label>
+                                        <p class="form-control-static"> @Html.DisplayFor(model => model.project.Name) </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Project Manager :</label>
+                                        <p class="form-control-static"> @projectHelper.ListUserOnProjectInRole(Model.ProjectId, "ProjectManager").FirstOrDefault().FullName  </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row p-t-20 ">
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Project Submitter :</label>
+                                        <div class="form-group row">
+                                            <div class="col-md-8">
+                                                <select class="form-control" multiple="">
+                                                    @foreach (var submitter in @projectHelper.ListUserOnProjectInRole(Model.ProjectId, "Submitter"))
+                                                    {
+                                                    <option> @submitter.FullName | @submitter.Email</option>
+                                                    }
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Project Developers :</label>
+                                        <div class="form-group row">
+                                            <div class="col-md-8">
+                                                <select class="form-control" multiple="">
+                                                    @foreach (var developer in @projectHelper.ListUserOnProjectInRole(Model.ProjectId, "Developer"))
+                                                    {
+                                                        <option> @developer.FullName | @developer.Email</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="tab-pane  tabcontent-border" id="TicketAttachments" role="tabpanel">
+                        <div class="card-body">
+                            <div class="row ">
+                                <div class="col-12">
+                                    <div class=" form-group">
+                                        <div class="table-responsive">
+                                            <table class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>File Name</th>
+                                                        <th>File Link</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var attachment in Model.Attachments.ToList())
+                                                    {
+                                                        <tr>
+                                                            <th>@Html.Display(attachment.FileName)</th>
+                                                            <th><a target="_blank" href="@attachment.FilePath">@attachment.FilePath</a></th>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (ticketHelper.CanAddAttachment(Model.Id))
+                            {
+                            <hr />
+                            using (Html.BeginForm("UploadFilesToTicket", "TicketAttachments", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.Hidden("TicketId", Model.Id)
+                                <div class="row p-t-20">
+                                    <div class="col-md-6">
+                                        <div class=" form-group">
+                                            <label class="control-label ">File Name :</label>
+                                            @Html.Editor("File Name", new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessage("FileName", "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class=" form-group">
+                                            <label class="control-label">Attachment Description :</label>
+                                            @Html.Editor("Description", new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessage("attachmentDescription", "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row p-t-20">
+                                    <div class="col-12">
+                                        <label class="control-label">File Upload</label>
+                                        <input name="file" type="file" class=" dropify form-control" id="fileUpload" />
+                                        <hr />
+                                        <button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Upload</button>
+                                    </div>
+                                </div>
+                            }
+                            }
+
+
+                        </div>
+                    </div>
+                    <div class="tab-pane tabcontent-border" id="Comments" role="tabpanel">
+                        <div class="card-body">
+                            <div class="row p-t-20 boarder justify-content-center" >
+                                <div class="col-6">
+                                    <div class="comment-widgets m-b-20">
+                                        <div class="chat-box b-all">
+                                            <ul class="chat-list">
+                                                @{var count = 1;}
+                                                @foreach (var comment in Model.Comments)
+                                                {
+                                                    <li>
+                                                        <!-- Comment Row -->
+                                                        <div class="d-flex flex-row comment-row  b-all">
+                                                            <div class="p-2"><span class="round"><a href="@Url.Action("ManageUser", "UserManagment", new { userid = comment.User.Id })"><img src="@comment.User.AvatarPath" alt="user" width="50"></a></span></div>
+                                                            <div class="comment-text w-100">
+                                                                <h5>@comment.User.FullName</h5>
+                                                                <div class="comment-footer">
+                                                                    <span class="date">@comment.Created.ToString("MMM dd yyyy")</span>
+                                                                </div>
+                                                                <p class="m-b-5 m-t-10">@comment.Comment</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    { count++; }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (ticketHelper.CanMakeComment(Model.Id))
+                            {
+                            using (Html.BeginForm("Create", "TicketComments", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.Hidden("TicketId", Model.Id)
+                                <div class="row p-t-20  justify-content-center">
+                                    <div class="col-6">
+                                        <label class="control-label">Comment</label>
+
+                                        @Html.TextArea("Comment", new { @class = "form-control", @rows = "5" })
+                                        <hr />
+                                        <button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Add New Comment</button>
+                                    </div>
+                                </div>
+                            }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            // Basic
+            $('.dropify').dropify();
+        });
+    </script>
+}
+
+

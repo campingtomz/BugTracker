@@ -1,11 +1,11 @@
 ﻿
 @using BugTracker.ViewModels
 @model ManageUserVM
-@using (Html.BeginForm("ManageUser", "UserManagment", FormMethod.Post))
+@using (Html.BeginForm("ManageUser", "UserManagment", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    @Html.AntiForgeryToken()
-    <!-- Row -->
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.AntiForgeryToken()
+                <!-- Row -->
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.HiddenFor(m => Model.user.Id)
     @Html.HiddenFor(m => Model.user.UserName)
     <div class="row justify-content-center">
@@ -75,7 +75,7 @@
                                                                 </thead>
                                                                 <tbody>
                                                                     @foreach (var project in Model.UserProjects)
-                                                                    {
+{
                                                                         <tr>
 
                                                                             <td>@project.Name</td>
@@ -105,7 +105,7 @@
                                                                 </thead>
                                                                 <tbody>
                                                                     @foreach (var project in Model.NotUserProjects)
-                                                                    {
+{
                                                                         <tr>
                                                                             <td>@project.Name</td>
                                                                             <td class="text-nowrap">
@@ -127,8 +127,8 @@
                             <div class="form-group row">
                                 <label class="control-label text-right col-md-3">Avatar Image Upload</label>
                                 <div class="col-md-3">
-                                    <input name="image" type="file" class=" dropify form-control" id="fileUpload" />
-                                    @Html.ValidationMessageFor(m => m.user.AvatarPath, "", new { @class = "text-danger" })
+                                    <input name="Avatar" type="file" class=" dropify form-control" id="fileUpload" />
+                                    @Html.ValidationMessageFor(m => m.Avatar, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                         </div>

@@ -1,51 +1,62 @@
 ﻿@model IEnumerable<BugTracker.Models.TicketComment>
 
-@{
-    ViewBag.Title = "Index";
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Comment List</h4>
+                <div class="table-responsive m-t-40">
+                    <table class="example25 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Ticket Name</th>                                
+                                <th>Commenter</th>
+                                <th>Submission Date</th>
+                                <th>Comment</th>
+                                <th>Project Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var comment in Model)
+                            {
+                            <tr>
+                                <td> @Html.Display(comment.ticket.Issue)</td>
+                                <td>@Html.Display(comment.User.FullName)</td>
+                                <td>@Html.Display(comment.Created.ToString("MMM dd yyyy")) </td>
+                                <td>@Html.Display(comment.Comment)</td>
+                                <td>@Html.Display(comment.ticket.project.Name)</td>
+                                <td>
+                                    @Html.ActionLink("Manage User", "ManageUser", new { id = comment.Id }) |
+                                    @Html.ActionLink("Delete", "Delete", new { id = comment.Id })
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                    @Html.ActionLink("Create New User", "CreateNewUser", "Account", null, new { @class = "btn btn-success" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.example25').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#PhoneNumber").mask('(000) 000-0000');
+        })
+    </script>
 }
-
-<h2>Index</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.ticket.SubmitterId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.User.FirstName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Comment)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Created)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.ticket.SubmitterId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.User.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Comment)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Created)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
-
-</table>

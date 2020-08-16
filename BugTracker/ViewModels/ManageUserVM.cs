@@ -13,6 +13,7 @@ namespace BugTracker.ViewModels
        
         public List<Project> UserProjects { get; set; }
         public List<Project> NotUserProjects { get; set; }
+        public HttpPostedFileBase Avatar { get; set; }
         #region Constructor
         public ManageUserVM()
         {

@@ -165,13 +165,17 @@ namespace BugTracker.Controllers
                     Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    AvatarPath = "/Images/Default_Avatar.png"
+                    AvatarPath = WebConfigurationManager.AppSettings["DefaultAvatarPath"]
                 };
                 if (model.Avatar != null)
                 {
-                    var fileName = Path.GetFileName(model.Avatar.FileName);
-                    model.Avatar.SaveAs(Path.Combine(Server.MapPath("~/Avatars/"), fileName));
-                    user.AvatarPath = "/Avatars/" + fileName;
+                    if (FileUploadValidator.IsWebFriendlyImage(model.Avatar))
+                    {
+                        var fileName = FileStamp.MakeUnique(model.Avatar.FileName);
+                        var AvatarFolder = WebConfigurationManager.AppSettings["DefaultAvatarFolder"];
+                        model.Avatar.SaveAs(Path.Combine(Server.MapPath(AvatarFolder), fileName));
+                        user.AvatarPath = $"{AvatarFolder}{fileName}";
+                    }
                 }
 
                 var result = await UserManager.CreateAsync(user, model.Password);
@@ -242,17 +246,20 @@ namespace BugTracker.Controllers
                     Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    AvatarPath = "/Images/Default_Avatar.png",
+                    AvatarPath = WebConfigurationManager.AppSettings["DefaultAvatarPath"],
                     PhoneNumber = model.PhoneNumber
 
                 };
                 if (model.Avatar != null)
                 {
-                    var fileName = Path.GetFileName(model.Avatar.FileName);
-                    model.Avatar.SaveAs(Path.Combine(Server.MapPath("~/Avatars/"), fileName));
-                    user.AvatarPath = "/Avatars/" + fileName;
+                    if (FileUploadValidator.IsWebFriendlyImage(model.Avatar))
+                    {
+                        var fileName = FileStamp.MakeUnique(model.Avatar.FileName);
+                        var serverFolder = WebConfigurationManager.AppSettings["DefaultAvatarFolder"];
+                        model.Avatar.SaveAs(Path.Combine(Server.MapPath(serverFolder), fileName));
+                        user.AvatarPath = $"{serverFolder}{fileName}";
+                    }
                 }
-
                 var result = await UserManager.CreateAsync(user, Membership.GeneratePassword(12, 1));
                 if (result.Succeeded)
                 {
@@ -264,8 +271,7 @@ namespace BugTracker.Controllers
                         projectHelper.AddUserToProject(user.Id, projectId);
                     }
 
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
+                    
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);

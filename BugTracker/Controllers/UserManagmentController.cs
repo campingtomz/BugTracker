@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Security;
 using BugTracker.Helpers;
@@ -61,7 +63,16 @@ namespace BugTracker.Controllers
         {
 
             userVM.user.UserName = userVM.user.Email;
+            userVM.user.AvatarPath = WebConfigurationManager.AppSettings["DefaultAvatarPath"];
 
+            if (FileUploadValidator.IsWebFriendlyImage(userVM.Avatar))
+            {
+                var fileName = FileStamp.MakeUnique(userVM.Avatar.FileName);
+                var serverFolder = WebConfigurationManager.AppSettings["DefaultAvatarFolder"];
+                userVM.Avatar.SaveAs(Path.Combine(Server.MapPath(serverFolder), fileName));
+                userVM.user.AvatarPath = $"{serverFolder}{fileName}";
+            }
+       
             db.Entry(userVM.user).State = EntityState.Modified;
             db.SaveChanges();
 
@@ -74,9 +85,12 @@ namespace BugTracker.Controllers
                 {
                     roleHelper.AddUserToRole(userVM.user.Id, roleName);
                 }
-           
+            
+            
 
-            return RedirectToAction("Index");
+                return RedirectToAction("Index");
         }
     }
 }
+
+                

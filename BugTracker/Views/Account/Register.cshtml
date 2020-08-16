@@ -2,7 +2,7 @@
 @model BugTracker.Models.ExtendedRegisterViewModel
 
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", @enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     <!DOCTYPE html>
@@ -62,7 +62,7 @@
                             <div class="form-group">
                                 <div class="col-xs-12">
                                     <label>Avatar Image Upload :</label>
-                                    <input name="image" type="file" class=" dropify form-control" id="fileUpload" />
+                                    <input name="Avatar" type="file" class=" dropify form-control" id="fileUpload" />
                                     @Html.ValidationMessageFor(model => model.Avatar, "", new { @class = "text-danger" })
                                 </div>
                             </div>

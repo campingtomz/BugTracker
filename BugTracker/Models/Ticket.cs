@@ -21,7 +21,7 @@ namespace BugTracker.Models
         public virtual TicketPriority TicketPriority { get; set; }
         public virtual ApplicationUser Submitter { get; set; }
         public virtual ApplicationUser Developer { get; set; }
-        public virtual ICollection<TicketAttahment> Attachments { get; set; }
+        public virtual ICollection<TicketAttachments> Attachments { get; set; }
         public virtual ICollection<TicketComment> Comments { get; set; }
         public virtual ICollection<TicketHistory> Histories { get; set; }
         public virtual ICollection<TicketNotification> Notifications { get; set; }
@@ -41,7 +41,7 @@ namespace BugTracker.Models
         #region Constructor
         public Ticket()
         {
-            Attachments = new HashSet<TicketAttahment>();
+            Attachments = new HashSet<TicketAttachments>();
             Comments = new HashSet<TicketComment>();
             Histories = new HashSet<TicketHistory>();
             Notifications = new HashSet<TicketNotification>();

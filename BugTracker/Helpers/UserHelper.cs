@@ -14,6 +14,7 @@ namespace BugTracker.Helpers
         {
             return db.Users.Find(userId);
         }
+       
         public string GetFirstName(string userId)
         {
             var user = db.Users.Find(userId);

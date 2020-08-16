@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-body wizard-content ">
                 <h4 class="card-title">Create New User</h4>
-                @using (Html.BeginForm("CreateNewUser", "Account", FormMethod.Post, new { @class = "tab-wizard vertical wizard-circle" }))
+                @using (Html.BeginForm("CreateNewUser", "Account", FormMethod.Post, new { @class = "tab-wizard vertical wizard-circle", @enctype = "multipart/form-data" } ))
                 {
                     @Html.AntiForgeryToken()
 
@@ -46,7 +46,7 @@
                         <div class="row">
                             <div class="col-lg-12 col-md-6">
                                 <label>Avatar Image Upload :</label>
-                                <input name="image" type="file" class=" dropify form-control" id="fileUpload" />
+                                <input name="Avatar" type="file" class=" dropify form-control" id="fileUpload" />
                                 @Html.ValidationMessageFor(model => model.Avatar, "", new { @class = "text-danger" })
 
                             </div>
