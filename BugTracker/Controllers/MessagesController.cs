@@ -11,16 +11,17 @@ using Microsoft.AspNet.Identity;
 
 namespace BugTracker.Controllers
 {
-    public class ChatMessagesController : Controller
+    public class MessagesController : Controller
     {
+
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: ChatMessages
-        public ActionResult Index()
-        {
-            var chatMessages = db.ChatMessages.Include(c => c.User).Include(c => c.userChat);
-            return View(chatMessages.ToList());
-        }
+        //public ActionResult Index()
+        //{
+        //    var chatMessages = db.Messages.Include(c => c.User).Include(c => c.UserId);
+        //    return View(chatMessages.ToList());
+        //}
 
         // GET: ChatMessages/Details/5
         public ActionResult Details(int? id)
@@ -29,7 +30,7 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ChatMessage chatMessage = db.ChatMessages.Find(id);
+            Message chatMessage = db.Messages.Find(id);
             if (chatMessage == null)
             {
                 return HttpNotFound();
@@ -42,21 +43,22 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "UserChatId,Message")] ChatMessage chatMessage)
+        public ActionResult Create([Bind(Include = "UserChatId, Message")] Message chatMessage, string recipientId)
         {
             if (ModelState.IsValid)
             {
-                chatMessage.UserId = User.Identity.GetUserId();
+                chatMessage.SenderId = User.Identity.GetUserId();
+                chatMessage.RecipientId = recipientId;
                 chatMessage.Created = DateTime.Now;
-                db.ChatMessages.Add(chatMessage);
+                db.Messages.Add(chatMessage);
                 db.SaveChanges();
                 return RedirectToAction("Index");
-            } 
+            }
             return View();
         }
 
         // GET: ChatMessages/Edit/5
-       
+
         // GET: ChatMessages/Delete/5
         public ActionResult Delete(int? id)
         {
@@ -64,7 +66,7 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ChatMessage chatMessage = db.ChatMessages.Find(id);
+            Message chatMessage = db.Messages.Find(id);
             if (chatMessage == null)
             {
                 return HttpNotFound();
@@ -77,8 +79,8 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            ChatMessage chatMessage = db.ChatMessages.Find(id);
-            db.ChatMessages.Remove(chatMessage);
+            Message chatMessage = db.Messages.Find(id);
+            db.Messages.Remove(chatMessage);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

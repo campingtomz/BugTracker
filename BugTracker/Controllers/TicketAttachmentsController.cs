@@ -74,7 +74,7 @@ namespace BugTracker.Controllers
                     var serverFolder = WebConfigurationManager.AppSettings["DefaultAttachmentFolder"];
                     file.SaveAs(Path.Combine(Server.MapPath(serverFolder), fileName));
                     ticketAttachments.FilePath = $"{serverFolder}{fileName}";
-
+                    ticketAttachments.FileName = fileName;
                     db.TicketAttachments.Add(ticketAttachments);
                     db.SaveChanges();
                     return RedirectToAction("Dashboard", "Tickets", new { id = ticketAttachments.TicketId });

@@ -146,8 +146,8 @@
                                     <tr>
                                         <td>@user.FullName</td>
                                         <td>@user.Email</td>
-                                        
-                                        <td>@Html.Display( user.PhoneNumber, new { @type = "tel" })</td>
+                                        <td>@user.PhoneNumber</td>
+                                        @*<td>@Html.Display( user.PhoneNumber, new { @type = "tel" })</td>*@
                                         
                                     </tr>
                                     }
@@ -172,7 +172,7 @@
                                     <tr>
                                         <td>@user.FullName</td>
                                         <td>@user.Email</td>                                     
-                                        <td>@String.Format("{0: (###) ###-####}", int.Parse(user.PhoneNumber))</td>
+                                        <td>@user.PhoneNumber</td>
 
                                     </tr>
                                     }

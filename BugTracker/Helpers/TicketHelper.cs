@@ -12,6 +12,49 @@ namespace BugTracker.Helpers
         private ApplicationDbContext db = new ApplicationDbContext();
         private UserRoleHelper userRoleHelper = new UserRoleHelper();
         private ProjectHelper projectHelper = new ProjectHelper();
+        public bool CanEditTicket(int ticketId)
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            var myRole = userRoleHelper.ListUserRoles(userId).FirstOrDefault();
+
+            switch (myRole)
+            {
+                case "Admin":
+                    return true;
+                case "ProjectManager":
+                    var user = db.Users.Find(userId);
+                    return user.Projects.SelectMany(p => p.Tickets).Any(t => t.Id == ticketId);
+                case "Developer":
+                    var ticket = db.Tickets.Find(ticketId);
+                    if (ticket.DeveloperId == userId || ticket.SubmitterId == userId)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                default:
+                    return false;
+            }
+        }
+        public bool CanEditTicketDev(int ticketId)
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            var myRole = userRoleHelper.ListUserRoles(userId).FirstOrDefault();
+
+            switch (myRole)
+            {
+                case "Admin":
+                    return true;
+                case "ProjectManager":
+                    var user = db.Users.Find(userId);
+                    return user.Projects.SelectMany(p => p.Tickets).Any(t => t.Id == ticketId);
+                default:
+                    return false;
+            }
+        }
         public bool CanEditComment(int ticketId)
         {
             var userId = HttpContext.Current.User.Identity.GetUserId();
@@ -182,9 +225,23 @@ namespace BugTracker.Helpers
             }
             return ticketTypes;
         }
+
+
+        public void ManageTicketNotifications(Ticket oldTicket, Ticket newTicket)
+        {
+            if(oldTicket.DeveloperId != newTicket.DeveloperId && newTicket.DeveloperId != null)
+            {
+                var newNotification = new TicketNotification()
+                {
+                    TicketId = newTicket.Id,
+                    UserId = newTicket.DeveloperId,
+                    Created = DateTime.Now,
+                    Subject =$"New Assignment to Ticket Id: {newTicket.Id}",
+                    Message= $"Hello, {newTicket.Developer.FullName} you have been assigned to Ticket: {newTicket.Issue} on Project {newTicket.project.Name}"
+                };
+                db.TicketNotifications.Add(newNotification);
+                db.SaveChanges();
+            }
+        }
     }
-}
-//What to add
-//    List asll user Tickers,
-//    list all usr tickets in project
-//    list tickets by role, 
+} 

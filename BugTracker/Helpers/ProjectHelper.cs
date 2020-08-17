@@ -73,7 +73,16 @@ namespace BugTracker.Helpers
             //return project.Users.Contains(user);
             return project.Users.Any(u=> u.Id == userId);
         }
-        
+        public List<ApplicationUser> ListUsesOnMyProjects(string userId)
+        {
+            List<ApplicationUser> userList = new List<ApplicationUser>();
+            foreach(var project in ListUserProjects(userId)){
+                userList.AddRange(ListUsersOnProject(project.Id));
+            }
+            return userList.OrderByDescending(u => u.Email).ToList();
+
+
+        }
         public List<ApplicationUser> ListUserOnProjectInRole(int projectId, string roleName)
         {
             var userList = ListUsersOnProject(projectId);

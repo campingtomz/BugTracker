@@ -8,7 +8,10 @@ using Microsoft.AspNet.Identity;
 namespace BugTracker.Helpers
 {
     public class ChatHelper
-    { UserHelper userHelper = new UserHelper();
+
+    {
+        private ApplicationDbContext db = new ApplicationDbContext(); 
+        UserHelper userHelper = new UserHelper();
         //public bool chatExists(string user2Id)
         //{
         //    var user = userHelper.getUser(HttpContext.Current.User.Identity.GetUserId());
@@ -28,5 +31,12 @@ namespace BugTracker.Helpers
         //{
         //    var latestMessage = Chat.Messages.Where(m => m.UserId != HttpContext.Current.User.Identity.GetUserId()).;
         //}
+        public ICollection<Connection> GetUserConnections(string userId)
+        {
+            ApplicationUser user = db.Users.Find(userId);
+            var connections = user.Connections.ToList();
+            return (connections);
+
+        }
     }
 }

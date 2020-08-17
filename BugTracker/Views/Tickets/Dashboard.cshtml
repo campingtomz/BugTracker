@@ -23,19 +23,49 @@
                 <!-- Tab panes -->
                 <div class="tab-content">
                     <div class="tab-pane tabcontent-border active" id="Ticket" role="tabpanel">
+                        @using (Html.BeginForm("Edit", "Tickets", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(model => model.Id)
+                            @Html.HiddenFor(model => model.ProjectId)
+                            @Html.HiddenFor(model => model.SubmitterId)
+                            @Html.HiddenFor(model => model.Created)
+                            if (!ticketHelper.CanEditTicket(Model.Id))
+                            {
+                                @Html.HiddenFor(model => model.TicketTypeId)
+                                @Html.HiddenFor(model => model.TicketPriorityId)
+                                @Html.HiddenFor(model => model.TicketStatusId)
+                                @Html.HiddenFor(model => model.DeveloperId)
+                            }
                         <div class="card-body">
                             <div class="row p-t-20">
                                 <div class="col-md-6">
                                     <div class="form-group ">
                                         <label class="control-label ">Ticket Issue:</label>
-                                        <p class="form-control-static">@Html.DisplayFor(model => model.Issue)</p>
+                                        @if (ticketHelper.CanEditTicket(Model.Id))
+                                        {
+                                            @Html.TextBoxFor(model => model.Issue, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.Issue, "", new { @class = "text-danger" })
+                                        }
+                                        else
+                                        {
+                                            <p class="form-control-static">@Html.DisplayFor(model => model.Issue)</p>
+                                        }
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group ">
                                         <label class="control-label ">Ticket Discription:</label>
-                                        @Html.DisplayFor(model => model.IssueDiscription, new { htmlAttributes = new { @class = "form-control" } })
-                                        @Html.ValidationMessageFor(model => model.IssueDiscription, "", new { @class = "text-danger" })
+                                        @if (ticketHelper.CanEditTicket(Model.Id))
+                                        {
+                                            @Html.TextAreaFor(model => model.IssueDiscription, new { @class = "form-control", @rows = "5" })
+                                            @Html.ValidationMessageFor(model => model.IssueDiscription, "", new { @class = "text-danger" })
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(model => model.IssueDiscription, new { htmlAttributes = new { @class = "form-control" } })
+
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -48,17 +78,39 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group ">
-                                        <label class="control-label">Ticket Developer :</label>
-                                        <p class="form-control-static">@Html.DisplayFor(model => model.Developer.FullName)  </p>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label class="control-label">Ticket Developer :</label>
+                                                @if (ticketHelper.CanEditTicketDev(Model.Id))
+                                                {
+                                                    <label class="control-label">Edit Developer :</label>
+                                                    @Html.DropDownList("DeveloperId", null, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.DeveloperId, "", new { @class = "text-danger" })
+                                                }
+                                                else
+                                                {
+                                                    <p class="form-control-static">@Html.DisplayFor(model => model.Developer.FullName)  </p>
+                                                }
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <hr />
+
                             <div class="row p-t-20">
                                 <div class="col-md-6">
                                     <div class="form-group ">
                                         <label class="control-label ">Ticket Type:</label>
-                                        <p class="form-control-static">  @Html.DisplayFor(model => model.TicketType.Name) </p>
+                                        @if (ticketHelper.CanEditTicket(Model.Id))
+                                        {
+                                            @Html.DropDownList("TicketTypeId", null, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.TicketTypeId, "", new { @class = "text-danger" })
+                                        }
+                                        else
+                                        {
+                                            <p class="form-control-static">  @Html.DisplayFor(model => model.TicketType.Name) </p>
+                                        }
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -72,7 +124,15 @@
                                 <div class="col-md-6">
                                     <div class="form-group ">
                                         <label class="control-label">Ticket Priority:</label>
-                                        <p class="form-control-static"> @Html.DisplayFor(model => model.TicketPriority.Name) </p>
+                                        @if (ticketHelper.CanEditTicket(Model.Id))
+                                        {
+                                            @Html.DropDownList("TicketPriorityId", null, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.TicketPriorityId, "", new { @class = "text-danger" })
+                                        }
+                                        else
+                                        {
+                                            <p class="form-control-static"> @Html.DisplayFor(model => model.TicketPriority.Name) </p>
+                                        }
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -88,12 +148,27 @@
                             <div class="row p-t-20">
                                 <div class="col-md-6">
                                     <div class="form-group ">
-                                        <label class="control-label">Ticket Priority:</label>
-                                        <p class="form-control-static"> @Html.DisplayFor(model => model.TicketStatus.Name) </p>
+                                        <label class="control-label">Ticket Status:</label>
+                                        @if (ticketHelper.CanEditTicket(Model.Id))
+                                        {
+                                            @Html.DropDownList("TicketStatusId", null, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.TicketStatusId, "", new { @class = "text-danger" })
+                                        }
+                                        else
+                                        {
+                                            <p class="form-control-static"> @Html.DisplayFor(model => model.TicketStatus.Name) </p>
+                                        }
+
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            <hr />
+                            @if (ticketHelper.CanEditTicket(Model.Id))
+                            {
+                                <button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Submit</button>
+                            }
+                            </div>
+                        }
                     </div>
                     <div class="tab-pane  tabcontent-border" id="ProjectInfo" role="tabpanel">
                         <div class="card-body">
@@ -115,97 +190,80 @@
                                 <div class="col-md-6">
                                     <div class="form-group ">
                                         <label class="control-label">Project Submitter :</label>
-                                        <div class="form-group row">
-                                            <div class="col-md-8">
-                                                <select class="form-control" multiple="">
-                                                    @foreach (var submitter in @projectHelper.ListUserOnProjectInRole(Model.ProjectId, "Submitter"))
-                                                    {
-                                                    <option> @submitter.FullName | @submitter.Email</option>
-                                                    }
-
-                                                </select>
-                                            </div>
-                                        </div>
+                                        <p class="form-control-static">@Model.Submitter.FullName</p>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group ">
                                         <label class="control-label">Project Developers :</label>
-                                        <div class="form-group row">
-                                            <div class="col-md-8">
-                                                <select class="form-control" multiple="">
-                                                    @foreach (var developer in @projectHelper.ListUserOnProjectInRole(Model.ProjectId, "Developer"))
-                                                    {
-                                                        <option> @developer.FullName | @developer.Email</option>
-                                                    }
-                                                </select>
-                                            </div>
-                                        </div>
+                                        <p class="form-control-static">@Model.Developer.FullName</p>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                     <div class="tab-pane  tabcontent-border" id="TicketAttachments" role="tabpanel">
                         <div class="card-body">
-                            <div class="row ">
-                                <div class="col-12">
-                                    <div class=" form-group">
-                                        <div class="table-responsive">
-                                            <table class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                                                <thead>
-                                                    <tr>
-                                                        <th>File Name</th>
-                                                        <th>File Link</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var attachment in Model.Attachments.ToList())
-                                                    {
-                                                        <tr>
-                                                            <th>@Html.Display(attachment.FileName)</th>
-                                                            <th><a target="_blank" href="@attachment.FilePath">@attachment.FilePath</a></th>
-                                                        </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            @if (ticketHelper.CanAddAttachment(Model.Id))
+                            @if (Model.Attachments.Count > 0)
                             {
-                            <hr />
-                            using (Html.BeginForm("UploadFilesToTicket", "TicketAttachments", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                            {
-                                @Html.AntiForgeryToken()
-                                @Html.Hidden("TicketId", Model.Id)
-                                <div class="row p-t-20">
-                                    <div class="col-md-6">
-                                        <div class=" form-group">
-                                            <label class="control-label ">File Name :</label>
-                                            @Html.Editor("File Name", new { htmlAttributes = new { @class = "form-control" } })
-                                            @Html.ValidationMessage("FileName", "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class=" form-group">
-                                            <label class="control-label">Attachment Description :</label>
-                                            @Html.Editor("Description", new { htmlAttributes = new { @class = "form-control" } })
-                                            @Html.ValidationMessage("attachmentDescription", "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row p-t-20">
+                                <div class="row ">
                                     <div class="col-12">
-                                        <label class="control-label">File Upload</label>
-                                        <input name="file" type="file" class=" dropify form-control" id="fileUpload" />
-                                        <hr />
-                                        <button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Upload</button>
+                                        <div class=" form-group">
+                                            <div class="table-responsive">
+                                                <table class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>File Name</th>
+                                                            <th>File Link</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var attachment in Model.Attachments.ToList())
+                                                        {
+                                                            <tr>
+                                                                <th>@attachment.FileName</th>
+                                                                <th><a target="_blank" href="@attachment.FilePath">@attachment.FilePath</a></th>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             }
+                            @if (ticketHelper.CanAddAttachment(Model.Id))
+                            {
+                                <hr />
+                                using (Html.BeginForm("UploadFileToTicket", "TicketAttachments", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.Hidden("TicketId", Model.Id)
+                                    <div class="row p-t-20">
+                                        <div class="col-md-6">
+                                            <div class=" form-group">
+                                                <label class="control-label ">File Name :</label>
+                                                @Html.Editor("File Name", new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessage("FileName", "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class=" form-group">
+                                                <label class="control-label">Attachment Description :</label>
+                                                @Html.Editor("Description", new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessage("attachmentDescription", "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row p-t-20">
+                                        <div class="col-12">
+                                            <label class="control-label">File Upload</label>
+                                            <input name="file" type="file" class=" dropify form-control" id="fileUpload" />
+                                            <hr />
+                                            <button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Upload</button>
+                                        </div>
+                                    </div>
+                                }
                             }
 
 
@@ -213,50 +271,53 @@
                     </div>
                     <div class="tab-pane tabcontent-border" id="Comments" role="tabpanel">
                         <div class="card-body">
-                            <div class="row p-t-20 boarder justify-content-center" >
-                                <div class="col-6">
-                                    <div class="comment-widgets m-b-20">
-                                        <div class="chat-box b-all">
-                                            <ul class="chat-list">
-                                                @{var count = 1;}
-                                                @foreach (var comment in Model.Comments)
-                                                {
-                                                    <li>
-                                                        <!-- Comment Row -->
-                                                        <div class="d-flex flex-row comment-row  b-all">
-                                                            <div class="p-2"><span class="round"><a href="@Url.Action("ManageUser", "UserManagment", new { userid = comment.User.Id })"><img src="@comment.User.AvatarPath" alt="user" width="50"></a></span></div>
-                                                            <div class="comment-text w-100">
-                                                                <h5>@comment.User.FullName</h5>
-                                                                <div class="comment-footer">
-                                                                    <span class="date">@comment.Created.ToString("MMM dd yyyy")</span>
+                            @if (Model.Comments.Count > 0)
+                            {
+                                <div class="row p-t-20 boarder justify-content-center">
+                                    <div class="col-6">
+                                        <div class="comment-widgets m-b-20">
+                                            <div class="chat-box b-all">
+                                                <ul class="chat-list">
+                                                    @{var count = 1;}
+                                                    @foreach (var comment in Model.Comments)
+                                                    {
+                                                        <li>
+                                                            <!-- Comment Row -->
+                                                            <div class="d-flex flex-row comment-row  b-all">
+                                                                <div class="p-2"><span class="round"><a href="@Url.Action("ManageUser", "UserManagment", new { userid = comment.User.Id })"><img src="@comment.User.AvatarPath" alt="user" width="50"></a></span></div>
+                                                                <div class="comment-text w-100">
+                                                                    <h5>@comment.User.FullName</h5>
+                                                                    <div class="comment-footer">
+                                                                        <span class="date">@comment.Created.ToString("MMM dd yyyy")</span>
+                                                                    </div>
+                                                                    <p class="m-b-5 m-t-10">@comment.Comment</p>
                                                                 </div>
-                                                                <p class="m-b-5 m-t-10">@comment.Comment</p>
                                                             </div>
-                                                        </div>
-                                                    </li>
-                                                    { count++; }
-                                                }
-                                            </ul>
+                                                        </li>
+                                                        { count++; }
+                                                    }
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            }
                             @if (ticketHelper.CanMakeComment(Model.Id))
                             {
-                            using (Html.BeginForm("Create", "TicketComments", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                            {
-                                @Html.AntiForgeryToken()
-                                @Html.Hidden("TicketId", Model.Id)
-                                <div class="row p-t-20  justify-content-center">
-                                    <div class="col-6">
-                                        <label class="control-label">Comment</label>
+                                using (Html.BeginForm("Create", "TicketComments", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.Hidden("TicketId", Model.Id)
+                                    <div class="row p-t-20  justify-content-center">
+                                        <div class="col-6">
+                                            <label class="control-label">Add Comment</label>
 
-                                        @Html.TextArea("Comment", new { @class = "form-control", @rows = "5" })
-                                        <hr />
-                                        <button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Add New Comment</button>
+                                            @Html.TextArea("Comment", new { @class = "form-control", @rows = "5" })
+                                            <hr />
+                                            <button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Add New Comment</button>
+                                        </div>
                                     </div>
-                                </div>
-                            }
+                                }
                             }
                         </div>
                     </div>

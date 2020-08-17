@@ -4,10 +4,12 @@
 @{ var roleHelper = new UserRoleHelper(); }
 @if (Request.IsAuthenticated)
 {
+     var CurrentUserId = User.Identity.GetUserId(); 
 
-    <div class="navbar-collapse">
-
-        <ul class="navbar-nav my-lg-0">
+    <div class="navbar-collapse collapse">
+        <ul class="navbar-nav mr-auto">
+        </ul>
+        <ul class="navbar-nav">
             <!-- ============================================================== -->
             <!-- Search -->
             <!-- ============================================================== -->
@@ -17,40 +19,39 @@
                     <input type="text" class="form-control" placeholder="Search & enter"> <a class="srh-btn"><i class="ti-close"></i></a>
                 </form>
             </li>
-            @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
-            {
-                @Html.AntiForgeryToken()
-                <!-- ============================================================== -->
-                <!-- Profile -->
-                <!-- ============================================================== -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="@userHelper.GetAvatar(User.Identity.GetUserId())" alt="user" class="profile-pic" /></a>
-                    <div class="dropdown-menu dropdown-menu-right scale-up">
-                        <ul class="dropdown-user">
-                            <li>
-                                <div class="dw-user-box">
-                                    <div class="u-img"><img src="@userHelper.GetAvatar(User.Identity.GetUserId())" salt="user"></div>
-                                    <div class="u-text">
-                                        <h4>@userHelper.GetFullName(User.Identity.GetUserId())</h4>
-                                        <p class="text-muted">@userHelper.GetEmail(User.Identity.GetUserId())</p>                                   
-                                         <p class="text-muted">@roleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault().ToString()</p>
-                                        
-                                        @*<a href="pages-profile.html" class="btn btn-rounded btn-danger btn-sm">View Profile</a>*@
-                                    </div>
+
+            <!-- ============================================================== -->
+            <!-- Profile -->
+            <!-- ============================================================== -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="@userHelper.GetAvatar(User.Identity.GetUserId())" alt="user" class="profile-pic" /></a>
+                <div class="dropdown-menu dropdown-menu-right scale-up">
+                    <ul class="dropdown-user">
+                        <li>
+                            <div class="dw-user-box">
+                                <div class="u-img"><img src="@userHelper.GetAvatar(CurrentUserId)" salt="user"></div>
+                                <div class="u-text">
+                                    <h4>@userHelper.GetFullName(CurrentUserId)</h4>
+                                    <p class="text-muted">@userHelper.GetEmail(CurrentUserId)</p>
+                                    <p class="text-muted">@roleHelper.ListUserRoles(CurrentUserId).FirstOrDefault().ToString()</p>
                                 </div>
+                            </div>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="@Url.Action("Index", "Manage")"><i class="mdi mdi-account"></i><span class="hide-menu"> Account</span></a>
+                        </li>
+                        <li><a href="#"><i class="ti-email"></i> Inbox</a></li>
+                        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <li>
+                                <a href="@Url.Action("Login", "Account", new { @class = "nav-link", @href = "javascript:document.getElementById('logoutForm').submit()" } )"><i class="mdi mdi-logout"></i><span class="hide-menu"> Log-Off</span></a>
                             </li>
-                            <li role="separator" class="divider"></li>
-
-                            <li>  @Html.ActionLink("Account", "Index", "Manage", null, new { @class = "ti-user" }) </li>
-
-                            <li><a href="#"><i class="ti-email"></i> Inbox</a></li>
-                            <li>  @Html.ActionLink("LogOff", "Login", "Account", null, new { @class = "nav-link", @href = "javascript:document.getElementById('logoutForm').submit()" }) </li>
-                            @*<li class="nav-item"><a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>*@
-
-                        </ul>
-                    </div>
-                </li>
-            }
+                        }
+                    </ul>
+                </div>
+            </li>
         </ul>
     </div>
 

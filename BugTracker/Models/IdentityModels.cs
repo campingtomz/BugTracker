@@ -18,8 +18,9 @@ namespace BugTracker.Models
         public virtual ICollection<TicketComment> Comments { get; set; }
         public virtual ICollection<TicketHistory> Histories { get; set; }
         public virtual ICollection<TicketNotification> Notifications { get; set; }
-        public virtual ICollection<UserChat> UserChats { get; set; }
-        public virtual ICollection<ChatMessage> Messages { get; set; }
+        public virtual ICollection<Connection> Connections { get; set; }
+        public virtual ICollection<Message> Messages { get; set; }
+
 
         #endregion
         #region Actuall Properties
@@ -45,8 +46,10 @@ namespace BugTracker.Models
             Histories = new HashSet<TicketHistory>();
             Notifications = new HashSet<TicketNotification>();
             Comments = new HashSet<TicketComment>();
-            Messages = new HashSet<ChatMessage>();
-            UserChats = new HashSet<UserChat>();
+            Connections = new HashSet<Connection>();
+            Messages = new HashSet<Message>();
+
+
         }
         #endregion
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
@@ -78,7 +81,10 @@ namespace BugTracker.Models
         public DbSet<BugTracker.Models.TicketComment> TicketComments { get; set; }
         public DbSet<BugTracker.Models.TicketHistory> TicketHistories { get; set; }
         public DbSet<BugTracker.Models.TicketNotification> TicketNotifications { get; set; }
-        public DbSet<BugTracker.Models.UserChat> UserChats { get; set; }
-        public DbSet<BugTracker.Models.ChatMessage> ChatMessages { get; set; }
+        public DbSet<BugTracker.Models.Connection> Connections { get; set; }
+        public DbSet<BugTracker.Models.Message> Messages { get; set; }
+
+
+
     }
 }

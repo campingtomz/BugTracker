@@ -1,4 +1,12 @@
-﻿@model IEnumerable<BugTracker.Models.UserChat>
+﻿Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+
+@model IEnumerable<BugTracker.Models.Connection>
 @using Microsoft.AspNet.Identity;
 @using BugTracker.Helpers;
 
@@ -17,11 +25,11 @@
                             <input class="form-control p-20" type="text" placeholder="Search Contact">
                         </div>
                         <ul class="chatonline style-none ">
-                            @foreach (var chatSession in Model)
+                            @foreach (var connection in Model)
                             {
-                                @*@{ var user2 = }*@
+                                 var user2 = connection.Users.Where(u => u.Id != HttpContext.Current.User.Identity.GetUserId()).FirstOrDefault(); 
                                 <li>
-                                    @*<a href="javascript:void(0)"><img src="@chatSession.User2.AvatarPath" alt="user-img" class="img-circle"> <span>@chatSession.User2.FullName <small class="text-success">online</small></span></a>*@
+                                    <a href="javascript:void(0)"><img src="@user2.AvatarPath" alt="user-img" class="img-circle"> <span>@user2.FullName <small class="text-success">online</small></span></a>
                                 </li>
 
                             }
@@ -43,13 +51,13 @@
                             <!--chat Row -->
                             @foreach (var message in Messages)
                             {
-                                if (message.UserId != User.Identity.GetUserId())
+                                if (message.SenderId != User.Identity.GetUserId())
                                 {
                                     <li>
-                                        <div class="chat-img"><img src="@message.User.AvatarPath" alt="user" /></div>
+                                        <div class="chat-img"><img src="@message.Sender.AvatarPath" alt="user" /></div>
                                         <div class="chat-content">
-                                            <h5>@message.User.FullName</h5>
-                                            <div class="box bg-light-info">@message.Message</div>
+                                            <h5>@message.Sender.FullName</h5>
+                                            <div class="box bg-light-info">@message.Content</div>
                                         </div>
                                         <div class="chat-time">@message.Created.ToString("MMM dd yyyy")</div>
                                     </li>
@@ -59,10 +67,10 @@
                                     <li class="reverse">
 
                                         <div class="chat-content">
-                                            <h5>@message.User.FullName</h5>
-                                            <div class="box bg-light-inverse">@message.Message</div>
+                                            <h5>@message.Sender.FullName</h5>
+                                            <div class="box bg-light-inverse">@message.Content</div>
                                         </div>
-                                        <div class="chat-img"><img src="@message.User.AvatarPath" alt="user" /></div>
+                                        <div class="chat-img"><img src="@message.Sender.AvatarPath" alt="user" /></div>
                                         <div class="chat-time">@message.Created.ToString("MMM dd yyyy")</div>
                                     </li>
                                 }

@@ -7,24 +7,27 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using BugTracker.Models;
-using Microsoft.AspNet.Identity;
 using BugTracker.Helpers;
+using Microsoft.AspNet.Identity;
 
 namespace BugTracker.Controllers
 {
-    public class UserChatsController : Controller
+    [Authorize]
+    public class ConnectionsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         UserHelper userHelper = new UserHelper();
         ChatHelper chatHelper = new ChatHelper();
-        
+
+
 
         // GET: UserChats
         public ActionResult Index()
         {
-            var user = userHelper.getUser(User.Identity.GetUserId());
-            return View(user.UserChats.ToList());
-            
+            //var connectionsList = userHelper.getUser(User.Identity.GetUserId()).Connections.ToList();
+            var userConnections = chatHelper.GetUserConnections(User.Identity.GetUserId());//db.Connections.ToList().Where(c => c.Users.Contains(userHelper.getUser(User.Identity.GetUserId())));
+            return View(userConnections) ;
+
         }
 
         // GET: UserChats/Details/5
@@ -43,14 +46,14 @@ namespace BugTracker.Controllers
         //}
 
         // GET: UserChats/Create
-      
+
 
         // POST: UserChats/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create( UserChat userChat, String User2Id)
+        public ActionResult Create(Connection connection, String User2Id)
         {
             if (ModelState.IsValid)
             {
@@ -61,9 +64,9 @@ namespace BugTracker.Controllers
                 //    userChat.UsersId.Add(User2Id);
                 //    db.UserChats.Add(userChat);
                 //    db.SaveChanges();
-                    
+
                 //}
-            } 
+            }
             return View();
         }
         // GET: UserChats/Delete/5
@@ -73,7 +76,7 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            UserChat userChat = db.UserChats.Find(id);
+            Connection userChat = db.Connections.Find(id);
             if (userChat == null)
             {
                 return HttpNotFound();
@@ -86,8 +89,8 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            UserChat userChat = db.UserChats.Find(id);
-            db.UserChats.Remove(userChat);
+            Connection userChat = db.Connections.Find(id);
+            db.Connections.Remove(userChat);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

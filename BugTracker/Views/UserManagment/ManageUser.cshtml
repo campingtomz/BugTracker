@@ -1,13 +1,21 @@
-﻿
-@using BugTracker.ViewModels
+﻿@using BugTracker.ViewModels
 @model ManageUserVM
+@using BugTracker.Helpers;
+@using Microsoft.AspNet.Identity;
+
+@{ var userHelper = new UserHelper();
+    UserRoleHelper roleHelper = new UserRoleHelper();
+}
 @using (Html.BeginForm("ManageUser", "UserManagment", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-                @Html.AntiForgeryToken()
-                <!-- Row -->
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    var currentUser = userHelper.getUser(HttpContext.Current.User.Identity.GetUserId());
+
+    @Html.AntiForgeryToken()
+    <!-- Row -->
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.HiddenFor(m => Model.user.Id)
     @Html.HiddenFor(m => Model.user.UserName)
+    @Html.HiddenFor(m => Model.user.AvatarPath)
     <div class="row justify-content-center">
         <div class="col-lg-12">
             <div class="card card-outline-info">
@@ -50,6 +58,7 @@
                                     @Html.ValidationMessageFor(m => m.user.PhoneNumber, "", new { @class = "text-danger" })
                                 </div>
                             </div>
+
                             @if (User.IsInRole("Admin"))
                             {
                                 <div class="form-group row">
@@ -58,6 +67,19 @@
                                         @Html.DropDownList("RoleName", null, new { @class = "form-control" })
                                     </div>
                                 </div>
+                            }
+                            else
+                            {
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">Roles</label>
+                                    <div class="col-md-3">
+                                        @roleHelper.ListUserRoles(Model.user.Id).FirstOrDefault()
+                                    </div>
+                                </div>
+                            }
+
+                            @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                            {
                                 <div class="form-group row">
                                     <label class="control-label text-right col-md-3">Projects</label>
                                     <div class="col-md-6">
@@ -75,7 +97,7 @@
                                                                 </thead>
                                                                 <tbody>
                                                                     @foreach (var project in Model.UserProjects)
-{
+                                                                    {
                                                                         <tr>
 
                                                                             <td>@project.Name</td>
@@ -90,8 +112,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
                                             <div class="col-6">
                                                 <div class="card">
                                                     <div class="card-body">
@@ -105,7 +125,7 @@
                                                                 </thead>
                                                                 <tbody>
                                                                     @foreach (var project in Model.NotUserProjects)
-{
+                                                                    {
                                                                         <tr>
                                                                             <td>@project.Name</td>
                                                                             <td class="text-nowrap">
@@ -124,6 +144,7 @@
                                     </div>
                                 </div>
                             }
+
                             <div class="form-group row">
                                 <label class="control-label text-right col-md-3">Avatar Image Upload</label>
                                 <div class="col-md-3">

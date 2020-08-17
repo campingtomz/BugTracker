@@ -11,12 +11,12 @@ namespace BugTracker.Models
         #region Parents/Children
         public int TicketId { get; set; }
         public virtual Ticket Ticket { get; set; }
-
         public string UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
 
         #endregion
         #region Actual Property
+        public string Subject { get; set; }
         public string Message { get; set; }
         public DateTime Created { get; set; }
         public bool IsRead { get; set; }

@@ -71,7 +71,7 @@
     </div>
 </div>
 @if (!roleHelper.IsUserInRole(HttpContext.Current.User.Identity.GetUserId(), "Admin"))
-{ 
+{
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -85,6 +85,7 @@
                                     <th>Project Manager</th>
                                     <th>Ticket Priority</th>
                                     <th>Ticket Status</th>
+                                    <th>Ticket Type</th>
                                     <th>Submitter</th>
                                     <th>Issue</th>
                                     <th>Created Data</th>
@@ -137,9 +138,12 @@
             </div>
         </div>
     </div>
+}
+@if (User.IsInRole("Submitter") || User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-success waves-effect waves-light m-r-10" })
+    </p>
     }
-<p>
-    @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-success waves-effect waves-light m-r-10" })
-</p>
 
 

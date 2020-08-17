@@ -19,18 +19,27 @@ namespace BugTracker.Controllers
     [Authorize]
     public class UserManagmentController : Controller
     {
+
         private ApplicationDbContext db = new ApplicationDbContext();
+        private UserHelper userHelper = new UserHelper();
         private UserRoleHelper roleHelper = new UserRoleHelper();
         private ProjectHelper projectHelper = new ProjectHelper();
-        // GET: UserManagment
+        // GET: UserManagment 
         public ActionResult Index()
         {
-
+            var userId = User.Identity.GetUserId();
             var model = db.Users.ToList();
-            
+            if (!roleHelper.IsUserInRole(userId, "Admin"))
+            {
+                 model = projectHelper.ListUsesOnMyProjects(userId);
+            }
             return View(model);
         }
-        [Authorize]
+        public ActionResult ViewAllUsers()
+        {
+            var model = db.Users.ToList();
+            return View(model);
+        }
         public ActionResult ManageUser(string userId, int? addRemove, int? projectId)
         {
             if (addRemove != null && projectId != null)
@@ -63,7 +72,8 @@ namespace BugTracker.Controllers
         {
 
             userVM.user.UserName = userVM.user.Email;
-            userVM.user.AvatarPath = WebConfigurationManager.AppSettings["DefaultAvatarPath"];
+            var avatarpath = userVM.user.AvatarPath;
+            //userVM.user.AvatarPath = userHelper.getUser(userVM.user.Id).AvatarPath;
 
             if (FileUploadValidator.IsWebFriendlyImage(userVM.Avatar))
             {
@@ -72,25 +82,25 @@ namespace BugTracker.Controllers
                 userVM.Avatar.SaveAs(Path.Combine(Server.MapPath(serverFolder), fileName));
                 userVM.user.AvatarPath = $"{serverFolder}{fileName}";
             }
-       
+
             db.Entry(userVM.user).State = EntityState.Modified;
             db.SaveChanges();
 
-           
-                foreach (var role in roleHelper.ListUserRoles(userVM.user.Id))
-                {
-                    roleHelper.RemoveUserFromRole(userVM.user.Id, role);
-                }
-                if (!string.IsNullOrEmpty(roleName))
-                {
-                    roleHelper.AddUserToRole(userVM.user.Id, roleName);
-                }
-            
-            
+            if (roleName != null) { 
+            foreach (var role in roleHelper.ListUserRoles(userVM.user.Id))
+            {
+                roleHelper.RemoveUserFromRole(userVM.user.Id, role);
+            }
+            if (!string.IsNullOrEmpty(roleName))
+            {
+                roleHelper.AddUserToRole(userVM.user.Id, roleName);
+            }
+        }
 
-                return RedirectToAction("Index");
+
+
+            return RedirectToAction("Index");
         }
     }
 }
 
-                

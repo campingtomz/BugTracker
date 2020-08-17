@@ -255,6 +255,49 @@ namespace BugTracker.Migrations
             }
             #endregion
             context.SaveChanges();
+            #region add connection sessions
+            var user1 = userManager.Users.ToList().Where(u => u.Email == "thomas.j.zanis@gmail.com").FirstOrDefault();
+            for (int i = 0; i < 10; i++)
+            {
+                Connection seedConnection = new Connection();
+                
+                var user2 = userManager.Users.ToList().Where(u => u.Email == $"bugtrackerpm{i}@mailinator.com").FirstOrDefault();
+               
+                seedConnection.Users.Add(user1);
+                seedConnection.Users.Add(user2);
+                seedConnection.isArchived = false;
+                seedConnection.Created = DateTime.Now;
+                context.Connections.Add(seedConnection);
+
+            }
+            #endregion
+            context.SaveChanges();
+            #region add Messages to Chat
+            foreach (var connection in user1.Connections)
+            {
+                var user2 = connection.Users.Where(u => u.Id != user1.Id).FirstOrDefault();
+                for (int j = 0; j < 10; j++)
+                {
+                    Message message = new Message();
+                    message.Created = DateTime.Now;
+                    message.ConnectionId = connection.Id;
+                    if(j%2 == 0)
+                    {
+                        message.SenderId = user1.Id;
+                        message.Content = $"{user1.FullName} this is test {j}";
+                    }
+                    else
+                    {
+                        {
+                            message.SenderId = user2.Id;
+                            message.Content = $"{user2.FullName} this is test {j}";
+                        }
+                    }
+                    context.Messages.Add(message);
+                }
+            }
+            #endregion
+            context.SaveChanges();
             #region add users to projects
             List<ApplicationUser> ProjectManagers = roleHelper.UsersInRole("ProjectManager").ToList();
             List<ApplicationUser> Developers = roleHelper.UsersInRole("Developer").ToList();

@@ -15,10 +15,10 @@ namespace BugTracker.Controllers
     [Authorize]
     public class TicketsController : Controller
     {
+        private ApplicationDbContext db = new ApplicationDbContext();
         private UserRoleHelper roleHelper = new UserRoleHelper();
         private ProjectHelper projectHelper = new ProjectHelper();
-        private ApplicationDbContext db = new ApplicationDbContext();
-
+        private TicketHelper ticketHelper = new TicketHelper();
         // GET: Tickets
         public ActionResult Index()
         {
@@ -37,7 +37,16 @@ namespace BugTracker.Controllers
             {
                 return HttpNotFound();
             }
-            //ViewBag.ProjectDevelopers = List<ApplicationUser>(projectHelper.ListUserOnProjectInRole)
+            if (ticketHelper.CanEditTicket(ticket.Id))
+            {
+                ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
+                ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
+                ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
+                if (ticketHelper.CanEditTicketDev(ticket.Id))
+                {
+                    ViewBag.DeveloperId = new SelectList(projectHelper.ListUserOnProjectInRole(ticket.ProjectId, "Developer"), "Id", "FullName", ticket.Developer);
+                }
+            }
             return View(ticket);
         }
 
@@ -47,12 +56,12 @@ namespace BugTracker.Controllers
         {
             var userId = User.Identity.GetUserId();
             //remove when authorize is activated
-            if(userId == null)
+            if (userId == null)
             {
                 return RedirectToAction("Index");
             }
             ViewBag.ProjectId = new SelectList(projectHelper.ListUserProjects(userId), "Id", "Name");
-            ViewBag.TicketPriorityId = new SelectList( db.TicketPriorities, "Id", "Name");
+            ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name");
             ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name");
             return View();
         }
@@ -67,13 +76,13 @@ namespace BugTracker.Controllers
             var userId = User.Identity.GetUserId();
             if (ModelState.IsValid)
             {
-                ticket.TicketStatusId = db.TicketStatuses.Where(ts => ts.Name == "Open").FirstOrDefault().Id;
+                ticket.TicketStatusId = db.TicketStatuses.FirstOrDefault(ts => ts.Name == "Open").Id;
                 ticket.Created = DateTime.Now;
                 ticket.SubmitterId = userId;
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
                 return RedirectToAction("Index");
-            } 
+            }
             ViewBag.ProjectId = new SelectList(projectHelper.ListUserProjects(userId), "Id", "Name");
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
             ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
@@ -85,8 +94,8 @@ namespace BugTracker.Controllers
             {
                 return RedirectToAction("Index");
             }
-           
-            
+
+
         }
 
         // GET: Tickets/Edit/5
@@ -110,10 +119,12 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketPriority,TicketStatusId,TicketTypeId,SubmitterId,DeveloperId,MyProperty,Issue,IssueDiscription,Created,Updated,IsResolved,IsArchived")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "Id,Created,TicketPriorityId,TicketStatusId,TicketTypeId,DeveloperId,SubmitterId,ProjectId,Issue,IssueDiscription")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
+                ticket.Updated = DateTime.Now;
+                var oldTicet = db.TicketAttachments.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
                 db.Entry(ticket).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -123,7 +134,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Delete/5
-       
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
