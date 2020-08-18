@@ -15,7 +15,7 @@ var projectHelper = new ProjectHelper(); }
             <div class="card-body">
                 <h4 class="card-title">User Data</h4>
                 <div class="table-responsive m-t-40">
-                    <table class="example25 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                    <table class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>Full Name</th>
@@ -37,37 +37,26 @@ var projectHelper = new ProjectHelper(); }
                                     <td>@user.PhoneNumber</td>
                                     @*<td><label class=" bfh-phone" data-format="+1 (ddd) ddd-dddd" value="1111111111"></label></td>*@
                                     <td> @roleHelper.ListUserRoles(user.Id).FirstOrDefault()</td>
-                                    <td> @Html.DropDownListFor(modelItem => user.Id, new SelectList(user.Projects, "id", "Name", "-- NO Project --"))</td>
+
+                                    <td> @Html.DropDownListFor(modelItem => user.Id, new SelectList(user.Projects, "id", "Name", "-- NO Project --"), new { @class = "form-control" })</td>
                                     <td>
                                         @Html.ActionLink("Manage User", "ManageUser", new { userid = user.Id }) |
-                                        @Html.ActionLink("Delete", "Delete", new { userid = user.Id })
-                                    </td>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            @Html.ActionLink("Delete", "Delete", new { userid = user.Id })
+                                        }
+                                        </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
+                    @if (User.IsInRole("Admin"))
+                    { 
                     @Html.ActionLink("Create New User", "CreateNewUser", "Account", null, new { @class = "btn btn-success" })
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts
-    {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.example25').DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ]
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
-            $("#PhoneNumber").mask('(000) 000-0000');
-        })
-    </script>
-}

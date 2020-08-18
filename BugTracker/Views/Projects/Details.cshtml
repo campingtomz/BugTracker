@@ -2,18 +2,26 @@
 @model BugTracker.Models.Project
 @using BugTracker.Helpers;
 @{var projectHelper = new ProjectHelper(); }
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card card-outline-info">
-            <div class="card-header">
+<div class="container-fluid p-t-20">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
                 <h4 class="m-b-0 text-white">Project @Model.Name</h4>
-            </div>
-            <div class="card-body">
-                <form class="form-horizontal" role="form">
-                    <div class="form-body">
-                        <h3 class="box-title">Project Info</h3>
-                        <hr class="m-t-0 m-b-40">
-                        <div class="row">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs profile-tab" role="tablist">
+                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#ProjectInfo" role="tab">Project Info</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#ProjectManager" role="tab">Project Manager</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Developers" role="tab">Project Developers</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Submitters" role="tab">Project Submitters</a> </li>
+                    @if (User.IsInRole("Submitter") || User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#AddTicket" role="tab">Create Ticket</a> </li>
+                    }
+                    </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane tabcontent-border active" id="ProjectInfo" role="tabpanel">
+                        <div class="card-body">
                             <div class="col-md-6">
                                 <div class="form-group row">
                                     <label class="control-label text-right col-md-3">Project Name:</label>
@@ -32,229 +40,237 @@
                                 </div>
                             </div>
                             <!--/span-->
-                        </div>
-                        <!--/row-->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group row">
-                                    <label class="control-label text-right col-md-3">Date Created:</label>
-                                    <div class="col-md-9">
-                                        <p class="form-control-static">  @Model.Created.ToString("MMM dd yyyy") </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--/span-->
-                            <div class="col-md-6">
-                                <div class="form-group row">
-                                    <label class="control-label text-right col-md-3">Due Date:</label>
-                                    <div class="col-md-9">
-                                        <p class="form-control-static">  @Model.DueDate.ToString("MMM dd yyyy") </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--/span-->
-                        </div>
-                        <!--/row-->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group row">
-                                    <label class="control-label text-right col-md-3">Discription :</label>
-                                    <div class="col-md-9">
-                                        <p class="form-control-static"> Say something nice about the project </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--/span-->
-                            <!--/span-->
-                        </div>
-                        <!--/row-->
-                        <h3 class="box-title">Project Manager</h3>
-                        <hr class="m-t-0 m-b-40">
-                        @{var projectManager = projectHelper.ListUserOnProjectInRole(Model.Id, "ProjectManager").FirstOrDefault();}
-                        @if (projectManager != null)
-                        {
-                            <div class="row">
-
-                                <div class="col-md-6">
-                                    <div class="form-group row">
-                                        <label class="control-label text-right col-md-3">First Name:</label>
-                                        <div class="col-md-9">
-                                            <p class="form-control-static">@projectManager.FirstName</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group row">
-                                        <label class="control-label text-right col-md-3">Email:</label>
-                                        <div class="col-md-9">
-                                            <p class="form-control-static">@projectManager.Email </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <!--/row-->
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group row">
-                                        <label class="control-label text-right col-md-3">Last Name:</label>
+                                        <label class="control-label text-right col-md-3">Date Created:</label>
                                         <div class="col-md-9">
-                                            <p class="form-control-static"> @projectManager.LastName </p>
+                                            <p class="form-control-static">  @Model.Created.ToString("MMM dd yyyy") </p>
                                         </div>
                                     </div>
                                 </div>
                                 <!--/span-->
                                 <div class="col-md-6">
                                     <div class="form-group row">
-                                        <label class="control-label text-right col-md-3">Contact Number:</label>
+                                        <label class="control-label text-right col-md-3">Due Date:</label>
                                         <div class="col-md-9">
-                                         
-                                            <p class="form-control-static" type="tel">@projectManager.PhoneNumber</p>
+                                            <p class="form-control-static">  @Model.DueDate.ToString("MMM dd yyyy") </p>
                                         </div>
                                     </div>
                                 </div>
                                 <!--/span-->
                             </div>
-                        }
-                        else
-                        {
+                            <!--/row-->
                             <div class="row">
-
                                 <div class="col-md-6">
                                     <div class="form-group row">
-                                        <label class="control-label text-right col-md-3">No Project Manager Assigned</label>
-
+                                        <label class="control-label text-right col-md-3">Discription :</label>
+                                        <div class="col-md-9">
+                                            <p class="form-control-static"> Say something nice about the project </p>
+                                        </div>
                                     </div>
                                 </div>
+                                <!--/span-->
+                                <!--/span-->
                             </div>
-                        }
-                        <!--/row-->
-
-                        <h4 class="card-title">Developers</h4>
-                        <hr class="m-t-0 m-b-40">
-
-                        <div class="table-responsive m-t-40">
-                            <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Contact Number</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var user in projectHelper.ListUserOnProjectInRole(Model.Id, "Developer").ToList())
-                                    {
-                                    <tr>
-                                        <td>@user.FullName</td>
-                                        <td>@user.Email</td>
-                                        <td>@user.PhoneNumber</td>
-                                        @*<td>@Html.Display( user.PhoneNumber, new { @type = "tel" })</td>*@
-                                        
-                                    </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <h4 class="card-title">Submitters</h4>
-                        <hr class="m-t-0 m-b-40">
-                        <div class="table-responsive m-t-40">
-                            <table id="" class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Contact Number</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var user in projectHelper.ListUserOnProjectInRole(Model.Id, "Submitter").ToList())
-                                    {
-
-                                    <tr>
-                                        <td>@user.FullName</td>
-                                        <td>@user.Email</td>                                     
-                                        <td>@user.PhoneNumber</td>
-
-                                    </tr>
-                                    }
-                                </tbody>
-                            </table>
                         </div>
                     </div>
-
-
-                    @if (User.IsInRole("Submitter"))
-                    {
-                        <div class="row">
-                            @using (Html.BeginForm("Create", "Tickets", FormMethod.Post))
+                    <div class="tab-pane tabcontent-border " id="ProjectManager" role="tabpanel">
+                        <div class="card-body">
+                            <h3 class="box-title">Project Manager</h3>
+                            <hr class="m-t-0 m-b-40">
+                            @{var projectManager = projectHelper.ListUserOnProjectInRole(Model.Id, "ProjectManager").FirstOrDefault();}
+                            @if (projectManager != null)
                             {
-                                @Html.AntiForgeryToken()
-                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                                @Html.Hidden("ProjectId", @Model.Id)
-                                @Html.Hidden("obnPage", true)
-                                <div class="row justify-content-center">
-                                    <div class="col-md-4">
-                                        <div class="card card-body">
-                                            <h3 class="box-title m-b-0">Create Ticket</h3>
-                                            <div class="row">
-                                                <div class="col-sm-12 col-xs-12">
-                                                    <form>
-
-                                                        <div class="form-group">
-                                                            @Html.Label("Ticket Priority", "TicketPriorityId")
-                                                            @Html.DropDownList("TicketPriorityId", null, htmlAttributes: new { @class = "form-control" })
-                                                            @Html.ValidationMessage("TicketPriorityId", "", new { @class = "text-danger" })
-
-                                                        </div>
-
-                                                        <div class="form-group">
-                                                            @Html.Label("Ticket Type", "TicketTypeId")
-                                                            @Html.DropDownList("TicketTypeId", null, htmlAttributes: new { @class = "form-control" })
-                                                            @Html.ValidationMessage("TicketTypeId", "", new { @class = "text-danger" })
-                                                        </div>
-                                                        <div class="form-group">
-                                                            @Html.Label("Issue")
-                                                            @Html.TextBox("Issue", new { @class = "form-control" })
-                                                            @Html.ValidationMessage("Issue", "", new { @class = "text-danger" })
-                                                        </div>
-                                                        <div class="form-group">
-                                                            @Html.Label("IssueDiscription")
-                                                            @Html.TextArea("IssueDiscription", new { @class = "form-control", @id = "IssueDiscription" })
-                                                            @Html.ValidationMessage("IssueDiscription", "", new { @class = "text-danger" })
-
-                                                        </div>
-                                                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Create</button>
-                                                        @*@Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-inverse waves-effect waves-light" })*@
-                                                        @*<button type="submit" class="btn btn-inverse waves-effect waves-light">Cancel</button>*@
-                                                    </form>
-                                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label class="control-label text-right col-md-3">First Name:</label>
+                                            <div class="col-md-9">
+                                                <p class="form-control-static">@projectManager.FirstName</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label class="control-label text-right col-md-3">Email:</label>
+                                            <div class="col-md-9">
+                                                <p class="form-control-static">@projectManager.Email </p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label class="control-label text-right col-md-3">Last Name:</label>
+                                            <div class="col-md-9">
+                                                <p class="form-control-static"> @projectManager.LastName </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--/span-->
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label class="control-label text-right col-md-3">Contact Number:</label>
+                                            <div class="col-md-9">
 
-
+                                                <p class="form-control-static" type="tel">@projectManager.PhoneNumber</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--/span-->
+                                </div>
                             }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label class="control-label text-right col-md-3">No Project Manager Assigned</label>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <!--/row-->
+                        </div>
+                    </div>
+                    <div class="tab-pane tabcontent-border " id="Developers" role="tabpanel">
+                        <div class="card-body">
+                            <h4 class="card-title">Developers</h4>
+                            <hr class="m-t-0 m-b-40">
+
+                            <div class="table-responsive m-t-40">
+                                <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Contact Number</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var user in projectHelper.ListUserOnProjectInRole(Model.Id, "Developer").ToList())
+                                        {
+                                            <tr>
+                                                <td>@user.FullName</td>
+                                                <td>@user.Email</td>
+                                                <td>@user.PhoneNumber</td>
+                                                @*<td>@Html.Display( user.PhoneNumber, new { @type = "tel" })</td>*@
+
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane tabcontent-border " id="Submitters" role="tabpanel">
+                        <div class="card-body">
+                            <h4 class="card-title">Submitters</h4>
+                            <hr class="m-t-0 m-b-40">
+                            <div class="table-responsive m-t-40">
+                                <table id="" class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Contact Number</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var user in projectHelper.ListUserOnProjectInRole(Model.Id, "Submitter").ToList())
+                                        {
+
+                                            <tr>
+                                                <td>@user.FullName</td>
+                                                <td>@user.Email</td>
+                                                <td>@user.PhoneNumber</td>
+
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (User.IsInRole("Submitter") || User.IsInRole("Admin"))
+                    {
+                        <div class="tab-pane tabcontent-border" id="AddTicket" role="tabpanel">
+                            <div class="card-body">
+                                <div class="row p-t-20">
+                                    @using (Html.BeginForm("Create", "Tickets", FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                        @Html.Hidden("ProjectId", @Model.Id)
+                                        @Html.Hidden("obnPage", true)
+                                        <div class="row justify-content-center">
+                                            <div class="col-md-12">
+                                                <div class="card card-body">
+                                                    <h3 class="box-title m-b-0">Create Ticket</h3>
+                                                    <div class="row">
+                                                        <div class="col-sm-12 col-xs-12">
+                                                            <form>
+
+                                                                <div class="form-group">
+                                                                    @Html.Label("Ticket Priority", "TicketPriorityId")
+                                                                    @Html.DropDownList("TicketPriorityId", null, htmlAttributes: new { @class = "form-control" })
+                                                                    @Html.ValidationMessage("TicketPriorityId", "", new { @class = "text-danger" })
+
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    @Html.Label("Ticket Type", "TicketTypeId")
+                                                                    @Html.DropDownList("TicketTypeId", null, htmlAttributes: new { @class = "form-control" })
+                                                                    @Html.ValidationMessage("TicketTypeId", "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    @Html.Label("Issue")
+                                                                    @Html.TextBox("Issue", null, htmlAttributes: new { @class = "form-control" })
+                                                                    @Html.ValidationMessage("Issue", "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    @Html.Label("IssueDiscription")
+                                                                    @Html.TextArea("IssueDiscription", new { @class = "form-control", @id = "IssueDiscription" })
+                                                                    @Html.ValidationMessage("IssueDiscription", "", new { @class = "text-danger" })
+
+                                                                </div>
+                                                                <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Create</button>
+                                                                @*@Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-inverse waves-effect waves-light" })*@
+                                                                @*<button type="submit" class="btn btn-inverse waves-effect waves-light">Cancel</button>*@
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
                         </div>
                     }
-
                     <div class="form-actions">
-                        <div class="row">
+                        <div class="row p-l-20 p-t-20 p-b-20">
                             <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-md-offset-3 col-md-9">
-                                        @if (User.IsInRole("Admin, ProjectManager"))
+                                <div class="row ">
+                                    <div class=" col-md-9">
+                                        @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
                                         {
                                             @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" })
                                         }
-                                            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-inverse" })
-                                            @*<button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Edit</button>*@
-                                            @*<button type="button" class="btn btn-inverse">Cancel</button>*@
-                                        </div>
+                                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-inverse" })
+                                        @*<button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Edit</button>*@
+                                        @*<button type="button" class="btn btn-inverse">Cancel</button>*@
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>

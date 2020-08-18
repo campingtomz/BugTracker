@@ -5,57 +5,58 @@
 
 @{ var userHelper = new UserHelper();
     UserRoleHelper roleHelper = new UserRoleHelper();
+    ProjectHelper projectHelper = new ProjectHelper();
 }
 @using (Html.BeginForm("ManageUser", "UserManagment", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    var currentUser = userHelper.getUser(HttpContext.Current.User.Identity.GetUserId());
+    //var currentUser = userHelper.getUser(HttpContext.Current.User.Identity.GetUserId());
+    @Html.HiddenFor(m => m.UserId)
+    @Html.HiddenFor(m => m.AvatarPath)
 
     @Html.AntiForgeryToken()
     <!-- Row -->
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(m => Model.user.Id)
-    @Html.HiddenFor(m => Model.user.UserName)
-    @Html.HiddenFor(m => Model.user.AvatarPath)
+
     <div class="row justify-content-center">
         <div class="col-lg-12">
             <div class="card card-outline-info">
                 <div class="card-header">
-                    <h4 class="m-b-0 text-white">Manage User @Model.user.FullName</h4>
+                    <h4 class="m-b-0 text-white">Manage User @Model.FullName</h4>
                 </div>
                 <div class="card-body">
                     <form action="#" class="form-horizontal form-bordered">
                         <div class="form-body">
                             <div class="form-group row">
                                 <div class="col-md-3">
-                                    <img src="@Model.user.AvatarPath" class="img-circle" width="150" />
+                                    <img src="@Model.AvatarPath" class="img-circle" width="150" />
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label class="control-label text-right col-md-3">First Name</label>
                                 <div class="col-md-3">
-                                    @Html.EditorFor(m => m.user.FirstName, new { htmlAttributes = new { @class = "form-control " } })
-                                    @Html.ValidationMessageFor(m => m.user.FirstName, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(m => m.FirstName, new { htmlAttributes = new { @class = "form-control " } })
+                                    @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label class="control-label text-right col-md-3">Last Name</label>
                                 <div class="col-md-3">
-                                    @Html.EditorFor(m => m.user.LastName, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(m => m.user.LastName, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(m => m.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label class="control-label text-right col-md-3">Email</label>
                                 <div class="col-md-3">
-                                    @Html.EditorFor(m => m.user.Email, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(m => m.user.Email, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label class="control-label text-right col-md-3">Phone Number</label>
                                 <div class="col-md-3">
-                                    @Html.EditorFor(m => m.user.PhoneNumber, new { htmlAttributes = new { @class = "form-control  phone-inputmask", value = "@user.PhoneNumber" } })
-                                    @Html.ValidationMessageFor(m => m.user.PhoneNumber, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(m => m.PhoneNumber, new { htmlAttributes = new { @class = "form-control  phone-inputmask", value = "@user.PhoneNumber" } })
+                                    @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
@@ -65,6 +66,7 @@
                                     <label class="control-label text-right col-md-3">Roles</label>
                                     <div class="col-md-3">
                                         @Html.DropDownList("RoleName", null, new { @class = "form-control" })
+
                                     </div>
                                 </div>
                             }
@@ -73,7 +75,7 @@
                                 <div class="form-group row">
                                     <label class="control-label text-right col-md-3">Roles</label>
                                     <div class="col-md-3">
-                                        @roleHelper.ListUserRoles(Model.user.Id).FirstOrDefault()
+                                        @Html.DisplayFor(m => m.userRole, new { htmlAttributes = new { @class = "form-control" } })
                                     </div>
                                 </div>
                             }
@@ -96,13 +98,13 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    @foreach (var project in Model.UserProjects)
+                                                                    @foreach (var project in projectHelper.ListUserProjects(Model.UserId))
                                                                     {
                                                                         <tr>
 
                                                                             <td>@project.Name</td>
                                                                             <td class="text-nowrap">
-                                                                                <a href="@Url.Action("ManageUser", "UserManagment", new { userId = Model.user.Id, addRemove = 1, projectId = project.Id })" class="submit" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-close text-danger"></i> </a>
+                                                                                <a href="@Url.Action("ManageUser", "UserManagment", new { userId = Model.UserId, addRemove = 1, projectId = project.Id })" class="submit" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-close text-danger"></i> </a>
                                                                             </td>
                                                                         </tr>
                                                                     }
@@ -124,13 +126,13 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    @foreach (var project in Model.NotUserProjects)
+                                                                    @foreach (var project in projectHelper.ListUserNotOnProjects(Model.UserId))
                                                                     {
                                                                         <tr>
                                                                             <td>@project.Name</td>
                                                                             <td class="text-nowrap">
 
-                                                                                <a href="@Url.Action("ManageUser", "UserManagment", new { userId = Model.user.Id, addRemove = 0, projectId = project.Id })" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-plus text-Success"></i> </a>
+                                                                                <a href="@Url.Action("ManageUser", "UserManagment", new { userId = Model.UserId, addRemove = 0, projectId = project.Id })" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-plus text-Success"></i> </a>
                                                                             </td>
                                                                         </tr>
                                                                     }

@@ -9,17 +9,15 @@ namespace BugTracker.ViewModels
 {
     public class ManageUserVM
     {
-        public ApplicationUser user { get; set; }
-       
-        public List<Project> UserProjects { get; set; }
-        public List<Project> NotUserProjects { get; set; }
+        public string UserId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }    
+        public string userRole { get; set; }
+        public string AvatarPath { get; set; }
         public HttpPostedFileBase Avatar { get; set; }
-        #region Constructor
-        public ManageUserVM()
-        {
-            UserProjects = new List<Project>();
-            NotUserProjects= new List<Project>();
-        }
-        #endregion
+
     }
 }

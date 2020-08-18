@@ -338,7 +338,7 @@ namespace BugTracker.Migrations
 
                     seedTicket.TicketStatusId = StatusId;
                     seedTicket.TicketPriorityId = ticketPriorities[rand.Next(ticketPriorities.Count)].Id;
-                    seedTicket.TicketTypeId = ticketTypes[rand.Next(ticketTypes.Count)].Id; ;
+                    seedTicket.TicketTypeId = ticketTypes[rand.Next(ticketTypes.Count)].Id; 
                     seedTicket.Created = DateTime.Now;
                     seedTicket.Issue = $"There is an issue with {project.Name}";
                     seedTicket.IsArchived = false;

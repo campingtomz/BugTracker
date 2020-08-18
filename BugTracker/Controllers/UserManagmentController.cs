@@ -16,6 +16,7 @@ using Microsoft.AspNet.Identity;
 
 namespace BugTracker.Controllers
 {
+    
     [Authorize]
     public class UserManagmentController : Controller
     {
@@ -31,7 +32,7 @@ namespace BugTracker.Controllers
             var model = db.Users.ToList();
             if (!roleHelper.IsUserInRole(userId, "Admin"))
             {
-                 model = projectHelper.ListUsesOnMyProjects(userId);
+                model = projectHelper.ListUsesOnMyProjects(userId);
             }
             return View(model);
         }
@@ -53,14 +54,20 @@ namespace BugTracker.Controllers
                     projectHelper.RemoveUserFromProject(userId, (int)projectId);
                 }
             }
-            var userRole = roleHelper.ListUserRoles(userId).FirstOrDefault();
-            ViewBag.RoleName = new SelectList(db.Roles, "Name", "Name", userRole);
+
+            var user = userHelper.getUser(userId);
             var model = new ManageUserVM();
-            model.user = db.Users.Find(userId);
-            model.UserProjects = projectHelper.ListUserProjects(userId).ToList();
-            model.NotUserProjects = projectHelper.ListUserNotOnProjects(userId).ToList();
-
-
+            model.UserId = user.Id;
+            model.FirstName = user.FirstName;
+            model.LastName = user.LastName;
+            model.Email = user.Email;
+            model.PhoneNumber = user.PhoneNumber;
+            model.FullName = user.FullName;
+            model.AvatarPath = user.AvatarPath;
+            model.userRole = roleHelper.ListUserRoles(userId).FirstOrDefault();
+            //model.FirstName = projectHelper.ListUserProjects(userId).ToList();
+            //model.NotUserProjects = projectHelper.ListUserNotOnProjects(userId).ToList();
+            ViewBag.RoleName = new SelectList(db.Roles, "Name", "Name", model.userRole);
             return View(model);
         }
 
@@ -70,9 +77,12 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ManageUser(ManageUserVM userVM, string roleName)
         {
-
-            userVM.user.UserName = userVM.user.Email;
-            var avatarpath = userVM.user.AvatarPath;
+            var user = db.Users.Find(userVM.UserId);
+            user.UserName = userVM.Email;
+            user.FirstName = userVM.FirstName;
+            user.LastName = userVM.LastName;
+            user.PhoneNumber = userVM.PhoneNumber;
+            user.AvatarPath = userVM.AvatarPath;
             //userVM.user.AvatarPath = userHelper.getUser(userVM.user.Id).AvatarPath;
 
             if (FileUploadValidator.IsWebFriendlyImage(userVM.Avatar))
@@ -80,22 +90,23 @@ namespace BugTracker.Controllers
                 var fileName = FileStamp.MakeUnique(userVM.Avatar.FileName);
                 var serverFolder = WebConfigurationManager.AppSettings["DefaultAvatarFolder"];
                 userVM.Avatar.SaveAs(Path.Combine(Server.MapPath(serverFolder), fileName));
-                userVM.user.AvatarPath = $"{serverFolder}{fileName}";
+                user.AvatarPath = $"{serverFolder}{fileName}";
             }
 
-            db.Entry(userVM.user).State = EntityState.Modified;
+            //db.Entry(user).State = EntityState.Modified;
             db.SaveChanges();
 
-            if (roleName != null) { 
-            foreach (var role in roleHelper.ListUserRoles(userVM.user.Id))
+            if (roleName != null)
             {
-                roleHelper.RemoveUserFromRole(userVM.user.Id, role);
+                foreach (var role in roleHelper.ListUserRoles(user.Id))
+                {
+                    roleHelper.RemoveUserFromRole(user.Id, role);
+                }
+                if (!string.IsNullOrEmpty(roleName))
+                {
+                    roleHelper.AddUserToRole(user.Id, roleName);
+                }
             }
-            if (!string.IsNullOrEmpty(roleName))
-            {
-                roleHelper.AddUserToRole(userVM.user.Id, roleName);
-            }
-        }
 
 
 

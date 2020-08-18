@@ -34,17 +34,17 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="control-label">Project Name:</label>
-
-                                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @placehoder = "@Model.Name" } })
-                                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-
+                                        <div class="col-md-6">
+                                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @placehoder = "@Model.Name" } })
+                                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
                                 <!--/span-->
                                 <div class="col-md-6">
                                     <div class="form-group ">
                                         <label class="control-label">Due Date:</label>
-                                        <div class="col-md-9">
+                                        <div class="col-md-6">
                                             <input type="date" class="form-control" placeholder="@Model.DueDate.ToString("MMM dd yyyy")">
                                         </div>
                                     </div>
@@ -56,9 +56,9 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="control-label">Description</label>
-                                        <div class="col-md-9">
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control editorHtml", @placeholder = "Enter a Description" } })
+                                                @Html.TextAreaFor(model => model.Description,  new { @class = "form-control ", @placeholder = "Enter a Description" } )
                                                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
@@ -76,7 +76,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <div class="col-md-6">
-                                                @Html.DropDownList("ProjectManagers")
+                                                @Html.DropDownList("ProjectManagers", null,new { @class = "form-control " })
                                             </div>
                                         </div>
                                     </div>
@@ -224,140 +224,15 @@
                                             <div class="col-md-offset-3 col-md-9">
                                                 <button type="submit" class="btn btn-success">Submit</button>
                                                 @Html.ActionLink("Cancel", "Details", new { id = Model.Id }, new { @type = "button", @class = "btn btn-inverse" })
-
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </form>
                 </div>
             </div>
         </div>
     </div>
 }
-@section Scripts{
-    <script src="~/Scripts/tinymce/tinymce.js"></script>
-    <script src="~/Scripts/tinymce/jquery.tinymce.min.js"></script>
-    <script type="text/javascript">
-        tinymce.init({
-
-            selector: "#Description"
-        });
-    </script>
-}
-
-@*@Ssection Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-    <script src="~/Scripts/select2.full.min.js"></script>
-    <script src="~/Scripts/bootstrap-select.min.js"></script>
-    <script src="~/Scripts/bootstrap-tagsinput.min.js"></script>
-    <script src="~/Scripts/jquery.bootstrap-touchspin.js"></script>
-    <script src="~/Scripts/dff.js"></script>
-
-
-    <script type="text/javascript" src="~/Scripts/jquery.multi-select.js"></script>
-    <script type="text/javascript" src="~/Scripts/CustomForm-Addon.js"></script>
-    }*@
-@*<div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Created, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Created, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Created, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.IsArchive, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.IsArchive)
-                    @Html.ValidationMessageFor(model => model.IsArchive, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
-    </div>*@
-@*  <h3 class="box-title">Users</h3>
-    <hr class="m-t-0 m-b-40">
-    <!--/row-->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Multiple Select</h4>
-                    <h6 class="card-subtitle"> Use a <code>"ProjectManagerId"</code> as your input element.</h6>
-                    <div class="row">
-                        <div class="col-lg-6 col-xlg-4  m-b-30">
-                            <h5 class="box-title">All Developer Users</h5><code>"ProjectManagerId"</code>
-                            <select id='pre-selected-options1' multiple='multiple'>
-
-                                <option value='elem_1'>elem 1</option>
-                                <option value='elem_2'>elem 2</option>
-                                <option value='elem_3'>elem 3</option>
-                                <option value='elem_4' selected>elem 4</option>
-                                <option value='elem_5' selected>elem 5</option>
-                                <option value="elem_6">elem 6</option>
-                                <option value="elem_7">elem 7</option>
-                                <option value="elem_8">elem 8</option>
-                                <option value="elem_9">elem 9</option>
-                                <option value="elem_10">elem 10</option>
-                                <option value="elem_11">elem 11</option>
-                                <option value="elem_12">elem 12</option>
-                                <option value="elem_13">elem 13</option>
-                                <option value="elem_14">elem 14</option>
-                                <option value="elem_15">elem 15</option>
-                                <option value="elem_16">elem 16</option>
-                                <option value="elem_17">elem 17</option>
-                                <option value="elem_18">elem 18</option>
-                                <option value="elem_19">elem 19</option>
-                                <option value="elem_20">elem 20</option>
-                            </select>
-                        </div>
-
-                        <div class="col-lg-6 col-xlg-4  m-b-30">
-                            <h5 class="box-title">All Submitter Users</h5>
-                            <select id='pre-selected-options2' multiple='multiple'>
-                                <option value='elem_1'>elem 1</option>
-                                <option value='elem_2'>elem 2</option>
-                                <option value='elem_3'>elem 3</option>
-                                <option value='elem_4' selected>elem 4</option>
-                                <option value='elem_5' selected>elem 5</option>
-                                <option value="elem_6">elem 6</option>
-                                <option value="elem_7">elem 7</option>
-                                <option value="elem_8">elem 8</option>
-                                <option value="elem_9">elem 9</option>
-                                <option value="elem_10">elem 10</option>
-                                <option value="elem_11">elem 11</option>
-                                <option value="elem_12">elem 12</option>
-                                <option value="elem_13">elem 13</option>
-                                <option value="elem_14">elem 14</option>
-                                <option value="elem_15">elem 15</option>
-                                <option value="elem_16">elem 16</option>
-                                <option value="elem_17">elem 17</option>
-                                <option value="elem_18">elem 18</option>
-                                <option value="elem_19">elem 19</option>
-                                <option value="elem_20">elem 20</option>
-                            </select>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> *@

@@ -18,6 +18,7 @@ namespace BugTracker.Models
         public virtual ICollection<TicketComment> Comments { get; set; }
         public virtual ICollection<TicketHistory> Histories { get; set; }
         public virtual ICollection<TicketNotification> Notifications { get; set; }
+        public virtual ICollection<ProjectNotification> ProjectNotifications { get; set; }
         public virtual ICollection<Connection> Connections { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
 
@@ -45,6 +46,8 @@ namespace BugTracker.Models
             Attachments = new HashSet<TicketAttachments>();
             Histories = new HashSet<TicketHistory>();
             Notifications = new HashSet<TicketNotification>();
+            ProjectNotifications = new HashSet<ProjectNotification>();
+
             Comments = new HashSet<TicketComment>();
             Connections = new HashSet<Connection>();
             Messages = new HashSet<Message>();
@@ -81,6 +84,8 @@ namespace BugTracker.Models
         public DbSet<BugTracker.Models.TicketComment> TicketComments { get; set; }
         public DbSet<BugTracker.Models.TicketHistory> TicketHistories { get; set; }
         public DbSet<BugTracker.Models.TicketNotification> TicketNotifications { get; set; }
+        public DbSet<BugTracker.Models.ProjectNotification> ProjectNotifications { get; set; }
+
         public DbSet<BugTracker.Models.Connection> Connections { get; set; }
         public DbSet<BugTracker.Models.Message> Messages { get; set; }
 
