@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using BugTracker.Helpers;
 using BugTracker.Models;
 using BugTracker.ViewModels;
+using Microsoft.AspNet.Identity;
 using PagedList;
 using PagedList.Mvc;
 
@@ -24,16 +25,20 @@ namespace BugTracker.Controllers
         // GET: Projects
         public ActionResult Index()
         {
-            var model = db.Projects.ToList().OrderByDescending(p => p.Created);
+
+            //var model = db.Projects.ToList().OrderByDescending(p => p.Created);
             //foreach (var project in db.Projects.ToList())
             //{
             //    var projectVm = new ProjectManageVM(project);
             //    projectList.Add(projectVm);
             //}
+            if (projectHelper.CanViewAllProjects())
+            {
+                ViewBag.AllProjects = new List<Project>(db.Projects.ToList().OrderByDescending(p => p.Created).ToList());
+            }
 
 
-            
-            return View(model);
+            return View(projectHelper.ListUserProjects(User.Identity.GetUserId()));
 
         }
 

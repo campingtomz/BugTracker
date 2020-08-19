@@ -13,7 +13,24 @@ namespace BugTracker.Helpers
         private UserRoleHelper userRoleHelper = new UserRoleHelper();
         private ProjectHelper projectHelper = new ProjectHelper();
         private UserHelper userHelper = new UserHelper();
-        public void ManageTicketNotifications(Ticket oldTicket, Ticket newTicket)
+
+        #region general Notification methods
+        public void NotificationRead(int notificationId)
+        {
+            var notification = GetNotification(notificationId);
+            notification.IsRead = true;
+            db.SaveChanges();
+        }
+        #endregion
+
+        #region Ticket Notification methods
+        public void TicketChangeNotification(Ticket oldTicket, Ticket newTicket)
+        {
+            TicketDeveloperChange(oldTicket, newTicket);
+            db.SaveChanges();
+
+        }
+        public void TicketDeveloperChange(Ticket oldTicket, Ticket newTicket)
         {
 
             if (oldTicket.DeveloperId != newTicket.DeveloperId && newTicket.DeveloperId != null)
@@ -42,6 +59,41 @@ namespace BugTracker.Helpers
                 db.TicketNotifications.Add(newNotification);
             }
 
+           
+
+        }
+        private void TicketNewCommentAdded(TicketComment newComment)
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            foreach (var user in newComment.ticket.project.Users.Where(u=>u.Id != userId)) {
+                var newNotification = new TicketNotification()
+                {
+                    TicketId = newComment.TicketId,
+                    UserId = userId,
+                    Created = DateTime.Now,
+                    Subject = $"New Comment Added to  {newComment.TicketId}",
+                    Message = $"Hello {user.FullName}, A new Comment has been added to the Ticket: {newComment.TicketId}, but {userHelper.getUser(userId).FullName}"
+                };
+                db.TicketNotifications.Add(newNotification);
+            }
+            db.SaveChanges();
+
+        }
+        private void TicketNewAttachmentAdded(TicketAttachment newAttachment)
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            foreach (var user in newAttachment.ticket.project.Users.Where(u => u.Id != userId))
+            {
+                var newNotification = new TicketNotification()
+                {
+                    TicketId = newAttachment.TicketId,
+                    UserId = userId,
+                    Created = DateTime.Now,
+                    Subject = $"New Comment Added to  {newAttachment.TicketId}",
+                    Message = $"Hello {user.FullName}, A new Comment has been added to the Ticket: {newAttachment.TicketId}, but {userHelper.getUser(userId).FullName}"
+                };
+                db.TicketNotifications.Add(newNotification);
+            }
             db.SaveChanges();
 
         }
@@ -58,18 +110,20 @@ namespace BugTracker.Helpers
             };
             db.TicketNotifications.Add(newNotification);
             db.SaveChanges();
-        }
-        public void NotificationRead(int notificationId)
-        {
-            var notification = GetNotification(notificationId);
-            notification.IsRead = true;
-            db.SaveChanges();
-        }
+        } 
+        #endregion
+            
         public TicketNotification GetNotification(int notificationId)
         {
             return db.TicketNotifications.Find(notificationId);
         }
 
+        #region Project Notification Methods
+        public void ProjectChanged(Project oldProject, Project newProject)
+        {
+            ProjectUserChange(oldProject, newProject);
+
+        }
         public void NewProjectCreated(Project project)
         {
             var userId = HttpContext.Current.User.Identity.GetUserId();
@@ -120,5 +174,6 @@ namespace BugTracker.Helpers
             db.SaveChanges();
 
         }
+        #endregion
     }
 }

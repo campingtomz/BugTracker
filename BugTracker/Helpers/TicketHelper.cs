@@ -12,6 +12,10 @@ namespace BugTracker.Helpers
         private ApplicationDbContext db = new ApplicationDbContext();
         private UserRoleHelper userRoleHelper = new UserRoleHelper();
         private ProjectHelper projectHelper = new ProjectHelper();
+        private HistoryHelper historyHelper = new HistoryHelper();
+        private NotificationHelper notificationHelper = new NotificationHelper();
+
+        #region ticket Permission methods
         public bool CanEditTicket(int ticketId)
         {
             var userId = HttpContext.Current.User.Identity.GetUserId();
@@ -36,6 +40,20 @@ namespace BugTracker.Helpers
                     }
 
                 default:
+                    return false;
+            }
+        }
+        public bool CanCreateTicket()
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            var myRole = userRoleHelper.ListUserRoles(userId).FirstOrDefault();
+
+            switch (myRole)
+            {
+                case "Admin":
+                case "Submitter":
+                    return true;
+               default:
                     return false;
             }
         }
@@ -136,6 +154,7 @@ namespace BugTracker.Helpers
                     return false;
             }
         }
+        #endregion
         //public bool CanRemoveAttachment() { }
         public List<Ticket> ListUserTicketsOnProject(string userId, int projectId){
             var project = db.Projects.Find(projectId);
@@ -226,22 +245,28 @@ namespace BugTracker.Helpers
             return ticketTypes;
         }
 
-
-        public void ManageTicketNotifications(Ticket oldTicket, Ticket newTicket)
+        #region tickethistory and notifications
+        public void TicketEdit(Ticket oldTicket, Ticket newTicket)
         {
-            if(oldTicket.DeveloperId != newTicket.DeveloperId && newTicket.DeveloperId != null)
-            {
-                var newNotification = new TicketNotification()
-                {
-                    TicketId = newTicket.Id,
-                    UserId = newTicket.DeveloperId,
-                    Created = DateTime.Now,
-                    Subject =$"New Assignment to Ticket Id: {newTicket.Id}",
-                    Message= $"Hello, {newTicket.Developer.FullName} you have been assigned to Ticket: {newTicket.Issue} on Project {newTicket.project.Name}"
-                };
-                db.TicketNotifications.Add(newNotification);
-                db.SaveChanges();
-            }
+            historyHelper.TicketHistoryEdit(oldTicket, newTicket);
+            notificationHelper.TicketChangeNotification(oldTicket, newTicket);
         }
+        #endregion
+        //public void ManageTicketNotifications(Ticket oldTicket, Ticket newTicket)
+        //{
+        //    if(oldTicket.DeveloperId != newTicket.DeveloperId && newTicket.DeveloperId != null)
+        //    {
+        //        var newNotification = new TicketNotification()
+        //        {
+        //            TicketId = newTicket.Id,
+        //            UserId = newTicket.DeveloperId,
+        //            Created = DateTime.Now,
+        //            Subject =$"New Assignment to Ticket Id: {newTicket.Id}",
+        //            Message= $"Hello, {newTicket.Developer.FullName} you have been assigned to Ticket: {newTicket.Issue} on Project {newTicket.project.Name}"
+        //        };
+        //        db.TicketNotifications.Add(newNotification);
+        //        db.SaveChanges();
+        //    }
+        //}
     }
 } 

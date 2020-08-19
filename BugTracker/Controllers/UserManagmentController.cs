@@ -29,10 +29,14 @@ namespace BugTracker.Controllers
         public ActionResult Index()
         {
             var userId = User.Identity.GetUserId();
-            var model = db.Users.ToList();
-            if (!roleHelper.IsUserInRole(userId, "Admin"))
+            var model = new List<ApplicationUser>();
+            if (!User.IsInRole("Admin"))
             {
-                model = projectHelper.ListUsesOnMyProjects(userId);
+                 model = projectHelper.ListUsesOnMyProjects(userId);
+            }
+            else
+            {
+                 model = db.Users.ToList();
             }
             return View(model);
         }
@@ -78,6 +82,7 @@ namespace BugTracker.Controllers
         public ActionResult ManageUser(ManageUserVM userVM, string roleName)
         {
             var user = db.Users.Find(userVM.UserId);
+            user.Email = userVM.Email;
             user.UserName = userVM.Email;
             user.FirstName = userVM.FirstName;
             user.LastName = userVM.LastName;

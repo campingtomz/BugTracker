@@ -32,7 +32,7 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TicketAttachments ticketAttachments = db.TicketAttachments.Find(id);
+            TicketAttachment ticketAttachments = db.TicketAttachments.Find(id);
             if (ticketAttachments == null)
             {
                 return HttpNotFound();
@@ -53,7 +53,7 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult UploadFileToTicket([Bind(Include = "TicketId,FileName")] TicketAttachments ticketAttachments, string AttachmentDescription, HttpPostedFileBase file)
+        public ActionResult UploadFileToTicket([Bind(Include = "TicketId,FileName")] TicketAttachment ticketAttachments, string AttachmentDescription, HttpPostedFileBase file)
         {
             if (file == null)
             {
@@ -95,7 +95,7 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TicketAttachments ticketAttachments = db.TicketAttachments.Find(id);
+            TicketAttachment ticketAttachments = db.TicketAttachments.Find(id);
             if (ticketAttachments == null)
             {
                 return HttpNotFound();
@@ -110,7 +110,7 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,TicketId,UserId,FilePath,Description,Created")] TicketAttachments ticketAttachments)
+        public ActionResult Edit([Bind(Include = "Id,TicketId,UserId,FilePath,Description,Created")] TicketAttachment ticketAttachments)
         {
             if (ModelState.IsValid)
             {
@@ -130,7 +130,7 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TicketAttachments ticketAttachments = db.TicketAttachments.Find(id);
+            TicketAttachment ticketAttachments = db.TicketAttachments.Find(id);
             if (ticketAttachments == null)
             {
                 return HttpNotFound();
@@ -143,7 +143,7 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            TicketAttachments ticketAttachments = db.TicketAttachments.Find(id);
+            TicketAttachment ticketAttachments = db.TicketAttachments.Find(id);
             db.TicketAttachments.Remove(ticketAttachments);
             db.SaveChanges();
             return RedirectToAction("Index");

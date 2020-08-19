@@ -8,7 +8,7 @@
 @{ var projectHelper = new ProjectHelper(); }
 @{ var user = userHelper.getUser(User.Identity.GetUserId());
     var ticketHelper = new TicketHelper();
-    }
+}
 
 
 
@@ -31,8 +31,8 @@
                             <h4><a href="@Url.Action("Index", "Projects", new { userid = user.Id })"><i class="mdi mdi-book-open-page-variant">  Projects</i></a></h4>
                         </div>
                         <div class="row text-center justify-content-md-center">
-                        <h4><a href="@Url.Action("Index", "Tickets", new { userid = user.Id })"><i class="mdi mdi-book-open-page-variant">  Tickets</i></a></h4>
-                            </div>
+                            <h4><a href="@Url.Action("Index", "Tickets", new { userid = user.Id })"><i class="mdi mdi-book-open-page-variant">  Tickets</i></a></h4>
+                        </div>
                     </center>
                 </div>
                 <div>
@@ -45,6 +45,7 @@
                     <button class="btn btn-circle btn-secondary"><i class="fa fa-facebook"></i></button>
                     <button class="btn btn-circle btn-secondary"><i class="fa fa-twitter"></i></button>
                     <button class="btn btn-circle btn-secondary"><i class="fa fa-youtube"></i></button>
+
                 </div>
             </div>
         </div>
@@ -58,6 +59,8 @@
                     <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#profile" role="tab">Profile</a> </li>
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Projects" role="tab">Projects</a> </li>
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Tickets" role="tab">Tickets</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Notifications" role="tab">Notifications</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#histories" role="tab">User Logs</a> </li>
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Settings" role="tab">Settings</a> </li>
 
                 </ul>
@@ -92,86 +95,183 @@
                     <div class="tab-pane " id="Projects" role="tabpanel">
                         <div class="card-body">
                             <div class="row">
-                                <div class="table-responsive m-t-40">
-                                    <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th>Project Name</th>
-                                                <th>Project Manager</th>
-                                                <th>Project Created Date</th>
-                                                <th>Project Due Date</th>
-                                                <th>Number Of Tickets</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var project in user.Projects)
-                                            {
-                                            <tr>
-                                                <td><a href="@Url.Action("Details", "Projects", new { id = project.Id })"> @project.Name</a></td>
-                                               
-                                                <td>
-                                                    @{var projectManager = projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager"); }
-                                                    @if (projectManager != null)
-                                                    {
-                                                        @Html.Label(projectManager.FirstOrDefault().FullName) }
-                                                    else
-                                                    {
-                                                        <span>No Project Manager Assigned</span>
-                                                    }
-                                                </td>
-                                                <td>@Html.Label(project.Created.ToString("MMM dd yyyy"))</td>
-                                                <td>@Html.Label(project.DueDate.ToString("MMM dd yyyy"))</td>
-                                                <td>@project.Tickets.Count</td>
-                                            </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
+                                @if (user.Projects.Count > 0)
+                                {
+                                    <div class="table-responsive m-t-40">
+                                        <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Project Name</th>
+                                                    <th>Project Manager</th>
+                                                    <th>Project Created Date</th>
+                                                    <th>Project Due Date</th>
+                                                    <th>Number Of Tickets</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var project in user.Projects)
+                                                {
+                                                    <tr>
+                                                        <td><a href="@Url.Action("Details", "Projects", new { id = project.Id })"> @project.Name</a></td>
+
+                                                        <td>
+                                                            @{var projectManager = projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager"); }
+                                                            @if (projectManager != null)
+                                                            {
+                                                                @Html.Label(projectManager.FirstOrDefault().FullName) }
+                                                            else
+                                                            {
+                                                                <span>No Project Manager Assigned</span>
+                                                            }
+                                                        </td>
+                                                        <td>@Html.Label(project.Created.ToString("MMM dd yyyy"))</td>
+                                                        <td>@Html.Label(project.DueDate.ToString("MMM dd yyyy"))</td>
+                                                        <td>@project.Tickets.Count</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                                else
+                                { <h4 class="card-title">No Projecst are assigned to this user</h4>}
                             </div>
                         </div>
                     </div>
+
                     <div class="tab-pane " id="Tickets" role="tabpanel">
                         <div class="card-body">
                             <div class="row">
-                                <div class="table-responsive m-t-40">
-                                    <table  class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th>Ticket Id</th>
-                                                <th>Project Manager</th>
-                                                <th>Ticket Priority</th>
-                                                <th>Ticket Status</th>
-                                                <th>Ticket Type</th>
-                                                <th>Submitter</th>
-                                                <th>Developer</th>
-                                                <th>Issue</th>                                                                                        
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var ticket in ticketHelper.GetMyTickets())
-                                            {
-                                            <tr>
-                                                <td><a href="@Url.Action("Dashboard", "Tickets", new { id = ticket.Id })"> @ticket.Id</a></td>                                         
-                                                <td>@Html.DisplayName(projectHelper.ListUserOnProjectInRole(ticket.ProjectId, "ProjectManager").FirstOrDefault().FullName)</td>
-                                                <td>@Html.DisplayName(ticket.TicketPriority.Name)</td>
-                                                <td>@Html.DisplayName(ticket.TicketStatus.Name)</td>
-                                                <td>@Html.DisplayName(ticket.TicketType.Name)</td>
-                                                <td>@Html.DisplayName(ticket.Submitter.FullName)</td>
-                                                @if (ticket.Developer != null)
+                                @if (ticketHelper.GetMyTickets().Count > 0)
+                                {
+                                    <div class="table-responsive m-t-40">
+                                        <table class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Ticket Id</th>
+                                                    <th>Project Manager</th>
+                                                    <th>Ticket Priority</th>
+                                                    <th>Ticket Status</th>
+                                                    <th>Ticket Type</th>
+                                                    <th>Submitter</th>
+                                                    <th>Developer</th>
+                                                    <th>Issue</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var ticket in ticketHelper.GetMyTickets())
                                                 {
-                                                    <td>@Html.DisplayName(ticket.Developer.FullName)</td>
+                                                    <tr>
+                                                        <td><a href="@Url.Action("Dashboard", "Tickets", new { id = ticket.Id })"> @ticket.Id</a></td>
+                                                        <td>@Html.DisplayName(projectHelper.ListUserOnProjectInRole(ticket.ProjectId, "ProjectManager").FirstOrDefault().FullName)</td>
+                                                        <td>@Html.DisplayName(ticket.TicketPriority.Name)</td>
+                                                        <td>@Html.DisplayName(ticket.TicketStatus.Name)</td>
+                                                        <td>@Html.DisplayName(ticket.TicketType.Name)</td>
+                                                        <td>@Html.DisplayName(ticket.Submitter.FullName)</td>
+                                                        @if (ticket.Developer != null)
+                                                        {
+                                                            <td>@Html.DisplayName(ticket.Developer.FullName)</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>No User assinged to Developer</td>
+                                                        }
+                                                        <td>@Html.DisplayName(ticket.Issue)</td>
+                                                    </tr>
                                                 }
-                                                else
-                                                {
-                                                    <td>No User assinged to Developer</td>
-                                                }
-                                                <td>@Html.DisplayName(ticket.Issue)</td>                                           
-                                            </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                                else
+                                { <h4 class="card-title">No Tickets are assigned to this user</h4>}
                             </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane " id="Notifiations" role="tabpanel">
+                        <div class="card-body">
+                            <div class="row">
+                                @if (user.Notifications.Count > 0)
+                                {
+                                    <div class="table-responsive m-t-40">
+                                        <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Project Name</th>
+                                                    <th>Project Manager</th>
+                                                    <th>Project Created Date</th>
+                                                    <th>Project Due Date</th>
+                                                    <th>Number Of Tickets</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var Notifications in user.Notifications)
+                                                {
+                                                    @*<tr>
+                                                            <td><a href="@Url.Action("Details", "Projects", new { id = Notifications.Id })"> @Notifications.Name</a></td>
+
+                                                            <td>
+                                                                @{var projectManager = projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager"); }
+                                                                @if (projectManager != null)
+                                                                {
+                                                                    @Html.Label(projectManager.FirstOrDefault().FullName) }
+                                                                else
+                                                                {
+                                                                    <span>No Project Manager Assigned</span>
+                                                                }
+                                                            </td>
+                                                            <td>@Html.Label(project.Created.ToString("MMM dd yyyy"))</td>
+                                                            <td>@Html.Label(project.DueDate.ToString("MMM dd yyyy"))</td>
+                                                            <td>@project.Tickets.Count</td>
+                                                        </tr>*@
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                                else
+                                { <h4 class="card-title">No Projecst are assigned to this user</h4>}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane tabcontent-border" id="histories" role="tabpanel">
+                        <div class="card-body">
+                            @if (user.Histories.Count > 0)
+                            {
+                                <div class="row ">
+                                    <div class="col-12">
+                                        <div class=" form-group">
+                                            <div class="table-responsive">
+                                                <table class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>User</th>
+                                                            <th>Property</th>
+                                                            <th>Old Value</th>
+                                                            <th>New Value</th>
+                                                            <th>Changed On</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var history in user.Histories.ToList())
+                                                        {
+                                                            <tr>
+                                                                <th>@history.User.FullName</th>
+                                                                <th>@history.Property</th>
+                                                                <th>@history.OldValue</th>
+                                                                <th>@history.NewValue</th>
+                                                                <th>@history.ChangedOn.ToString("MMM dd yyyy")</th>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            { <h4 class="card-title">No Logs for this Ticket</h4>}
                         </div>
                     </div>
                     <div class="tab-pane " id="Settings" role="tabpanel">

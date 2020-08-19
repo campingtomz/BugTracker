@@ -5,7 +5,7 @@ using System.Web;
 
 namespace BugTracker.Models
 {
-    public class TicketAttachments
+    public class TicketAttachment
     {
         public int Id { get; set; }
         #region Parents/Children

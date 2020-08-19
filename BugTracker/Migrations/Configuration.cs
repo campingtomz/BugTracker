@@ -16,7 +16,18 @@ namespace BugTracker.Migrations
         {
             AutomaticMigrationsEnabled = true;
         }
-
+        private Tuple<string, string> generateRandomName()
+        {
+            var firstNames = new List<string>() { "Brandon", "Andrew", "Jason", "Glen", "Peter", "Wade", "Richard", "Jackson", "Adam", "Khoa", "Douglas", "Angelica", "Beth", "Jaylin", "Jeremy", "Kayla", "Kodi", "Thomas" };
+            var lastNames = new List<string>() { "Russell", "Gallagher", "Velez", "Nguyen", "Olmo", "Swaney", "Dolteren", "Campbell", "Stewart", "Cooper", "Twichell", "Dennis", "McGraw", "Kane", "Gutherie", "Cranford", "Zanis" };
+            var rand = new Random();
+            return Tuple.Create(firstNames[rand.Next(firstNames.Count)], lastNames[rand.Next(lastNames.Count)]);
+        }
+        private string RandomPhoneNumber()
+        {
+            var rand = new Random();
+            return $"({rand.Next(100, 1000)})-{rand.Next(100, 1000)}-{rand.Next(1000, 10000)}";
+        }
         protected override void Seed(BugTracker.Models.ApplicationDbContext context)
         {
             UserRoleHelper roleHelper = new UserRoleHelper();
@@ -154,50 +165,107 @@ namespace BugTracker.Migrations
                     FirstName = "Thomas",
                     LastName = "Zanis",
                     AvatarPath = "/Images/Default_Avatar.png",
-                    PhoneNumber = "(111)111-1111"
+                    PhoneNumber = RandomPhoneNumber(),
+                    Description = "Administrator of the Site"
 
 
                 },
                 "Tobeornot123!");
-
-
             }
             userId = userManager.FindByEmail("thomas.j.zanis@gmail.com").Id;
             userManager.AddToRole(userId, "Admin");
 
-            if (!context.Users.Any(u => u.Email == "moderator@coderfoundry.com"))
+
+            if (!context.Users.Any(u => u.Email == "DemoAdmin@mailinator.com"))
             {
                 userManager.Create(new ApplicationUser()
                 {
-                    Email = "moderator@coderfoundry.com",
-                    UserName = "moderator@coderfoundry.com",
-                    FirstName = "moderator",
+                    Email = "DemoAdmin@mailinator.com",
+                    UserName = "DemoAdmin@mailinator.com",
+                    FirstName = "Admin",
+                    LastName = "Demo",
                     AvatarPath = "/Images/Default_Avatar.png",
-                    PhoneNumber = "(111)111-1111"
+                    PhoneNumber = RandomPhoneNumber(),
+                    Description = "Demo Administrator of the Site"
+                },
+                "Dmrss6HDRwd");
+            }
+            userId = userManager.FindByEmail("DemoAdmin@mailinator.com").Id;
+            userManager.AddToRole(userId, "Admin");
+
+
+            if (!context.Users.Any(u => u.Email == "DemoSubmitter@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser()
+                {
+                    Email = "DemoSubmitter@mailinator.com",
+                    UserName = "DemoSubmitter@mailinator.com",
+                    FirstName = "Submitter",
+                    LastName = "Demo",
+                    AvatarPath = "/Images/Default_Avatar.png",
+                    PhoneNumber = RandomPhoneNumber(),
+                    Description = "Demo Submitter of the Site"
 
 
                 },
-                "123456Abc$");
-
-
+                "Dmrss6HDRwd");
             }
-            userId = userManager.FindByEmail("moderator@coderfoundry.com").Id;
-            userManager.AddToRole(userId, "Moderator");
+            userId = userManager.FindByEmail("DemoSubmitter@mailinator.com").Id;
+            userManager.AddToRole(userId, "Submitter");
+
+
+            if (!context.Users.Any(u => u.Email == "DemoProjectManager@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser()
+                {
+                    Email = "DemoProjectManager@mailinator.com",
+                    UserName = "DemoProjectManager@mailinator.com",
+                    FirstName = "ProjectManager",
+                    LastName = "Demo",
+                    AvatarPath = "/Images/Default_Avatar.png",
+                    PhoneNumber = RandomPhoneNumber(),
+                    Description = "Demo ProjectManager of the Site"
+                },
+                "Dmrss6HDRwd");
+            }
+            userId = userManager.FindByEmail("DemoProjectManager@mailinator.com").Id;
+            userManager.AddToRole(userId, "ProjectManager");
+
+
+            if (!context.Users.Any(u => u.Email == "DemoDeveloper@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser()
+                {
+                    Email = "DemoDeveloper@mailinator.com",
+                    UserName = "DemoDeveloper@mailinator.com",
+                    FirstName = "Developer",
+                    LastName = "Demo",
+                    AvatarPath = "/Images/Default_Avatar.png",
+                    PhoneNumber = RandomPhoneNumber(),
+                    Description = "Demo Developer of the Site"
+
+
+                },
+                "Dmrss6HDRwd");
+            }
+            userId = userManager.FindByEmail("DemoDeveloper@mailinator.com").Id;
+            userManager.AddToRole(userId, "Developer");
 
 
             for (int i = 0; i < 10; i++)
             {
-                var emailCurr = $"bugtrackerdev{i}@mailinator.com";
+                var name = generateRandomName();
+                var emailCurr = $"{name.Item1}{name.Item2}@mailinator.com";
                 if (!context.Users.Any(u => u.Email == emailCurr))
                 {
                     userManager.Create(new ApplicationUser()
                     {
-                        Email = $"bugtrackerdev{i}@mailinator.com",
-                        UserName = $"bugtrackerdev{i}@mailinator.com",
-                        FirstName = $"dev{i}",
-                        LastName = "dev",
+                        Email = emailCurr,
+                        UserName = emailCurr,
+                        FirstName = $"{name.Item1}",
+                        LastName = $"{name.Item2}",
                         AvatarPath = "/Images/Default_Avatar.png",
-                        PhoneNumber = "(111)111-1111"
+                        PhoneNumber = RandomPhoneNumber()
 
                     },
                     "123456Abc$");
@@ -210,17 +278,18 @@ namespace BugTracker.Migrations
 
             for (int i = 0; i < 10; i++)
             {
-                var emailCurr = $"bugtrackerpm{i}@mailinator.com";
+                var name = generateRandomName();
+                var emailCurr = $"{name.Item1}{name.Item2}@mailinator.com";
                 if (!context.Users.Any(u => u.Email == emailCurr))
                 {
                     userManager.Create(new ApplicationUser()
                     {
-                        Email = $"bugtrackerpm{i}@mailinator.com",
-                        UserName = $"bugtrackerpm{i}@mailinator.com",
-                        FirstName = $"pm{i}",
-                        LastName = "pm",
+                        Email = emailCurr,
+                        UserName = emailCurr,
+                        FirstName = $"{name.Item1}",
+                        LastName = $"{name.Item2}",
                         AvatarPath = "/Images/Default_Avatar.png",
-                        PhoneNumber = "(111)111-1111"
+                        PhoneNumber = RandomPhoneNumber()
 
                     },
                     "123456Abc$");
@@ -233,17 +302,18 @@ namespace BugTracker.Migrations
 
             for (int i = 0; i < 10; i++)
             {
-                var emailCurr = $"bugtrackersub{i}@mailinator.com";
+                var name = generateRandomName();
+                var emailCurr = $"{name.Item1}{name.Item2}@mailinator.com";
                 if (!context.Users.Any(u => u.Email == emailCurr))
                 {
                     userManager.Create(new ApplicationUser()
                     {
-                        Email = $"bugtrackersub{i}@mailinator.com",
-                        UserName = $"bugtrackersub{i}@mailinator.com",
-                        FirstName = $"sub{i}",
-                        LastName = "sub",
+                        Email = emailCurr,
+                        UserName = emailCurr,
+                        FirstName = $"{name.Item1}",
+                        LastName = $"{name.Item2}",
                         AvatarPath = "/Images/Default_Avatar.png",
-                        PhoneNumber = "(111)111-1111"
+                        PhoneNumber = RandomPhoneNumber()
 
                     },
                     "123456Abc$");
@@ -257,41 +327,39 @@ namespace BugTracker.Migrations
             context.SaveChanges();
             #region add connection sessions
             var user1 = userManager.Users.ToList().Where(u => u.Email == "thomas.j.zanis@gmail.com").FirstOrDefault();
-            for (int i = 0; i < 10; i++)
-            {
-                Connection seedConnection = new Connection();
-                
-                var user2 = userManager.Users.ToList().Where(u => u.Email == $"bugtrackerpm{i}@mailinator.com").FirstOrDefault();
-               
+            var user2 = userManager.Users.ToList().Where(u => u.Email == "DemoDeveloper@mailinator.com").FirstOrDefault();
+
+
+            Connection seedConnection = new Connection();
                 seedConnection.Users.Add(user1);
                 seedConnection.Users.Add(user2);
                 seedConnection.isArchived = false;
                 seedConnection.Created = DateTime.Now;
                 context.Connections.Add(seedConnection);
 
-            }
+            
             #endregion
             context.SaveChanges();
             #region add Messages to Chat
             foreach (var connection in user1.Connections)
             {
-                var user2 = connection.Users.Where(u => u.Id != user1.Id).FirstOrDefault();
+
                 for (int j = 0; j < 10; j++)
                 {
                     Message message = new Message();
                     message.Created = DateTime.Now;
                     message.ConnectionId = connection.Id;
-                    if(j%2 == 0)
+                    if (j % 2 == 0)
                     {
                         message.SenderId = user1.Id;
                         message.Content = $"{user1.FullName} this is test {j}";
                     }
                     else
                     {
-                        {
-                            message.SenderId = user2.Id;
-                            message.Content = $"{user2.FullName} this is test {j}";
-                        }
+
+                        message.SenderId = user2.Id;
+                        message.Content = $"{user2.FullName} this is test {j}";
+
                     }
                     context.Messages.Add(message);
                 }
@@ -314,9 +382,8 @@ namespace BugTracker.Migrations
                     projectHelper.AddUserToProject(Submitters[randSub].Id, project.Id);
                 }
             }
-
-            context.SaveChanges();
-            #endregion
+#endregion
+            context.SaveChanges();   
             #region seed tickets 10 tickets/project
             List<TicketPriority> ticketPriorities = ticketHelper.ListTicketProities();
             List<TicketType> ticketTypes = ticketHelper.ListTicketTypes();
@@ -338,7 +405,7 @@ namespace BugTracker.Migrations
 
                     seedTicket.TicketStatusId = StatusId;
                     seedTicket.TicketPriorityId = ticketPriorities[rand.Next(ticketPriorities.Count)].Id;
-                    seedTicket.TicketTypeId = ticketTypes[rand.Next(ticketTypes.Count)].Id; 
+                    seedTicket.TicketTypeId = ticketTypes[rand.Next(ticketTypes.Count)].Id;
                     seedTicket.Created = DateTime.Now;
                     seedTicket.Issue = $"There is an issue with {project.Name}";
                     seedTicket.IsArchived = false;
@@ -347,13 +414,10 @@ namespace BugTracker.Migrations
                     context.Tickets.Add(seedTicket);
                 }
             }
-            context.SaveChanges();
+            
             #endregion
-            //  This method will be called after migrating to the latest version.
-
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data.
-
+            context.SaveChanges();
+            
 
         }
     }

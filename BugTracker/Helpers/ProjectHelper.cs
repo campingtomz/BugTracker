@@ -1,4 +1,5 @@
 ﻿using BugTracker.Models;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,48 @@ namespace BugTracker.Helpers
         //new access to the database 
         private ApplicationDbContext db = new ApplicationDbContext();
         private UserRoleHelper userRoleHelper = new UserRoleHelper();
-        
+        public bool CanCreateProject()
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            var myRole = userRoleHelper.ListUserRoles(userId).FirstOrDefault();
+
+            switch (myRole)
+            {
+                case "Admin":
+                case "ProjectManager":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        public bool CanEditProject()
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            var myRole = userRoleHelper.ListUserRoles(userId).FirstOrDefault();
+
+            switch (myRole)
+            {
+                case "Admin":
+                case "ProjectManager":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        public bool CanViewAllProjects()
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            var myRole = userRoleHelper.ListUserRoles(userId).FirstOrDefault();
+
+            switch (myRole)
+            {
+                case "Admin":
+                case "ProjectManager":
+                    return true;
+                default:
+                    return false;
+            }
+        }
         public void AddUserToProject(string userId, int projectId)
         {
             if (!isUserOnProject(userId, projectId))
@@ -53,7 +95,6 @@ namespace BugTracker.Helpers
             resultList.AddRange(project.Users);
             return resultList;
         }
-
         public List<ApplicationUser> ListUsersNotOnProject(int projectId)
         {
             var resultList = new List<ApplicationUser>();
@@ -76,12 +117,9 @@ namespace BugTracker.Helpers
         public List<ApplicationUser> ListUsesOnMyProjects(string userId)
         {
             List<ApplicationUser> userList = new List<ApplicationUser>();
-            foreach(var project in ListUserProjects(userId)){
-                userList.AddRange(ListUsersOnProject(project.Id));
-            }
-            return userList.OrderByDescending(u => u.Email).ToList();
-
-
+            var user = db.Users.Find(userId);
+            return user.Projects.SelectMany(p => p.Users).Distinct().OrderByDescending(p=>p.Email).ToList();
+            
         }
         public List<ApplicationUser> ListUserOnProjectInRole(int projectId, string roleName)
         {

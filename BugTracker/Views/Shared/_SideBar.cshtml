@@ -2,7 +2,10 @@
 @using Microsoft.AspNet.Identity
 @using BugTracker.Helpers;
 @{ var userHelper = new UserHelper(); }
-@{ var roleHelper = new UserRoleHelper(); }
+@{ var roleHelper = new UserRoleHelper();
+    var ticketHelper = new TicketHelper();
+    var projectHelper = new ProjectHelper();
+    }
 
 @if (Request.IsAuthenticated)
 {
@@ -39,9 +42,9 @@
                         <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-folder-multiple-outline"></i><span class="hide-menu">Projects</span></a>
                         <ul aria-expanded="false" class="collapse">
                             <li>
-                                <a href="@Url.Action("Index", "Projects", new { userid = user.Id })"><i class="mdi mdi-book-open-page-variant"> Manage Projects</i></a>
+                                <a href="@Url.Action("Index", "Projects")"><i class="mdi mdi-book-open-page-variant"> Manage Projects</i></a>
                             </li>
-                            @if (User.IsInRole("Admin"))
+                            @if (projectHelper.CanCreateProject())
                             {
                                 <li>
                                     <a href="@Url.Action("ProjectWizard", "Projects")"><i class="mdi mdi-folder-plus"> Create New Project</i></a>
@@ -53,7 +56,7 @@
                         <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-account-circle"></i><span class="hide-menu">User Managment</span></a>
                         <ul aria-expanded="false" class="collapse">
                             <li>
-                                <a href="@Url.Action("ViewAllUsers", "UserManagment", new { userid = user.Id })"><i class="mdi mdi-account-multiple"> All Users</i></a>
+                                <a href="@Url.Action("ViewAllUsers", "UserManagment")"><i class="mdi mdi-account-multiple"> All Users</i></a>
                             </li>
                             @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
                             {
@@ -64,7 +67,7 @@
                                     </li>
                                 }
                                 <li>
-                                    <a href="@Url.Action("Index", "UserManagment", new { userid = user.Id })"><i class="mdi mdi-account-multiple"> Manage Users</i></a>
+                                    <a href="@Url.Action("Index", "UserManagment")"><i class="mdi mdi-account-multiple"> Manage Users</i></a>
 
                                 </li>
                             }
@@ -75,16 +78,16 @@
                         <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-ticket"></i><span class="hide-menu">Ticket Managment</span></a>
                         <ul aria-expanded="false" class="collapse">
                             <li>
-                                <a href="@Url.Action("Index", "Tickets", new { userid = user.Id })"><i class="mdi mdi-ticket-confirmation"> Manage Tickets</i></a>
+                                <a href="@Url.Action("Index", "Tickets")"><i class="mdi mdi-ticket-confirmation"> Manage Tickets</i></a>
                             </li>
-                            @if (User.IsInRole("Submitter") || User.IsInRole("Admin"))
+                            @if (ticketHelper.CanCreateTicket())
                             {
                                 <li>
                                     <a href="@Url.Action("Create", "Tickets")"><i class="mdi mdi-ticket-account"> Create New Ticket</i></a>
                                 </li>
                             }
                             <li>
-                                <a href="@Url.Action("Index", "Tickets", new { userid = user.Id })"><i class="mdi mdi-ticket-confirmation"> View Comments</i></a>
+                                <a href="@Url.Action("Index", "Tickets")"><i class="mdi mdi-ticket-confirmation"> View Comments</i></a>
                             </li>
 
                         </ul>

@@ -98,6 +98,24 @@ namespace BugTracker.Controllers
                     return View(model);
             }
         }
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DemoLoginAsync(string emailKey, string returnUrl)
+        {
+            var email = WebConfigurationManager.AppSettings[emailKey];
+            var password = WebConfigurationManager.AppSettings["DP"];
+            var result = await SignInManager.PasswordSignInAsync(email, password, false, shouldLockout: false);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    return RedirectToLocal(returnUrl);
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError("", "Invalid Login Attempt.");
+                    return View();
+            }
+        }
 
         //
         // GET: /Account/VerifyCode
@@ -263,7 +281,7 @@ namespace BugTracker.Controllers
                 var result = await UserManager.CreateAsync(user, Membership.GeneratePassword(12, 1));
                 if (result.Succeeded)
                 {
-                    
+
                     roleHelper.AddUserToRole(user.Id, RoleName);
 
                     foreach (var projectId in AllProjects)
@@ -271,7 +289,7 @@ namespace BugTracker.Controllers
                         projectHelper.AddUserToProject(user.Id, projectId);
                     }
 
-                    
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);

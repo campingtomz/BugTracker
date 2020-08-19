@@ -19,6 +19,8 @@
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#ProjectInfo" role="tab">Project Info</a> </li>
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#TicketAttachments" role="tab">Ticket Attachments</a> </li>
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Comments" role="tab">Comments</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#histories" role="tab">Ticket Log</a> </li>
+
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
@@ -37,136 +39,135 @@
                                 @Html.HiddenFor(model => model.TicketStatusId)
                                 @Html.HiddenFor(model => model.DeveloperId)
                             }
-                        <div class="card-body">
-                            <div class="row p-t-20">
-                                <div class="col-md-6">
-                                    <div class="form-group ">
-                                        <label class="control-label ">Ticket Issue:</label>
-                                        @if (ticketHelper.CanEditTicket(Model.Id))
-                                        {
-                                            @Html.TextBoxFor(model => model.Issue, new { @class = "form-control" })
-                                            @Html.ValidationMessageFor(model => model.Issue, "", new { @class = "text-danger" })
-                                        }
-                                        else
-                                        {
-                                            <p class="form-control-static">@Html.DisplayFor(model => model.Issue)</p>
-                                        }
+                            <div class="card-body">
+                                <div class="row p-t-20">
+                                    <div class="col-md-6">
+                                        <div class="form-group ">
+                                            <label class="control-label ">Ticket Issue:</label>
+                                            @if (ticketHelper.CanEditTicket(Model.Id))
+                                            {
+                                                @Html.TextBoxFor(model => model.Issue, new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.Issue, "", new { @class = "text-danger" })
+                                            }
+                                            else
+                                            {
+                                                <p class="form-control-static">@Html.DisplayFor(model => model.Issue)</p>
+                                            }
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group ">
-                                        <label class="control-label ">Ticket Discription:</label>
-                                        @if (ticketHelper.CanEditTicket(Model.Id))
-                                        {
-                                            @Html.TextAreaFor(model => model.IssueDiscription, new { @class = "form-control", @rows = "5" })
-                                            @Html.ValidationMessageFor(model => model.IssueDiscription, "", new { @class = "text-danger" })
-                                        }
-                                        else
-                                        {
-                                            @Html.DisplayFor(model => model.IssueDiscription, new { htmlAttributes = new { @class = "form-control" } })
+                                    <div class="col-md-6">
+                                        <div class="form-group ">
+                                            <label class="control-label ">Ticket Discription:</label>
+                                            @if (ticketHelper.CanEditTicket(Model.Id))
+                                            {
+                                                @Html.TextAreaFor(model => model.IssueDiscription, new { @class = "form-control", @rows = "5" })
+                                                @Html.ValidationMessageFor(model => model.IssueDiscription, "", new { @class = "text-danger" })
+                                            }
+                                            else
+                                            {
+                                                @Html.DisplayFor(model => model.IssueDiscription, new { htmlAttributes = new { @class = "form-control" } })
 
-                                        }
+                                            }
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row p-t-20">
-                                <div class="col-md-6">
-                                    <div class="form-group ">
-                                        <label class="control-label">Ticket Submitter :</label>
-                                        <p class="form-control-static"> @Html.DisplayFor(model => model.Submitter.FullName)  </p>
+                                <div class="row p-t-20">
+                                    <div class="col-md-6">
+                                        <div class="form-group ">
+                                            <label class="control-label">Ticket Submitter :</label>
+                                            <p class="form-control-static"> @Html.DisplayFor(model => model.Submitter.FullName)  </p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group ">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <label class="control-label">Ticket Developer :</label>
-                                                @if (ticketHelper.CanEditTicketDev(Model.Id))
-                                                {
-                                                    <label class="control-label">Edit Developer :</label>
-                                                    @Html.DropDownList("DeveloperId", null, new { @class = "form-control" })
-                                                    @Html.ValidationMessageFor(model => model.DeveloperId, "", new { @class = "text-danger" })
-                                                }
-                                                else
-                                                {
-                                                    <p class="form-control-static">@Html.DisplayFor(model => model.Developer.FullName)  </p>
-                                                }
+                                    <div class="col-md-6">
+                                        <div class="form-group ">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label class="control-label">Ticket Developer :</label>
+                                                    @if (ticketHelper.CanEditTicketDev(Model.Id))
+                                                    {
+                                                        @Html.DropDownList("DeveloperId", null, new { @class = "form-control" })
+                                                        @Html.ValidationMessageFor(model => model.DeveloperId, "", new { @class = "text-danger" })
+                                                    }
+                                                    else
+                                                    {
+                                                        <p class="form-control-static">@Html.DisplayFor(model => model.Developer.FullName)  </p>
+                                                    }
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <hr />
+                                <hr />
 
-                            <div class="row p-t-20">
-                                <div class="col-md-6">
-                                    <div class="form-group ">
-                                        <label class="control-label ">Ticket Type:</label>
-                                        @if (ticketHelper.CanEditTicket(Model.Id))
-                                        {
-                                            @Html.DropDownList("TicketTypeId", null, new { @class = "form-control" })
-                                            @Html.ValidationMessageFor(model => model.TicketTypeId, "", new { @class = "text-danger" })
-                                        }
-                                        else
-                                        {
-                                            <p class="form-control-static">  @Html.DisplayFor(model => model.TicketType.Name) </p>
-                                        }
+                                <div class="row p-t-20">
+                                    <div class="col-md-6">
+                                        <div class="form-group ">
+                                            <label class="control-label ">Ticket Type:</label>
+                                            @if (ticketHelper.CanEditTicket(Model.Id))
+                                            {
+                                                @Html.DropDownList("TicketTypeId", null, new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.TicketTypeId, "", new { @class = "text-danger" })
+                                            }
+                                            else
+                                            {
+                                                <p class="form-control-static">  @Html.DisplayFor(model => model.TicketType.Name) </p>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group ">
+                                            <label class="control-label">Created Date:</label>
+                                            <p class="form-control-static"> @Model.Created.ToString("MMM dd yyyy") </p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group ">
-                                        <label class="control-label">Created Date:</label>
-                                        <p class="form-control-static"> @Model.Created.ToString("MMM dd yyyy") </p>
+                                <div class="row p-t-20">
+                                    <div class="col-md-6">
+                                        <div class="form-group ">
+                                            <label class="control-label">Ticket Priority:</label>
+                                            @if (ticketHelper.CanEditTicket(Model.Id))
+                                            {
+                                                @Html.DropDownList("TicketPriorityId", null, new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.TicketPriorityId, "", new { @class = "text-danger" })
+                                            }
+                                            else
+                                            {
+                                                <p class="form-control-static"> @Html.DisplayFor(model => model.TicketPriority.Name) </p>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group ">
+                                            <label class="control-label">last Update:</label>
+                                            @if (Model.Updated != null)
+                                            {
+                                                <p class="form-control-static"> @Model.Updated.GetValueOrDefault().ToString("MMM dd yyyy") </p>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row p-t-20">
-                                <div class="col-md-6">
-                                    <div class="form-group ">
-                                        <label class="control-label">Ticket Priority:</label>
-                                        @if (ticketHelper.CanEditTicket(Model.Id))
-                                        {
-                                            @Html.DropDownList("TicketPriorityId", null, new { @class = "form-control" })
-                                            @Html.ValidationMessageFor(model => model.TicketPriorityId, "", new { @class = "text-danger" })
-                                        }
-                                        else
-                                        {
-                                            <p class="form-control-static"> @Html.DisplayFor(model => model.TicketPriority.Name) </p>
-                                        }
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group ">
-                                        <label class="control-label">last Update:</label>
-                                        @if (Model.Updated != null)
-                                        {
-                                            <p class="form-control-static"> @Model.Updated.GetValueOrDefault().ToString("MMM dd yyyy") </p>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row p-t-20">
-                                <div class="col-md-6">
-                                    <div class="form-group ">
-                                        <label class="control-label">Ticket Status:</label>
-                                        @if (ticketHelper.CanEditTicket(Model.Id))
-                                        {
-                                            @Html.DropDownList("TicketStatusId", null, new { @class = "form-control" })
-                                            @Html.ValidationMessageFor(model => model.TicketStatusId, "", new { @class = "text-danger" })
-                                        }
-                                        else
-                                        {
-                                            <p class="form-control-static"> @Html.DisplayFor(model => model.TicketStatus.Name) </p>
-                                        }
+                                <div class="row p-t-20">
+                                    <div class="col-md-6">
+                                        <div class="form-group ">
+                                            <label class="control-label">Ticket Status:</label>
+                                            @if (ticketHelper.CanEditTicket(Model.Id))
+                                            {
+                                                @Html.DropDownList("TicketStatusId", null, new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.TicketStatusId, "", new { @class = "text-danger" })
+                                            }
+                                            else
+                                            {
+                                                <p class="form-control-static"> @Html.DisplayFor(model => model.TicketStatus.Name) </p>
+                                            }
 
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <hr />
-                            @if (ticketHelper.CanEditTicket(Model.Id))
-                            {
-                                <button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Submit</button>
-                            }
+                                <hr />
+                                @if (ticketHelper.CanEditTicket(Model.Id))
+                                {
+                                    <button type="submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Submit</button>
+                                }
                             </div>
                         }
                     </div>
@@ -231,7 +232,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            }
+                            }else
+                            { <h4 class="card-title">No Files Attached to the Ticket</h4>}
                             @if (ticketHelper.CanAddAttachment(Model.Id))
                             {
                                 <hr />
@@ -302,6 +304,8 @@
                                     </div>
                                 </div>
                             }
+                            else
+                            { <h4 class="card-title">No Comments on The Ticket</h4>}
                             @if (ticketHelper.CanMakeComment(Model.Id))
                             {
                                 using (Html.BeginForm("Create", "TicketComments", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -319,6 +323,47 @@
                                     </div>
                                 }
                             }
+                        </div>
+                    </div>
+                    <div class="tab-pane tabcontent-border" id="histories" role="tabpanel">
+                        <div class="card-body">
+                            @if (Model.Histories.Count > 0)
+                            {
+                                <div class="row ">
+                                    <div class="col-12">
+                                        <div class=" form-group">
+                                            <div class="table-responsive">
+                                                <table class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>User</th>
+                                                            <th>Property</th>
+                                                            <th>Old Value</th>
+                                                            <th>New Value</th>
+                                                            <th>Changed On</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var history in Model.Histories.ToList())
+                                                        {
+                                                            <tr>
+                                                                <th>@history.User.FullName</th>
+                                                                <th>@history.Property</th>
+                                                                <th>@history.OldValue</th>
+                                                                <th>@history.NewValue</th>
+                                                                <th>@history.ChangedOn.ToString("MMM dd yyyy")</th>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            { <h4 class="card-title">No Logs for this Ticket</h4>}
+
                         </div>
                     </div>
                 </div>

@@ -1,8 +1,6 @@
 ﻿@model IEnumerable<BugTracker.Models.Ticket>
 @using Microsoft.AspNet.Identity;
 @using BugTracker.Helpers;
-
-
 @{
     ViewBag.Title = "Index";
 }
@@ -12,71 +10,11 @@
     UserRoleHelper roleHelper = new UserRoleHelper();
     ProjectHelper projectHelper = new ProjectHelper();
 }
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">All Project Ticket List</h4>
-                <div class="table-responsive m-t-40">
-                    <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                        <thead>
-                            <tr>
-                                <th>Project Name</th>
-                                <th>Project Manager</th>
-                                <th>Ticket Priority</th>
-                                <th>Ticket Status</th>
-                                <th>Ticket Type</th>
-                                <th>Submitter</th>
-                                <th>Developer</th>
-                                <th>Issue</th>
-                                <th>Created Data</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            @foreach (var ticket in Model)
-                            {
-                                <tr>
-                                    <td>@Html.DisplayName(ticket.project.Name)</td>
-                                    <td>@Html.DisplayName(projectHelper.ListUserOnProjectInRole(ticket.ProjectId, "ProjectManager").FirstOrDefault().FullName)</td>
-                                    <td>@Html.DisplayName(ticket.TicketPriority.Name)</td>
-                                    <td>@Html.DisplayName(ticket.TicketStatus.Name)</td>
-                                    <td>@Html.DisplayName(ticket.TicketType.Name)</td>
-                                    <td>@Html.DisplayName(ticket.Submitter.FullName)</td>
-                                    @if (ticket.Developer != null)
-                                    {
-                                        <td>@Html.DisplayName(ticket.Developer.FullName)</td>
-                                    }
-                                    else
-                                    {
-                                        <td>No User assinged to Developer</td>
-                                    }
-                                    <td>@Html.DisplayName(ticket.Issue)</td>
-                                    <td>@Html.DisplayName(ticket.Created.ToString("MMM dd yyyy"))</td>
-                                    <td>
-                                        @if (roleHelper.IsUserInRole(HttpContext.Current.User.Identity.GetUserId(), "Admin"))
-                                        {
-                                            @Html.ActionLink("Edit", "Edit", new { id = ticket.Id }) <span>|</span>
-                                        }
-                                        @Html.ActionLink("Details", "DashBoard", new { id = ticket.Id }) |
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@if (!roleHelper.IsUserInRole(HttpContext.Current.User.Identity.GetUserId(), "Admin"))
-{
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">All Assigned to You</h4>
+                    <h4 class="card-title">All Assigned Tickets</h4>
                     <div class="table-responsive m-t-40">
                         <table class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
@@ -86,51 +24,55 @@
                                     <th>Ticket Priority</th>
                                     <th>Ticket Status</th>
                                     <th>Ticket Type</th>
+                                    <th>Developer</th>
                                     <th>Submitter</th>
                                     <th>Issue</th>
                                     <th>Created Data</th>
-                                    <th>Due Date</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
-
                             <tbody>
-                                @foreach (var ticket in ticketHelper.GetMyTickets())
+                                @foreach (var ticket in Model)
                                 {
-                                    <tr>
-                                        <td>@Html.DisplayName(ticket.project.Name)</td>
-                                        <td>@Html.DisplayName(projectHelper.ListUserOnProjectInRole(ticket.ProjectId, "ProjectManager").FirstOrDefault().FullName)</td>
-                                        <td>@Html.DisplayName(ticket.TicketPriority.Name)</td>
-                                        <td>@Html.DisplayName(ticket.TicketStatus.Name)</td>
-                                        <td>@Html.DisplayName(ticket.TicketType.Name)</td>
-                                        <td>@Html.DisplayName(ticket.Submitter.FullName)</td>
-                                        @if (ticket.Developer != null)
-                                        {
-                                            <td>@Html.DisplayName(ticket.Developer.FullName)</td>
-                                        }
-                                        else
-                                        {
-                                            <td>No User assinged to Developer</td>
-                                        }
-                                        @if (ticket.Issue != null)
-                                        {
-                                            <td>@Html.DisplayName(ticket.Issue)</td>
-                                        }
-                                        else
-                                        {
-                                            <td>No issue</td>
-                                        }
-                                        <td>@Html.DisplayName(ticket.Created.ToString("MMM dd yyyy"))</td>
-                                        <td>
+                                    var projectManager = projectHelper.ListUserOnProjectInRole(ticket.ProjectId, "ProjectManager").FirstOrDefault(); 
+                                <tr>
+                                    <td><a href="@Url.Action("Details", "Projects", new { id = ticket.ProjectId })"> @Html.DisplayName(ticket.project.Name)</a></td>
+                                    @*<td>@Html.DisplayName(ticket.project.Name)</td>*@
 
-                                            @if (!roleHelper.IsUserInRole(HttpContext.Current.User.Identity.GetUserId(), "Submitter"))
-                                            {
-                                                @Html.ActionLink("Edit", "Edit", new { id = ticket.Id }) <span>|</span>
-                                            }
-                                            @Html.ActionLink("Details", "Dashboard", new { id = ticket.Id }) |
-                                        </td>
-                                    </tr>
-                                }
+                                    <td><a href="@Url.Action( "Index", "Manage", new { userId = projectManager.Id })">@projectManager.FullName</a></td>
+                                    @*<td>@Html.DisplayName(projectHelper.ListUserOnProjectInRole(ticket.ProjectId, "ProjectManager").FirstOrDefault().FullName)</td>*@
+                                    <td>@Html.DisplayName(ticket.TicketPriority.Name)</td>
+                                    <td>@Html.DisplayName(ticket.TicketStatus.Name)</td>
+                                    <td>@Html.DisplayName(ticket.TicketType.Name)</td>
+
+                                    @if (ticket.Developer != null)
+                                    {
+                                        <td>@Html.DisplayName(ticket.Developer.FullName)</td>
+                                    }
+                                    else
+                                    {
+                                        <td>No User assinged to Developer</td>
+                                    }
+                                    <td>@Html.DisplayName(ticket.Submitter.FullName)</td>
+                                    @if (ticket.Issue != null)
+                                    {
+                                        <td>@Html.DisplayName(ticket.Issue)</td>
+                                    }
+                                    else
+                                    {
+                                        <td>No issue</td>
+                                    }
+                                    <td>@Html.DisplayName(ticket.Created.ToString("MMM dd yyyy"))</td>
+                                    <td>
+
+                                        @if (!User.IsInRole("Submitter"))
+                                        {
+                                            @Html.ActionLink("Edit", "Edit", new { id = ticket.Id }) <span>|</span>
+                                        }
+                                        @Html.ActionLink("Details", "Dashboard", new { id = ticket.Id }) |
+                                    </td>
+                                </tr>
+                            }
                             </tbody>
                         </table>
                     </div>
@@ -138,8 +80,8 @@
             </div>
         </div>
     </div>
-}
-@if (User.IsInRole("Submitter") || User.IsInRole("Admin"))
+
+@if (ticketHelper.CanCreateTicket())
 {
     <p>
         @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-success waves-effect waves-light m-r-10" })

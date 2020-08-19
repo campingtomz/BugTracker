@@ -19,10 +19,12 @@ namespace BugTracker.Controllers
         private UserRoleHelper roleHelper = new UserRoleHelper();
         private ProjectHelper projectHelper = new ProjectHelper();
         private TicketHelper ticketHelper = new TicketHelper();
+        private HistoryHelper historyHelper = new HistoryHelper();
         // GET: Tickets
         public ActionResult Index()
         {
-            return View(db.Tickets.ToList());
+            
+            return View(ticketHelper.GetMyTickets());
         }
 
 
@@ -124,9 +126,12 @@ namespace BugTracker.Controllers
             if (ModelState.IsValid)
             {
                 ticket.Updated = DateTime.Now;
-                var oldTicet = db.TicketAttachments.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
+                var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
                 db.Entry(ticket).State = EntityState.Modified;
                 db.SaveChanges();
+                var newTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
+                ticketHelper.TicketEdit(oldTicket, newTicket);
+               
                 return RedirectToAction("Index");
             }
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
