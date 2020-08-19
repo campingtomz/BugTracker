@@ -5,13 +5,13 @@ using System.Web;
 
 namespace BugTracker.Models
 {
-    public class TicketHistory: History
+    public class ProjectHistory : History
     {
         public int Id { get; set; }
-        
-        public int TicketId { get; set; }
-        public virtual Ticket ticket { get; set; }
+      
+        public int ProjectId { get; set; }
+        public virtual Project project { get; set; }
 
-       
+
     }
 }

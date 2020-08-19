@@ -22,6 +22,7 @@ namespace BugTracker.Controllers
         //private UserHelper userHelper = new UserHelper();
         private UserRoleHelper roleHelper = new UserRoleHelper();
         private ProjectHelper projectHelper = new ProjectHelper();
+        private NotificationHelper notificationHelper = new NotificationHelper();
         // GET: Projects
         public ActionResult Index()
         {
@@ -107,6 +108,7 @@ namespace BugTracker.Controllers
                 project.IsArchive = false;
                 db.Projects.Add(project);
                 db.SaveChanges();
+                notificationHelper.NewProjectCreated(project);
 
                 projectHelper.AddUserToProject(model.ProjectManagerId, project.Id);
                 foreach (var userId in model.DeveloperIds)
@@ -126,7 +128,7 @@ namespace BugTracker.Controllers
                 ViewBag.ProjectManagerId = new SelectList(roleHelper.UsersInRole("ProjectManager"), "Id", "FullName");
                 ViewBag.DeveloperIds = new MultiSelectList(roleHelper.UsersInRole("Developer"), "Id", "FullName");
                 ViewBag.SubmitterIds = new MultiSelectList(roleHelper.UsersInRole("Submitter"), "Id", "FullName");
-
+                
                 return View(model);
             }
         }

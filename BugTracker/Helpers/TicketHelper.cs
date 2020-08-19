@@ -212,7 +212,6 @@ namespace BugTracker.Helpers
             var projects = db.Projects.Find(projectId);
             return projects.Tickets;
         }
-
         public List<Ticket> ListTicketByStatus(string status)
         {
             return db.Tickets.Where(t => t.TicketStatus.Name == status).ToList();
@@ -244,7 +243,6 @@ namespace BugTracker.Helpers
             }
             return ticketTypes;
         }
-
         #region tickethistory and notifications
         public void TicketEdit(Ticket oldTicket, Ticket newTicket)
         {

@@ -7,16 +7,14 @@
     UserRoleHelper roleHelper = new UserRoleHelper();
     ProjectHelper projectHelper = new ProjectHelper();
 }
+
 @using (Html.BeginForm("ManageUser", "UserManagment", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    //var currentUser = userHelper.getUser(HttpContext.Current.User.Identity.GetUserId());
     @Html.HiddenFor(m => m.UserId)
     @Html.HiddenFor(m => m.AvatarPath)
-
     @Html.AntiForgeryToken()
     <!-- Row -->
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
     <div class="row justify-content-center">
         <div class="col-lg-12">
             <div class="card card-outline-info">
@@ -59,8 +57,7 @@
                                     @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-
-                            @if (User.IsInRole("Admin"))
+                            @if (roleHelper.CanEditRole())
                             {
                                 <div class="form-group row">
                                     <label class="control-label text-right col-md-3">Roles</label>
@@ -80,7 +77,7 @@
                                 </div>
                             }
 
-                            @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                            @if (projectHelper.CanEditProject())
                             {
                                 <div class="form-group row">
                                     <label class="control-label text-right col-md-3">Projects</label>
@@ -146,7 +143,6 @@
                                     </div>
                                 </div>
                             }
-
                             <div class="form-group row">
                                 <label class="control-label text-right col-md-3">Avatar Image Upload</label>
                                 <div class="col-md-3">
@@ -172,7 +168,6 @@
             </div>
         </div>
     </div>
-    <!-- Row -->
 }
 @section scripts{
     <script>

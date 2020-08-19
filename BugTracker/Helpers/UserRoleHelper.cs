@@ -5,18 +5,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-
+using BugTracker.Helpers;
 namespace BugTracker.Helpers
 {
     public class UserRoleHelper
     {
         private UserManager<ApplicationUser> userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
-        private ApplicationDbContext db = new ApplicationDbContext();
+        
         public bool IsUserInRole(string userId, string roleName)
         {
             return userManager.IsInRole(userId, roleName);
-        }
-     
+        }     
         public ICollection<string> ListUserRoles(string userId)
         {
             return userManager.GetRoles(userId);
@@ -31,7 +30,6 @@ namespace BugTracker.Helpers
             var result = userManager.RemoveFromRole(userId, roleName);
             return result.Succeeded;
         }
-
         public ICollection<ApplicationUser> UsersInRole(string roleName)
         {
             var resultList = new List<ApplicationUser>();
@@ -57,6 +55,19 @@ namespace BugTracker.Helpers
                 }
             }
             return resultList;
+        }
+        public bool CanEditRole()
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            var myRole = ListUserRoles(userId).FirstOrDefault();
+
+            switch (myRole)
+            {
+                case "Admin":
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }

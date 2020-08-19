@@ -4,11 +4,60 @@
 @{ var roleHelper = new UserRoleHelper(); }
 @if (Request.IsAuthenticated)
 {
-     var CurrentUserId = User.Identity.GetUserId(); 
+    var user = userHelper.getUser(User.Identity.GetUserId());
 
     <div class="navbar-collapse collapse">
         <ul class="navbar-nav mr-auto">
+            <li class="nav-item"> <a class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="mdi mdi-menu"></i></a> </li>
+            <li class="nav-item m-l-10"> <a class="nav-link sidebartoggler hidden-sm-down text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a> </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-muted text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="mdi mdi-message"></i>
+                    <div class="notify"> <span class="heartbit"></span> <span class="point"></span> </div>
+                </a>
+                <div class="dropdown-menu mailbox animated slideInUp">
+                    <ul>
+                        <li>
+                            <div class="drop-title">Notifications</div>
+                        </li>
+                        @if (user.Notifications.Count > 0)
+                        {
+                            foreach (var notification in user.Notifications)
+                            {
+                                <li>
+                                    <div class="message-center">
+                                        <!-- Message -->
+                                        <a href="#">
+                                            <div class="btn btn-danger btn-circle"><i class="fa fa-link"></i></div>
+                                            <div class="mail-contnet">
+                                                <h5>@notification.Subject</h5> <span class="mail-desc">@notification.Message</span> <span class="time">@notification.Created</span>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                </li>
+                            }
+                            <li>
+                                <a href="@Url.Action( "DisplayNotifications", "UserManagment", new { userid = user.Id })" class="nav-link text-center"><strong>Check all notifications</strong> <i class="fa fa-angle-right"></i></a>
+                                @*<a class="nav-link text-center" href="javascript:void(0);"> <strong>Check all notifications</strong> <i class="fa fa-angle-right"></i> </a>*@
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <div class="message-center">
+                                    <h5 class="p-l-20">No New Notifications</h5>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </li>
+
         </ul>
+
+
         <ul class="navbar-nav">
             <!-- ============================================================== -->
             <!-- Search -->
@@ -29,11 +78,11 @@
                     <ul class="dropdown-user">
                         <li>
                             <div class="dw-user-box">
-                                <div class="u-img"><img src="@userHelper.GetAvatar(CurrentUserId)" salt="user"></div>
+                                <div class="u-img"><img src="@user.AvatarPath" salt="user"></div>
                                 <div class="u-text">
-                                    <h4>@userHelper.GetFullName(CurrentUserId)</h4>
-                                    <p class="text-muted">@userHelper.GetEmail(CurrentUserId)</p>
-                                    <p class="text-muted">@roleHelper.ListUserRoles(CurrentUserId).FirstOrDefault().ToString()</p>
+                                    <h4>@user.FullName</h4>
+                                    <p class="text-muted">@user.Email</p>
+                                    <p class="text-muted">@roleHelper.ListUserRoles(user.Id).FirstOrDefault().ToString()</p>
                                 </div>
                             </div>
                         </li>

@@ -45,6 +45,7 @@ namespace BugTracker.Controllers
             var model = db.Users.ToList();
             return View(model);
         }
+        [Authorize(Roles = "Admin, ProjectManager")]
         public ActionResult ManageUser(string userId, int? addRemove, int? projectId)
         {
             if (addRemove != null && projectId != null)
@@ -74,9 +75,6 @@ namespace BugTracker.Controllers
             ViewBag.RoleName = new SelectList(db.Roles, "Name", "Name", model.userRole);
             return View(model);
         }
-
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ManageUser(ManageUserVM userVM, string roleName)
@@ -88,8 +86,6 @@ namespace BugTracker.Controllers
             user.LastName = userVM.LastName;
             user.PhoneNumber = userVM.PhoneNumber;
             user.AvatarPath = userVM.AvatarPath;
-            //userVM.user.AvatarPath = userHelper.getUser(userVM.user.Id).AvatarPath;
-
             if (FileUploadValidator.IsWebFriendlyImage(userVM.Avatar))
             {
                 var fileName = FileStamp.MakeUnique(userVM.Avatar.FileName);
@@ -97,10 +93,7 @@ namespace BugTracker.Controllers
                 userVM.Avatar.SaveAs(Path.Combine(Server.MapPath(serverFolder), fileName));
                 user.AvatarPath = $"{serverFolder}{fileName}";
             }
-
-            //db.Entry(user).State = EntityState.Modified;
             db.SaveChanges();
-
             if (roleName != null)
             {
                 foreach (var role in roleHelper.ListUserRoles(user.Id))
@@ -112,10 +105,12 @@ namespace BugTracker.Controllers
                     roleHelper.AddUserToRole(user.Id, roleName);
                 }
             }
-
-
-
             return RedirectToAction("Index");
+        }
+
+        public ActionResult UserProfile(string userId)
+        {
+            return View(db.Users.Find(userId));
         }
     }
 }

@@ -13,11 +13,12 @@
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#ProjectManager" role="tab">Project Manager</a> </li>
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Developers" role="tab">Project Developers</a> </li>
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Submitters" role="tab">Project Submitters</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Tickets" role="tab">Project Tickets</a> </li>
                     @if (User.IsInRole("Submitter") || User.IsInRole("Admin"))
                     {
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#AddTicket" role="tab">Create Ticket</a> </li>
                     }
-                    </ul>
+                </ul>
 
                 <div class="tab-content">
                     <div class="tab-pane tabcontent-border active" id="ProjectInfo" role="tabpanel">
@@ -30,17 +31,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!--/span-->
-                            <div class="col-md-6">
-                                <div class="form-group row">
-                                    <label class="control-label text-right col-md-3">Last Name:</label>
-                                    <div class="col-md-9">
-                                        <p class="form-control-static"> @Model.Created.ToString("MMM dd yyyy") </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--/span-->
-                            <!--/row-->
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group row">
@@ -65,7 +56,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group row">
-                                        <label class="control-label text-right col-md-3">Discription :</label>
+                                        <label class="control-label text-right col-md-3">Description :</label>
                                         <div class="col-md-9">
                                             <p class="form-control-static"> Say something nice about the project </p>
                                         </div>
@@ -88,7 +79,7 @@
                                         <div class="form-group row">
                                             <label class="control-label text-right col-md-3">First Name:</label>
                                             <div class="col-md-9">
-                                                <p class="form-control-static">@projectManager.FirstName</p>
+                                                @Html.ActionLink(@projectManager.FirstName, "UserProfile", "UserManagment", new { userid = projectManager.Id }, new { @class = "form-control-static" })
                                             </div>
                                         </div>
                                     </div>
@@ -140,9 +131,9 @@
                     <div class="tab-pane tabcontent-border " id="Developers" role="tabpanel">
                         <div class="card-body">
                             <h4 class="card-title">Developers</h4>
-                            <hr class="m-t-0 m-b-40">
+                            <hr>
 
-                            <div class="table-responsive m-t-40">
+                            <div class="table-responsive">
                                 <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                                     <thead>
                                         <tr>
@@ -155,7 +146,10 @@
                                         @foreach (var user in projectHelper.ListUserOnProjectInRole(Model.Id, "Developer").ToList())
                                         {
                                             <tr>
-                                                <td>@user.FullName</td>
+
+                                                <td>
+                                                    @Html.ActionLink(@user.FullName, "UserProfile", "UserManagment", new { userid = user.Id })
+                                                </td>
                                                 <td>@user.Email</td>
                                                 <td>@user.PhoneNumber</td>
                                                 @*<td>@Html.Display( user.PhoneNumber, new { @type = "tel" })</td>*@
@@ -170,8 +164,8 @@
                     <div class="tab-pane tabcontent-border " id="Submitters" role="tabpanel">
                         <div class="card-body">
                             <h4 class="card-title">Submitters</h4>
-                            <hr class="m-t-0 m-b-40">
-                            <div class="table-responsive m-t-40">
+                            <hr />
+                            <div class="table-responsive ">
                                 <table id="" class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                                     <thead>
                                         <tr>
@@ -185,7 +179,7 @@
                                         {
 
                                             <tr>
-                                                <td>@user.FullName</td>
+                                                <td>@Html.ActionLink(@user.FullName, "UserProfile", "UserManagment", new { userid = user.Id })</td>
                                                 <td>@user.Email</td>
                                                 <td>@user.PhoneNumber</td>
 
@@ -196,7 +190,58 @@
                             </div>
                         </div>
                     </div>
+                    <div class="tab-pane tabcontent-border " id="Tickets" role="tabpanel">
+                        <div class="card-body">
+                            <h4 class="card-title">Tickets</h4>
+                            <hr>
+                            @if (Model.Tickets.Count > 0)
+                            {
+                                <div class="table-responsive">
+                                    <table class="example25 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Ticket Id</th>
+                                                <th>Project Manager</th>
+                                                <th>Ticket Priority</th>
+                                                <th>Ticket Status</th>
+                                                <th>Ticket Type</th>
+                                                <th>Submitter</th>
+                                                <th>Developer</th>
+                                                <th>Issue</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var ticket in Model.Tickets)
+                                            {
+                                                <tr>
+                                                    <td><a href="@Url.Action("Dashboard", "Tickets", new { id = ticket.Id })"> @ticket.Id</a></td>
+                                                    <td>@Html.DisplayName(projectHelper.ListUserOnProjectInRole(ticket.ProjectId, "ProjectManager").FirstOrDefault().FullName)</td>
+                                                    <td>@Html.DisplayName(ticket.TicketPriority.Name)</td>
+                                                    <td>@Html.DisplayName(ticket.TicketStatus.Name)</td>
+                                                    <td>@Html.DisplayName(ticket.TicketType.Name)</td>
+                                                    <td>@Html.DisplayName(ticket.Submitter.FullName)</td>
+                                                    @if (ticket.Developer != null)
+                                                    {
+                                                        <td>@Html.DisplayName(ticket.Developer.FullName)</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>No User assinged to Developer</td>
+                                                    }
+                                                    <td>@Html.DisplayName(ticket.Issue)</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                 <h4 class="card-title">No Tickets are Created for this Project</h4>
 
+                            }
+                        </div>
+                    </div>
                     @if (User.IsInRole("Submitter") || User.IsInRole("Admin"))
                     {
                         <div class="tab-pane tabcontent-border" id="AddTicket" role="tabpanel">
@@ -234,9 +279,9 @@
                                                                     @Html.ValidationMessage("Issue", "", new { @class = "text-danger" })
                                                                 </div>
                                                                 <div class="form-group">
-                                                                    @Html.Label("IssueDiscription")
-                                                                    @Html.TextArea("IssueDiscription", new { @class = "form-control", @id = "IssueDiscription" })
-                                                                    @Html.ValidationMessage("IssueDiscription", "", new { @class = "text-danger" })
+                                                                    @Html.Label("IssueDescription")
+                                                                    @Html.TextArea("IssueDescription", new { @class = "form-control", @id = "IssueDescription" })
+                                                                    @Html.ValidationMessage("IssueDescription", "", new { @class = "text-danger" })
 
                                                                 </div>
                                                                 <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Create</button>
@@ -253,6 +298,7 @@
                             </div>
                         </div>
                     }
+
                     <div class="form-actions">
                         <div class="row p-l-20 p-t-20 p-b-20">
                             <div class="col-md-6">

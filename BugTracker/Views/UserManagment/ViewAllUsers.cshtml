@@ -1,7 +1,7 @@
 ﻿@using System.Linq;
 @using BugTracker.Helpers;
-@{ var roleHelper = new UserRoleHelper(); 
-    }
+@{ var roleHelper = new UserRoleHelper();
+}
 @model IEnumerable<BugTracker.Models.ApplicationUser>
 
 <div class="container-fluid">
@@ -9,24 +9,28 @@
         <!-- .col -->
         @foreach (var user in Model)
         {
+
             <div class="col-md-6 col-lg-6 col-xlg-4">
-                <div class="card card-body">
-                    <div class="row">
-                        <div class="col-md-4 col-lg-3 text-center">
-                            <a href="app-contact-detail.html"><img src="@user.AvatarPath" alt="user" class="img-circle img-responsive"></a>
-                        </div>
-                        <div class="col-md-8 col-lg-9">
-                            <h3 class="box-title m-b-0">@user.FullName</h3><small>@roleHelper.ListUserRoles(user.Id).FirstOrDefault()</small>
-                            <address>
-                                795 Folsom Ave, Suite 600 San Francisco, CADGE 94107
-                                <br />
-                                <br />
-                                <abbr title="Phone">P:</abbr> @user.PhoneNumber
-                            </address>
+                <a href="@Url.Action( "UserProfile", "UserManagment", new { userid = user.Id })">
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col-md-4 col-lg-3 text-center">
+                                <img src="@user.AvatarPath" alt="user" width="40" class="img-circle" />
+                            </div>
+                            <div class="col-md-8 col-lg-9">
+                                <h3 class="box-title m-b-0">@user.FullName</h3><small>@roleHelper.ListUserRoles(user.Id).FirstOrDefault()</small>
+                                <address>
+                                    795 Folsom Ave, Suite 600 San Francisco, CADGE 94107
+                                    <br />
+                                    <br />
+                                    <abbr title="Phone">P:</abbr> @user.PhoneNumber
+                                </address>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
+
         }
     </div>
 </div>

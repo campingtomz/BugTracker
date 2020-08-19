@@ -73,7 +73,7 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,ProjectId,TicketPriorityId,TicketTypeId,Issue,IssueDiscription")] Ticket ticket, bool onPage)
+        public ActionResult Create([Bind(Include = "Id,ProjectId,TicketPriorityId,TicketTypeId,Issue,IssueDescription")] Ticket ticket, bool onPage)
         {
             var userId = User.Identity.GetUserId();
             if (ModelState.IsValid)
@@ -83,6 +83,7 @@ namespace BugTracker.Controllers
                 ticket.SubmitterId = userId;
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
+                NotificationHelper.NewTicketNotification(ticket);
                 return RedirectToAction("Index");
             }
             ViewBag.ProjectId = new SelectList(projectHelper.ListUserProjects(userId), "Id", "Name");
@@ -121,7 +122,7 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Created,TicketPriorityId,TicketStatusId,TicketTypeId,DeveloperId,SubmitterId,ProjectId,Issue,IssueDiscription")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "Id,Created,TicketPriorityId,TicketStatusId,TicketTypeId,DeveloperId,SubmitterId,ProjectId,Issue,IssueDescription")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {

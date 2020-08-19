@@ -1,17 +1,13 @@
-﻿@model BugTracker.Models.IndexViewModel
+﻿@model BugTracker.Models.ApplicationUser
 
 @using Microsoft.AspNet.Identity
 @using BugTracker.Helpers;
 
 @{ var userHelper = new UserHelper(); }
 @{ var userRoleHelper = new UserRoleHelper(); }
-@{ var projectHelper = new ProjectHelper(); }
-@{ var user = userHelper.getUser(User.Identity.GetUserId());
+@{ var projectHelper = new ProjectHelper();
     var ticketHelper = new TicketHelper();
 }
-
-
-
 
 <div class="container-fluid p-t-10">
     <!-- ============================================================== -->
@@ -24,15 +20,10 @@
             <div class="card">
                 <div class="card-body">
                     <center class="m-t-30">
-                        <img src="@user.AvatarPath" class="img-circle" width="150" />
-                        <h4 class="card-title m-t-10">@user.FullName</h4>
-                        <h6 class="card-subtitle">@userRoleHelper.ListUserRoles(user.Id).FirstOrDefault()</h6>
-                        <div class="row text-center justify-content-md-center">
-                            <h4><a href="@Url.Action("Index", "Projects", new { userid = user.Id })"><i class="mdi mdi-book-open-page-variant">  Projects</i></a></h4>
-                        </div>
-                        <div class="row text-center justify-content-md-center">
-                            <h4><a href="@Url.Action("Index", "Tickets", new { userid = user.Id })"><i class="mdi mdi-book-open-page-variant">  Tickets</i></a></h4>
-                        </div>
+                        <img src="@Model.AvatarPath" class="img-circle" width="150" />
+                        <h4 class="card-title m-t-10">@Model.FullName</h4>
+                        <h6 class="card-subtitle">@userRoleHelper.ListUserRoles(Model.Id).FirstOrDefault()</h6>
+                       
                     </center>
                 </div>
                 <div>
@@ -40,8 +31,8 @@
                 </div>
                 <div class="card-body">
                     <small class="text-muted">Email address </small>
-                    <h6>@user.Email</h6> <small class="text-muted p-t-30 db">Phone</small>
-                    <h6> @user.PhoneNumber</h6>
+                    <h6>@Model.Email</h6> <small class="text-muted p-t-30 db">Phone</small>
+                    <h6> @Model.PhoneNumber</h6>
                     <button class="btn btn-circle btn-secondary"><i class="fa fa-facebook"></i></button>
                     <button class="btn btn-circle btn-secondary"><i class="fa fa-twitter"></i></button>
                     <button class="btn btn-circle btn-secondary"><i class="fa fa-youtube"></i></button>
@@ -61,7 +52,6 @@
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Tickets" role="tab">Tickets</a> </li>
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Notifications" role="tab">Notifications</a> </li>
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#histories" role="tab">User Logs</a> </li>
-                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Settings" role="tab">Settings</a> </li>
 
                 </ul>
                 <!-- Tab panes -->
@@ -73,17 +63,17 @@
                                 <div class="col-md-3 col-xs-6 b-r">
                                     <strong>Full Name</strong>
                                     <br>
-                                    <p class="text-muted">@user.FullName</p>
+                                    <p class="text-muted">@Model.FullName</p>
                                 </div>
                                 <div class="col-md-3 col-xs-6 b-r">
                                     <strong>Mobile</strong>
                                     <br>
-                                    <p class="text-muted">@user.PhoneNumber</p>
+                                    <p class="text-muted">@Model.PhoneNumber</p>
                                 </div>
                                 <div class="col-md-3 col-xs-6 b-r">
                                     <strong>Email</strong>
                                     <br>
-                                    <p class="text-muted">@user.Email</p>
+                                    <p class="text-muted">@Model.Email</p>
                                 </div>
 
                             </div>
@@ -95,7 +85,7 @@
                     <div class="tab-pane " id="Projects" role="tabpanel">
                         <div class="card-body">
                             <div class="row">
-                                @if (user.Projects.Count > 0)
+                                @if (Model.Projects.Count > 0)
                                 {
                                     <div class="table-responsive m-t-40">
                                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
@@ -109,7 +99,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach (var project in user.Projects)
+                                                @foreach (var project in Model.Projects)
                                                 {
                                                     <tr>
                                                         <td><a href="@Url.Action("Details", "Projects", new { id = project.Id })"> @project.Name</a></td>
@@ -142,7 +132,7 @@
                     <div class="tab-pane " id="Tickets" role="tabpanel">
                         <div class="card-body">
                             <div class="row">
-                                @if (ticketHelper.GetMyTickets().Count > 0)
+                                @if (ticketHelper.GetAllProjectTicketsForUser(Model.Id).Count > 0)
                                 {
                                     <div class="table-responsive m-t-40">
                                         <table class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
@@ -159,7 +149,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach (var ticket in ticketHelper.GetMyTickets())
+                                                @foreach (var ticket in ticketHelper.GetAllProjectTicketsForUser(Model.Id))
                                                 {
                                                     <tr>
                                                         <td><a href="@Url.Action("Dashboard", "Tickets", new { id = ticket.Id })"> @ticket.Id</a></td>
@@ -191,30 +181,39 @@
                     <div class="tab-pane " id="Notifiations" role="tabpanel">
                         <div class="card-body">
                             <div class="row">
-                                @if (user.Notifications.Count > 0)
+                                @if (Model.Notifications.Count > 0)
                                 {
                                     <div class="table-responsive m-t-40">
                                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                                             <thead>
                                                 <tr>
-                                                    <th>Subject</th>
-                                                    <th>Ticket Type</th>
+                                                    <th>Project Name</th>
+                                                    <th>Project Manager</th>
                                                     <th>Project Created Date</th>
-                                                    <th>Action</th>
+                                                    <th>Project Due Date</th>
+                                                    <th>Number Of Tickets</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach (var notification in user.Notifications)
+                                                @foreach (var Notifications in Model.Notifications)
                                                 {
-                                                    <tr>
-                                                        <td>@notification.Subject</td>
-                                                        <td>@notification.NotificationType</td>
-                                                        <td>@Html.Label(notification.Created.ToString("MMM dd yyyy"))</td>
-                                                        @if (notification.NotificationType == "Project")
-                                                        {
-                                                            <td> @Html.ActionLink("View Project", "Details", "Projects", new { id = ProjectId }, null)</td>
-                                                        }
-                                                    </tr>
+                                                    @*<tr>
+                                                            <td><a href="@Url.Action("Details", "Projects", new { id = Notifications.Id })"> @Notifications.Name</a></td>
+
+                                                            <td>
+                                                                @{var projectManager = projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager"); }
+                                                                @if (projectManager != null)
+                                                                {
+                                                                    @Html.Label(projectManager.FirstOrDefault().FullName) }
+                                                                else
+                                                                {
+                                                                    <span>No Project Manager Assigned</span>
+                                                                }
+                                                            </td>
+                                                            <td>@Html.Label(project.Created.ToString("MMM dd yyyy"))</td>
+                                                            <td>@Html.Label(project.DueDate.ToString("MMM dd yyyy"))</td>
+                                                            <td>@project.Tickets.Count</td>
+                                                        </tr>*@
                                                 }
                                             </tbody>
                                         </table>
@@ -227,7 +226,7 @@
                     </div>
                     <div class="tab-pane tabcontent-border" id="histories" role="tabpanel">
                         <div class="card-body">
-                            @if (user.Histories.Count > 0)
+                            @if (Model.Histories.Count > 0)
                             {
                                 <div class="row ">
                                     <div class="col-12">
@@ -244,7 +243,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach (var history in user.Histories.ToList())
+                                                        @foreach (var history in Model.Histories.ToList())
                                                         {
                                                             <tr>
                                                                 <th>@history.User.FullName</th>
@@ -265,22 +264,7 @@
                             { <h4 class="card-title">No Logs for this Ticket</h4>}
                         </div>
                     </div>
-                    <div class="tab-pane " id="Settings" role="tabpanel">
-                        <div class="card-body">
-                            <h4>Change your account settings</h4>
-                            <div class="row">
 
-                                <hr />
-                                <div class="col-md-3 col-xs-6 b-r">
-                                    @Html.ActionLink("Change your password", "ChangePassword")
-                                </div>
-                                <div class="col-md-3 col-xs-6 b-r">
-                                    @Html.ActionLink("Edit Account", "ManageUser", "UserManagment", new { userid = user.Id }, null)
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -288,86 +272,3 @@
 </div>
 
 
-
-<!-- Row -->
-<!-- ============================================================== -->
-<!-- End PAge Content -->
-@*<div>
-    <h4>Change your account settings</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>Password:</dt>
-        <dd>
-            [
-            @if (Model.HasPassword)
-            {
-                @Html.ActionLink("Change your password", "ChangePassword")
-            }
-            else
-            {
-                @Html.ActionLink("Create", "SetPassword")
-            }
-            ]
-        </dd>
-        <dt>External Logins:</dt>
-        <dd>
-            @Model.Logins.Count [
-            @Html.ActionLink("Manage", "ManageLogins") ]
-        </dd>*@
-@*
-    Phone Numbers can used as a second factor of verification in a two-factor authentication system.
-
-     See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
-        for details on setting up this ASP.NET application to support two-factor authentication using SMS.
-
-     Uncomment the following block after you have set up two-factor authentication
-*@
-@*
-    <dt>Phone Number:</dt>
-    <dd>
-        @(Model.PhoneNumber ?? "None")
-        @if (Model.PhoneNumber != null)
-        {
-            <br />
-            <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
-            using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                <text>[<input type="submit" value="Remove" class="btn-link" />]</text>
-            }
-        }
-        else
-        {
-            <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
-        }
-    </dd>
-*@
-@*<dt>Two-Factor Authentication:</dt>
-    <dd>
-        <p>
-            There are no two-factor authentication providers configured. See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
-            for details on setting up this ASP.NET application to support two-factor authentication.
-        </p>*@
-@*@if (Model.TwoFactor)
-    {
-        using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-        {
-            @Html.AntiForgeryToken()
-            <text>Enabled
-            <input type="submit" value="Disable" class="btn btn-link" />
-            </text>
-        }
-    }
-    else
-    {
-        using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-        {
-            @Html.AntiForgeryToken()
-            <text>Disabled
-            <input type="submit" value="Enable" class="btn btn-link" />
-            </text>
-        }
-    }*@
-@*</dd>
-        </dl>
-    </div>*@

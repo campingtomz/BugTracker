@@ -3,13 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using BugTracker.Helpers;
+using Microsoft.AspNet.Identity;
 
 namespace BugTracker.Helpers
 {
-  
     public class UserHelper
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private UserRoleHelper roleHelper = new UserRoleHelper();
         public ApplicationUser getUser(string userId)
         {
             return db.Users.Find(userId);
@@ -39,6 +41,19 @@ namespace BugTracker.Helpers
         {
             var user = db.Users.Find(userId);
             return user.AvatarPath;
+        }
+        public bool CanEditUser()
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            var myRole = roleHelper.ListUserRoles(userId).FirstOrDefault();
+
+            switch (myRole)
+            {
+                case "Admin":
+                    return true;
+                default:
+                    return false;
+            }
         }
 
     }

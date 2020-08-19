@@ -31,7 +31,7 @@ var projectHelper = new ProjectHelper(); }
                             @foreach (var user in Model)
                             {
                                 <tr>
-                                    <td><a href="@Url.Action( "ManageUser", "UserManagment", new { userid = user.Id })"><img src="@user.AvatarPath" alt="user" width="40" class="img-circle" /> @Html.DisplayFor(modelItem => user.FullName)</a></td>
+                                    <td><a href="@Url.Action( "UserProfile", "UserManagment", new { userid = user.Id })"><img src="@user.AvatarPath" alt="user" width="40" class="img-circle" /> @Html.DisplayFor(modelItem => user.FullName)</a></td>
                                     @*<td> @Html.DisplayFor(modelItem => user.FullName)</td>*@
                                     <td>@Html.DisplayFor(modelItem => user.Email)</td>
                                     <td>@user.PhoneNumber</td>

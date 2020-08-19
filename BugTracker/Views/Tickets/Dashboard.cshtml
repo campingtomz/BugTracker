@@ -57,15 +57,15 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group ">
-                                            <label class="control-label ">Ticket Discription:</label>
+                                            <label class="control-label ">Ticket Description :</label>
                                             @if (ticketHelper.CanEditTicket(Model.Id))
                                             {
-                                                @Html.TextAreaFor(model => model.IssueDiscription, new { @class = "form-control", @rows = "5" })
-                                                @Html.ValidationMessageFor(model => model.IssueDiscription, "", new { @class = "text-danger" })
+                                                @Html.TextAreaFor(model => model.IssueDescription, new { @class = "form-control", @rows = "5" })
+                                                @Html.ValidationMessageFor(model => model.IssueDescription, "", new { @class = "text-danger" })
                                             }
                                             else
                                             {
-                                                @Html.DisplayFor(model => model.IssueDiscription, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.DisplayFor(model => model.IssueDescription, new { htmlAttributes = new { @class = "form-control" } })
 
                                             }
                                         </div>

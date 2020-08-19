@@ -30,7 +30,7 @@ namespace BugTracker.Helpers
             db.SaveChanges();
 
         }
-        public void TicketDeveloperChange(Ticket oldTicket, Ticket newTicket)
+        private void TicketDeveloperChange(Ticket oldTicket, Ticket newTicket)
         {
 
             if (oldTicket.DeveloperId != newTicket.DeveloperId && newTicket.DeveloperId != null)
@@ -113,9 +113,9 @@ namespace BugTracker.Helpers
         } 
         #endregion
             
-        public TicketNotification GetNotification(int notificationId)
+        public Notification GetNotification(int notificationId)
         {
-            return db.TicketNotifications.Find(notificationId);
+            return db.Notifications.Find(notificationId);
         }
 
         #region Project Notification Methods
@@ -124,24 +124,7 @@ namespace BugTracker.Helpers
             ProjectUserChange(oldProject, newProject);
 
         }
-        public void NewProjectCreated(Project project)
-        {
-            var userId = HttpContext.Current.User.Identity.GetUserId();
-            foreach (var user in project.Users.Where(u => u.Id != userId))
-            {
-                var newNotification = new ProjectNotification()
-                {
-                    ProjectId = project.Id,
-                    UserId = user.Id,
-                    Created = DateTime.Now,
-                    Subject = $"Added to Project Id: {project.Id}",
-                    Message = $"Hello, {user.FullName} you have been Added to the project: {project.Name}"
-                };
-                db.ProjectNotifications.Add(newNotification);
-
-            }
-            db.SaveChanges();
-        }
+        
         public void ProjectUserChange(Project oldProject, Project newProject)
         {
             var addedUsers = newProject.Users.Except(oldProject.Users);
@@ -173,6 +156,24 @@ namespace BugTracker.Helpers
 
             db.SaveChanges();
 
+        }
+        public void NewProjectCreated(Project project)
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            foreach (var user in project.Users.Where(u => u.Id != userId))
+            {
+                var newNotification = new ProjectNotification()
+                {
+                    ProjectId = project.Id,
+                    UserId = user.Id,
+                    Created = DateTime.Now,
+                    Subject = $"Added to Project Id: {project.Id}",
+                    Message = $"Hello, {user.FullName} you have been Added to the project: {project.Name}"
+                };
+                db.ProjectNotifications.Add(newNotification);
+
+            }
+            db.SaveChanges();
         }
         #endregion
     }

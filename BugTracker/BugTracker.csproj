@@ -214,10 +214,13 @@
     <Compile Include="Models\AttachmentHistory.cs" />
     <Compile Include="Models\Connection.cs" />
     <Compile Include="Models\EmailModel.cs" />
+    <Compile Include="Models\History.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\Project.cs" />
+    <Compile Include="Models\ProjectHistory.cs" />
     <Compile Include="Models\ProjectNotification.cs" />
     <Compile Include="Models\Ticket.cs" />
     <Compile Include="Models\TicketAttachment.cs" />
@@ -235,6 +238,20 @@
     <Compile Include="ViewModels\ProjectWizardVM.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Avatars\DemoUserAvatars\1.jpg" />
+    <Content Include="Avatars\DemoUserAvatars\2.jpg" />
+    <Content Include="Avatars\DemoUserAvatars\3.jpg" />
+    <Content Include="Avatars\DemoUserAvatars\4.jpg" />
+    <Content Include="Avatars\DemoUserAvatars\5.jpg" />
+    <Content Include="Avatars\DemoUserAvatars\6.jpg" />
+    <Content Include="Avatars\DemoUserAvatars\7.jpg" />
+    <Content Include="Avatars\DemoUserAvatars\8.jpg" />
+    <Content Include="Avatars\DemoUserAvatars\d1.jpg" />
+    <Content Include="Avatars\DemoUserAvatars\d2.jpg" />
+    <Content Include="Avatars\DemoUserAvatars\d3.jpg" />
+    <Content Include="Avatars\DemoUserAvatars\d4.jpg" />
+    <Content Include="Avatars\DemoUserAvatars\d5.jpg" />
+    <Content Include="Avatars\DemoUserAvatars\profile.png" />
     <Content Include="Content\Fonts\dropify.eot" />
     <Content Include="Content\Fonts\dropify.ttf" />
     <Content Include="Content\Fonts\dropify.woff" />
@@ -1045,7 +1062,6 @@
     <Content Include="Views\Projects\Index.cshtml" />
     <Content Include="Views\Tickets\Create.cshtml" />
     <Content Include="Views\Tickets\Dashboard.cshtml" />
-    <Content Include="Views\Tickets\Edit.cshtml" />
     <Content Include="Views\Tickets\Index.cshtml" />
     <Content Include="Views\TicketAttahments\Create.cshtml" />
     <Content Include="Views\TicketAttahments\Delete.cshtml" />
@@ -1086,10 +1102,10 @@
     <Content Include="Views\Connections\Index.cshtml" />
     <Content Include="Views\Shared\_SideBar.cshtml" />
     <Content Include="Views\UserManagment\ViewAllUsers.cshtml" />
+    <Content Include="Views\UserManagment\UserProfile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Avatars\" />
     <Folder Include="Content\DefaultAvatars\" />
     <Folder Include="Content\Icons\" />
     <Folder Include="Uploads\" />

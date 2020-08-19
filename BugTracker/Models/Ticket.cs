@@ -29,7 +29,7 @@ namespace BugTracker.Models
 
         #region Actual Properties
         public string Issue { get; set; }
-        public  string IssueDiscription{ get; set; }
+        public  string IssueDescription { get; set; }
         public DateTime Created{ get; set; }
         public DateTime? Updated { get; set; }
         public bool IsResolved { get; set; }

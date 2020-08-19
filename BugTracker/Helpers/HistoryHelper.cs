@@ -17,7 +17,7 @@ namespace BugTracker.Helpers
             TicketPriorityIdChange(oldTicket, newTicket);
             TicketTicketStatusIdChange(oldTicket, newTicket);
             TickeTIssueChange(oldTicket, newTicket);
-            TicketTicketIssueDiscriptionChange(oldTicket, newTicket);
+            TicketTicketIssueDescriptionChange(oldTicket, newTicket);
             db.SaveChanges();
         }
         private void DeveloperUpdate(Ticket oldTicket, Ticket newTicket)
@@ -105,10 +105,10 @@ namespace BugTracker.Helpers
                 db.TicketHistories.Add(history);
             }
         }
-        private void TicketTicketIssueDiscriptionChange(Ticket oldTicket, Ticket newTicket)
+        private void TicketTicketIssueDescriptionChange(Ticket oldTicket, Ticket newTicket)
         {
 
-            if (oldTicket.IssueDiscription != newTicket.IssueDiscription)
+            if (oldTicket.IssueDescription != newTicket.IssueDescription)
             {
                 var history = new TicketHistory()
                 {
@@ -116,8 +116,8 @@ namespace BugTracker.Helpers
                     UserId = HttpContext.Current.User.Identity.GetUserId(),
                     ChangedOn = DateTime.Now,
                     Property = "TicketTypeId",
-                    OldValue = oldTicket.IssueDiscription,
-                    NewValue = newTicket.IssueDiscription
+                    OldValue = oldTicket.IssueDescription,
+                    NewValue = newTicket.IssueDescription
                 };
                 db.TicketHistories.Add(history);
             }

@@ -50,4 +50,10 @@ $('.example24').DataTable({
         'copy', 'csv', 'excel', 'pdf', 'print'
     ]
 });
+    $('.example25').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    });
 });
