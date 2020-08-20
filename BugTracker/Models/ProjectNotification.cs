@@ -7,11 +7,9 @@ namespace BugTracker.Models
 {
     public class ProjectNotification : Notification
     {
-        public int Id { get; set; }
         #region Parents/Children
-        public int ProjectId{ get; set; }
-        public virtual Project Project { get; set; }
-       
+        public int ProjectId { get; set; }
+        public virtual ApplicationUser User { get; set; }
         #endregion
     }
 }

@@ -11,6 +11,7 @@ namespace BugTracker.Models
         #region Parents/Children
         public virtual ICollection<Ticket> Tickets { get; set; }
         public virtual ICollection<ApplicationUser> Users { get; set; }
+        public virtual ICollection<ProjectHistory> Histories { get; set; }
         #endregion
 
         #region Actual Properties
@@ -27,6 +28,7 @@ namespace BugTracker.Models
         {
             Tickets = new HashSet<Ticket>();
             Users = new HashSet<ApplicationUser>();
+            Histories = new HashSet<ProjectHistory>();
 
         }
         #endregion

@@ -417,8 +417,8 @@ namespace BugTracker.Migrations
             
             #endregion
             context.SaveChanges();
-            
-
+            #region seed 
+            #endregion
         }
     }
 }

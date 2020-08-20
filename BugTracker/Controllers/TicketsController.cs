@@ -20,6 +20,7 @@ namespace BugTracker.Controllers
         private ProjectHelper projectHelper = new ProjectHelper();
         private TicketHelper ticketHelper = new TicketHelper();
         private HistoryHelper historyHelper = new HistoryHelper();
+        private NotificationHelper notificationHelper = new NotificationHelper();
         // GET: Tickets
         public ActionResult Index()
         {
@@ -83,7 +84,7 @@ namespace BugTracker.Controllers
                 ticket.SubmitterId = userId;
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
-                NotificationHelper.NewTicketNotification(ticket);
+                notificationHelper.NewTicketNotification(ticket);
                 return RedirectToAction("Index");
             }
             ViewBag.ProjectId = new SelectList(projectHelper.ListUserProjects(userId), "Id", "Name");

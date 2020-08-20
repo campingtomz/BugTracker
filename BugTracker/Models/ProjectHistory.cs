@@ -7,11 +7,9 @@ namespace BugTracker.Models
 {
     public class ProjectHistory : History
     {
-        public int Id { get; set; }
-      
+        public ApplicationUser User { get; set; }
         public int ProjectId { get; set; }
-        public virtual Project project { get; set; }
-
+        public virtual Project Project { get; set; }
 
     }
 }

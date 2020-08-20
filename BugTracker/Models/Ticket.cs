@@ -24,7 +24,6 @@ namespace BugTracker.Models
         public virtual ICollection<TicketAttachment> Attachments { get; set; }
         public virtual ICollection<TicketComment> Comments { get; set; }
         public virtual ICollection<TicketHistory> Histories { get; set; }
-        public virtual ICollection<TicketNotification> Notifications { get; set; }
         #endregion
 
         #region Actual Properties
@@ -44,7 +43,6 @@ namespace BugTracker.Models
             Attachments = new HashSet<TicketAttachment>();
             Comments = new HashSet<TicketComment>();
             Histories = new HashSet<TicketHistory>();
-            Notifications = new HashSet<TicketNotification>();
 
         }
 

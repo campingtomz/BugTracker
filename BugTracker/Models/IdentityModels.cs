@@ -19,7 +19,7 @@ namespace BugTracker.Models
         //public virtual ICollection<TicketHistory> Histories { get; set; }
         //public virtual ICollection<TicketNotification> TicketNotifications { get; set; }
         //public virtual ICollection<ProjectNotification> ProjectNotifications { get; set; }
-        public virtual ICollection<History> Histories { get; set; }
+        public virtual ICollection<UserHistory> Histories { get; set; }
         public virtual ICollection<Notification> Notifications { get; set; }
         public virtual ICollection<Connection> Connections { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
@@ -50,7 +50,7 @@ namespace BugTracker.Models
             //Histories = new HashSet<TicketHistory>();
             //TicketNotifications = new HashSet<TicketNotification>();
             //ProjectNotifications = new HashSet<ProjectNotification>();
-            Histories = new HashSet<History>();
+            Histories = new HashSet<UserHistory>();
             Notifications = new HashSet<Notification>();
             Comments = new HashSet<TicketComment>();
             Connections = new HashSet<Connection>();
@@ -82,18 +82,19 @@ namespace BugTracker.Models
         public DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<TicketStatus> TicketStatuses { get; set; }
         public DbSet<TicketPriority> TicketPriorities { get; set; }
-        public DbSet<BugTracker.Models.Project> Projects { get; set; }
-        public DbSet<BugTracker.Models.Ticket> Tickets { get; set; }
-        public DbSet<BugTracker.Models.TicketAttachment> TicketAttachments { get; set; }
-        public DbSet<BugTracker.Models.TicketComment> TicketComments { get; set; }
-        public DbSet<BugTracker.Models.TicketHistory> TicketHistories { get; set; }
-        public DbSet<BugTracker.Models.ProjectHistory> ProjectHistories { get; set; }
-        public DbSet<BugTracker.Models.TicketNotification> TicketNotifications { get; set; }
-        public DbSet<BugTracker.Models.ProjectNotification> ProjectNotifications { get; set; }
-        public DbSet<BugTracker.Models.Notification> Notifications { get; set; }
-        public DbSet<BugTracker.Models.AttachmentHistory> AttachmentHistories { get; set; }
-        public DbSet<BugTracker.Models.Connection> Connections { get; set; }
-        public DbSet<BugTracker.Models.Message> Messages { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<TicketAttachment> TicketAttachments { get; set; }
+        public DbSet<TicketComment> TicketComments { get; set; }
+        public DbSet<TicketHistory> TicketHistories { get; set; }
+        public DbSet<ProjectHistory> ProjectHistories { get; set; }
+        public DbSet<UserHistory> UserHistories { get; set; }
+        public DbSet<TicketNotification> TicketNotifications { get; set; }
+        public DbSet<ProjectNotification> ProjectNotifications { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<AttachmentHistory> AttachmentHistories { get; set; }
+        public DbSet<Connection> Connections { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
     }
 }

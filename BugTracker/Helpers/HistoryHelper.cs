@@ -15,26 +15,33 @@ namespace BugTracker.Helpers
             DeveloperUpdate(oldTicket, newTicket);
             TicketTypeIdChange(oldTicket, newTicket);
             TicketPriorityIdChange(oldTicket, newTicket);
-            TicketTicketStatusIdChange(oldTicket, newTicket);
+            TicketStatusIdChange(oldTicket, newTicket);
             TickeTIssueChange(oldTicket, newTicket);
             TicketTicketIssueDescriptionChange(oldTicket, newTicket);
             db.SaveChanges();
+        }
+        private void CreateHistory(Ticket newTicket, string oldValue, string newValue, string property)
+        {
+            var user = db.Users.Find(HttpContext.Current.User.Identity.GetUserId());
+            var history = new TicketHistory()
+            {
+
+                TicketId = newTicket.Id,
+                User = user,
+                UserId = user.Id,
+                ChangedOn = DateTime.Now,
+                Property = property,
+                OldValue = oldValue,
+                NewValue = newValue
+            };
+            db.TicketHistories.Add(history);
         }
         private void DeveloperUpdate(Ticket oldTicket, Ticket newTicket)
         {
 
             if (oldTicket.DeveloperId != newTicket.DeveloperId)
             {
-                var history = new TicketHistory()
-                {
-                    TicketId = newTicket.Id,
-                    UserId = HttpContext.Current.User.Identity.GetUserId(),
-                    ChangedOn = DateTime.Now,
-                    Property = "DeveloperId",
-                    OldValue = oldTicket.DeveloperId,
-                    NewValue = newTicket.DeveloperId
-                };
-                db.TicketHistories.Add(history);
+                CreateHistory(newTicket, oldTicket.Developer.FullName, newTicket.Developer.FullName, "Developer" );
             }
         }
         private void TicketTypeIdChange(Ticket oldTicket, Ticket newTicket)
@@ -42,50 +49,20 @@ namespace BugTracker.Helpers
 
             if (oldTicket.TicketTypeId != newTicket.TicketTypeId)
             {
-                var history = new TicketHistory()
-                {
-                    TicketId = newTicket.Id,
-                    UserId = HttpContext.Current.User.Identity.GetUserId(),
-                    ChangedOn = DateTime.Now,
-                    Property = "Ticket Type",
-                    OldValue = oldTicket.TicketType.Name,
-                    NewValue = newTicket.TicketType.Name
-                };
-                db.TicketHistories.Add(history);
+                CreateHistory(newTicket, oldTicket.TicketType.Name, newTicket.TicketType.Name, "Ticket Type");
             }
         }
         private void TicketPriorityIdChange(Ticket oldTicket, Ticket newTicket)
         {
 
-            if (oldTicket.TicketPriorityId != newTicket.TicketPriorityId)
-            {
-                var history = new TicketHistory()
-                {
-                    TicketId = newTicket.Id,
-                    UserId = HttpContext.Current.User.Identity.GetUserId(),
-                    ChangedOn = DateTime.Now,
-                    Property = "Ticket Priority",
-                    OldValue = oldTicket.TicketPriority.Name,
-                    NewValue = newTicket.TicketPriority.Name
-                };
-                db.TicketHistories.Add(history);
-            }
+            CreateHistory(newTicket, oldTicket.TicketPriority.Name, newTicket.TicketPriority.Name, "Ticket Priority");
         }
-        private void TicketTicketStatusIdChange(Ticket oldTicket, Ticket newTicket)
+        private void TicketStatusIdChange(Ticket oldTicket, Ticket newTicket)
         {
 
             if (oldTicket.TicketStatusId != newTicket.TicketStatusId)
             {
-                var history = new TicketHistory()
-                {
-                    TicketId = newTicket.Id,
-                    UserId = HttpContext.Current.User.Identity.GetUserId(),
-                    ChangedOn = DateTime.Now,
-                    Property = "Ticket Status",
-                    OldValue = oldTicket.TicketStatus.Name,
-                    NewValue = newTicket.TicketStatus.Name
-                };
-                db.TicketHistories.Add(history);
+                CreateHistory(newTicket, oldTicket.TicketStatus.Name, newTicket.TicketStatus.Name, "Ticket Status");
             }
         }
         private void TickeTIssueChange(Ticket oldTicket, Ticket newTicket)
@@ -93,16 +70,7 @@ namespace BugTracker.Helpers
 
             if (oldTicket.Issue != newTicket.Issue)
             {
-                var history = new TicketHistory()
-                {
-                    TicketId = newTicket.Id,
-                    UserId = HttpContext.Current.User.Identity.GetUserId(),
-                    ChangedOn = DateTime.Now,
-                    Property = "Issue",
-                    OldValue = oldTicket.Issue,
-                    NewValue = newTicket.Issue
-                };
-                db.TicketHistories.Add(history);
+                CreateHistory(newTicket, oldTicket.Issue, newTicket.Issue, "Issue");
             }
         }
         private void TicketTicketIssueDescriptionChange(Ticket oldTicket, Ticket newTicket)
@@ -110,16 +78,7 @@ namespace BugTracker.Helpers
 
             if (oldTicket.IssueDescription != newTicket.IssueDescription)
             {
-                var history = new TicketHistory()
-                {
-                    TicketId = newTicket.Id,
-                    UserId = HttpContext.Current.User.Identity.GetUserId(),
-                    ChangedOn = DateTime.Now,
-                    Property = "TicketTypeId",
-                    OldValue = oldTicket.IssueDescription,
-                    NewValue = newTicket.IssueDescription
-                };
-                db.TicketHistories.Add(history);
+                CreateHistory(newTicket, oldTicket.IssueDescription, newTicket.IssueDescription,"Issue Description");
             }
         }
         #endregion
