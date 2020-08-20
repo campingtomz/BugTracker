@@ -174,6 +174,15 @@ namespace BugTracker.Helpers
                     return null;
             }
         }
+        public List<ApplicationUser> ListTicketUsers(int TicketId)
+        {
+            var UserList = new List<ApplicationUser>();
+            var ticket = db.Tickets.Find(TicketId);
+            UserList.Add(ticket.Developer);
+            UserList.Add(ticket.Submitter);
+            UserList.Add(projectHelper.ListUserOnProjectInRole(ticket.ProjectId, "ProjectManager").FirstOrDefault()) ;
+            return UserList;
+        }
         //gets all the tickets assigned to the  logged in user. 
         public List<Ticket> GetMyTickets()
         {

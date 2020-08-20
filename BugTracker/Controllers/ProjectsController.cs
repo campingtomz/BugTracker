@@ -108,8 +108,6 @@ namespace BugTracker.Controllers
                 project.IsArchive = false;
                 db.Projects.Add(project);
                 db.SaveChanges();
-                notificationHelper.NewProjectCreated(project);
-
                 projectHelper.AddUserToProject(model.ProjectManagerId, project.Id);
                 foreach (var userId in model.DeveloperIds)
                 {
@@ -119,7 +117,7 @@ namespace BugTracker.Controllers
                 {
                     projectHelper.AddUserToProject(userId, project.Id);
                 }
-
+                notificationHelper.NewProjectCreated(project);
                 return RedirectToAction("Index");
             }
             else
@@ -132,8 +130,6 @@ namespace BugTracker.Controllers
                 return View(model);
             }
         }
-
-
         // GET: Projects/Edit/5
         public ActionResult Edit(int? id, string userId, int? AddRemoveUser)
         {
@@ -180,7 +176,7 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Project project, string ProjectManagers)
         {
-
+            var oldProject = db.Projects.AsNoTracking().FirstOrDefault(p => p.Id == project.Id);
             //projectVM.projectValue.IsArchive = false;
             db.Entry(project).State = EntityState.Modified;
             db.SaveChanges();
@@ -190,7 +186,9 @@ namespace BugTracker.Controllers
                 projectHelper.RemoveUserFromProject(projectPm.FirstOrDefault().Id, project.Id);
             }
             projectHelper.AddUserToProject(ProjectManagers, project.Id);
+            var newProject = db.Projects.AsNoTracking().FirstOrDefault(p => p.Id == project.Id);
 
+            projectHelper.ProjectEdits(oldProject, newProject);
             return RedirectToAction("Index"); 
         }
 

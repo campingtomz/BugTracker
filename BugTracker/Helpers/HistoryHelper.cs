@@ -41,7 +41,7 @@ namespace BugTracker.Helpers
 
             if (oldTicket.DeveloperId != newTicket.DeveloperId)
             {
-                CreateHistory(newTicket, oldTicket.Developer.FullName, newTicket.Developer.FullName, "Developer" );
+                CreateHistory(newTicket, oldTicket.Developer.FullName, newTicket.Developer.FullName, "Developer");
             }
         }
         private void TicketTypeIdChange(Ticket oldTicket, Ticket newTicket)
@@ -78,7 +78,7 @@ namespace BugTracker.Helpers
 
             if (oldTicket.IssueDescription != newTicket.IssueDescription)
             {
-                CreateHistory(newTicket, oldTicket.IssueDescription, newTicket.IssueDescription,"Issue Description");
+                CreateHistory(newTicket, oldTicket.IssueDescription, newTicket.IssueDescription, "Issue Description");
             }
         }
         #endregion
@@ -95,16 +95,79 @@ namespace BugTracker.Helpers
                 FileName = oldAttachment.FileName
             };
             db.AttachmentHistories.Add(history);
+            db.SaveChanges();
         }
         #endregion
 
         #region Ticket Commnet Methods
         #endregion
         #region project History
-        //public void ProjectEdit(Project oldProject, Project newProject)
-        //{
+        public void ProjectHistoriesEdit(Project oldProject, Project newProject)
+        {
+            ProjectUsersChanged(oldProject, newProject);
+            ProjectDescriptionChange(oldProject, newProject);
+            ProjectNameChange(oldProject, newProject);
+            db.SaveChanges();
+        }
+        private void ProjectUsersChanged(Project oldProject, Project newProject)
+        {
+            var addedUsers = newProject.Users.Except(oldProject.Users);
+            var removedUsers = oldProject.Users.Except(newProject.Users);
+            foreach (var user in addedUsers)
+            {
+                var NewHistory = new ProjectHistory()
+                {
+                    ProjectId = newProject.Id,
+                    UserId = HttpContext.Current.User.Identity.GetUserId(),
+                    ChangedOn = DateTime.Now,
+                    Property = $"User added to: {newProject.Name}",
+                    OldValue = "",
+                    NewValue = $"{user.Email}"
+                };
+                db.ProjectHistories.Add(NewHistory);
+            }
+            foreach (var user in removedUsers)
+            {
+                var NewHistory = new ProjectHistory()
+                {
+                    ProjectId = newProject.Id,
+                    UserId = HttpContext.Current.User.Identity.GetUserId(),
+                    ChangedOn = DateTime.Now,
+                    Property = $"User removed to: {newProject.Name}",
+                    OldValue = "",
+                    NewValue = $"{user.Email}"
+                };
+                db.ProjectHistories.Add(NewHistory);
+            }
 
-        //}
+        }
+        private void ProjectDescriptionChange(Project oldProject, Project newProject)
+        {
+            var NewHistory = new ProjectHistory()
+            {
+                ProjectId = newProject.Id,
+                UserId = HttpContext.Current.User.Identity.GetUserId(),
+                ChangedOn = DateTime.Now,
+                Property = "Description",
+                OldValue = oldProject.Description,
+                NewValue = newProject.Description
+            };
+            db.ProjectHistories.Add(NewHistory);
+        }
+        private void ProjectNameChange(Project oldProject, Project newProject)
+        {
+            var NewHistory = new ProjectHistory()
+            {
+                ProjectId = newProject.Id,
+                UserId = HttpContext.Current.User.Identity.GetUserId(),
+                ChangedOn = DateTime.Now,
+                Property = "Description",
+                OldValue = oldProject.Name,
+                NewValue = newProject.Name
+            };
+            db.ProjectHistories.Add(NewHistory);
+        }
+
         #endregion
         #region user History
         #endregion

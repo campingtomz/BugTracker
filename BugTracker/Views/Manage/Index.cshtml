@@ -212,7 +212,7 @@
                                                         <td>@Html.Label(notification.Created.ToString("MMM dd yyyy"))</td>
                                                         @if (notification.NotificationType == "Project")
                                                         {
-                                                            <td> @Html.ActionLink("View Project", "Details", "Projects", new { id = ProjectId }, null)</td>
+                                                            <td> @Html.ActionLink("View Project", "Details", "Projects", new { id = notification.ProjectId }, null)</td>
                                                         }
                                                     </tr>
                                                 }

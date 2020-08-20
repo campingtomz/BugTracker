@@ -11,6 +11,7 @@ namespace BugTracker.Models
 
         #region Parents/Children
         public int TicketId { get; set; }
+
         public virtual ApplicationUser User { get; set; }
 
         #endregion

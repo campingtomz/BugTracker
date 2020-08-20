@@ -12,6 +12,8 @@ namespace BugTracker.Helpers
         //new access to the database 
         private ApplicationDbContext db = new ApplicationDbContext();
         private UserRoleHelper userRoleHelper = new UserRoleHelper();
+        private NotificationHelper notificationHelper = new NotificationHelper();
+        private HistoryHelper historyHelper = new HistoryHelper();
         public bool CanCreateProject()
         {
             var userId = HttpContext.Current.User.Identity.GetUserId();
@@ -135,5 +137,11 @@ namespace BugTracker.Helpers
             return resultList;
         }
     
+        public void ProjectEdits(Project oldProject, Project newProject)
+        {
+            historyHelper.ProjectHistoriesEdit( oldProject,  newProject);
+            notificationHelper.ProjectChangedNotification(oldProject, newProject);
+        }
+        
     }
 }

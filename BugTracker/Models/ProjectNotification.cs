@@ -9,6 +9,7 @@ namespace BugTracker.Models
     {
         #region Parents/Children
         public int ProjectId { get; set; }
+
         public virtual ApplicationUser User { get; set; }
         #endregion
     }

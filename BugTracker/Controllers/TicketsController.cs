@@ -132,6 +132,7 @@ namespace BugTracker.Controllers
                 db.Entry(ticket).State = EntityState.Modified;
                 db.SaveChanges();
                 var newTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
+
                 ticketHelper.TicketEdit(oldTicket, newTicket);
                
                 return RedirectToAction("Index");
