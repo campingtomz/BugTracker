@@ -83,7 +83,7 @@
                                         <td>@project.DueDate.ToString("MMM dd yyyy")</td>
                                         <td>@project.Tickets.Count</td>
                                         <td>
-                                            @if (projectHelper.CanEditProject())
+                                            @if (User.IsInRole("Admin"))
                                             {
                                                 @Html.ActionLink("Edit", "Edit", new { id = project.Id }) <span>|</span>
                                             }

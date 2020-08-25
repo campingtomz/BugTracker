@@ -16,9 +16,15 @@ namespace BugTracker.Helpers
         private TicketHelper ticketHelper = new TicketHelper();
 
         #region general Notification methods
-        public void NotificationRead(int notificationId)
+        public void TicketNotificationRead(int notificationId)
         {
-            var notification = GetNotification(notificationId);
+            var notification = GetTicketNotification(notificationId);
+            notification.IsRead = true;
+            db.SaveChanges();
+        }
+        public void ProjectNotificationRead(int notificationId)
+        {
+            var notification = GetProjectNotification(notificationId);
             notification.IsRead = true;
             db.SaveChanges();
         }
@@ -45,7 +51,6 @@ namespace BugTracker.Helpers
                         Created = DateTime.Now,
                         Subject = $"Ticket Id: {ticket.Id} Has been Closed",
                         Message = $"Hello, {user.FullName} you have been assigned to Ticket: {ticket.Issue} on Project {ticket.project.Name}",
-                        NotificationType = "Ticket"
                     };
                     db.TicketNotifications.Add(newNotification);
                 }
@@ -64,7 +69,6 @@ namespace BugTracker.Helpers
                     Created = DateTime.Now,
                     Subject = $"New Assignment to Ticket Id: {newTicket.Id}",
                     Message = $"Hello, {newTicket.Developer.FullName} you have been assigned to Ticket: {newTicket.Issue} on Project {newTicket.project.Name}",
-                    NotificationType = "Ticket"
                 };
                 db.TicketNotifications.Add(newNotification);
             }
@@ -78,7 +82,6 @@ namespace BugTracker.Helpers
                     Created = DateTime.Now,
                     Subject = $"Removed from Id: {newTicket.Id}",
                     Message = $"Hello, {oldTicket.Developer.FullName} you have been Removed from Ticket: {newTicket.Issue} on Project {newTicket.project.Name}",
-                    NotificationType = "Ticket"
                 };
                 db.TicketNotifications.Add(newNotification);
             }
@@ -98,7 +101,6 @@ namespace BugTracker.Helpers
                     Created = DateTime.Now,
                     Subject = $"New Comment Added to  {newComment.TicketId}",
                     Message = $"Hello {user.FullName}, A new Comment has been added to the Ticket: {newComment.TicketId}, by {CurrUser.FullName}",
-                    NotificationType = "Ticket"
                 };
                 db.TicketNotifications.Add(newNotification);
             }
@@ -118,7 +120,6 @@ namespace BugTracker.Helpers
                     Created = DateTime.Now,
                     Subject = $"New Comment Added to  {newAttachment.TicketId}",
                     Message = $"Hello {user.FullName}, A new Comment has been added to the Ticket: {newAttachment.TicketId}, by {CurrUser.FullName}",
-                    NotificationType = "Ticket"
                 };
                 db.TicketNotifications.Add(newNotification);
             }
@@ -140,30 +141,33 @@ namespace BugTracker.Helpers
             db.SaveChanges();
         }
         #endregion
-        public Notification GetNotification(int notificationId)
+        public ProjectNotification GetProjectNotification(int notificationId)
         {
-            return db.Notifications.Find(notificationId);
+            return db.ProjectNotifications.Find(notificationId);
+        }
+        public TicketNotification GetTicketNotification(int notificationId)
+        {
+            return db.TicketNotifications.Find(notificationId);
         }
         #region Project Notification Methods
-        public void ProjectChangedNotification(Project oldProject, Project newProject)
+        public void ProjectChangedNotification(Project oldProject, Project newProject, List<ApplicationUser> OldUserList)
         {
-            ProjectUserChange(oldProject, newProject);
+            ProjectUserChange(oldProject, OldUserList);
             db.SaveChanges();
         }
-        public void ProjectUserChange(Project oldProject, Project newProject)
+        public void ProjectUserChange(Project project, List<ApplicationUser> OldUserList)
         {
-            var addedUsers = newProject.Users.Except(oldProject.Users);
-            var removedUsers = oldProject.Users.Except(newProject.Users);
+            var addedUsers = project.Users.Except(OldUserList);
+            var removedUsers = OldUserList.Except(project.Users);
             foreach (var user in addedUsers)
             {
                 var newNotification = new ProjectNotification()
                 {
-                    ProjectId = newProject.Id,
+                    ProjectId = project.Id,
                     UserId = user.Id,
                     Created = DateTime.Now,
-                    Subject = $"Added to Project: {newProject.Name}",
-                    Message = $"Hello, {user.FullName} you have been Added to the project: {newProject.Name}",
-                    NotificationType = "Project"
+                    Subject = $"Added to Project: {project.Name}",
+                    Message = $"Hello, {user.FullName} you have been Added to the project: {project.Name}",
                 };
                 db.ProjectNotifications.Add(newNotification);
             }
@@ -171,12 +175,11 @@ namespace BugTracker.Helpers
             {
                 var newNotification = new ProjectNotification()
                 {
-                    ProjectId = newProject.Id,
+                    ProjectId = project.Id,
                     UserId = user.Id,
                     Created = DateTime.Now,
-                    Subject = $"Removed from Project: {newProject.Name}",
-                    Message = $"Hello, {user.FullName} you have been removed from the project: {newProject.Name}",
-                    NotificationType = "Project"
+                    Subject = $"Removed from Project: {project.Name}",
+                    Message = $"Hello, {user.FullName} you have been removed from the project: {project.Name}",
                 };
                 db.ProjectNotifications.Add(newNotification);
             }
@@ -196,13 +199,24 @@ namespace BugTracker.Helpers
                     Created = DateTime.Now,
                     Subject = $"Added to Project Id: {project.Id}",
                     Message = $"Hello, {user.FullName} you have been Added to the project: {project.Name}",
-                    NotificationType = "Project"
+              
                 };
                 db.ProjectNotifications.Add(newNotification);
 
             }
             db.SaveChanges();
+
         }
+        
         #endregion
+
+        public Ticket getTicket(int ticketId)
+        {
+            return db.Tickets.Find(ticketId);
+        }
+        public Project getProject(int ProjectId)
+        {
+            return db.Projects.Find(ProjectId);
+        }
     }
 }

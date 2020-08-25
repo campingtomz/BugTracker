@@ -133,8 +133,9 @@ namespace BugTracker.Controllers
                 db.SaveChanges();
                 var newTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
 
-                ticketHelper.TicketEdit(oldTicket, newTicket);
-               
+                //ticketHelper.TicketEdit(oldTicket, newTicket);
+                historyHelper.TicketHistoryEdit(oldTicket, newTicket);
+                notificationHelper.TicketChangeNotification(oldTicket, newTicket);
                 return RedirectToAction("Index");
             }
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);

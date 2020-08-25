@@ -12,8 +12,8 @@ namespace BugTracker.Helpers
         private ApplicationDbContext db = new ApplicationDbContext();
         private UserRoleHelper userRoleHelper = new UserRoleHelper();
         private ProjectHelper projectHelper = new ProjectHelper();
-        private HistoryHelper historyHelper = new HistoryHelper();
-        private NotificationHelper notificationHelper = new NotificationHelper();
+        //private HistoryHelper historyHelper = new HistoryHelper();
+        //private NotificationHelper notificationHelper = new NotificationHelper();
 
         #region ticket Permission methods
         public bool CanEditTicket(int ticketId)
@@ -253,11 +253,11 @@ namespace BugTracker.Helpers
             return ticketTypes;
         }
         #region tickethistory and notifications
-        public void TicketEdit(Ticket oldTicket, Ticket newTicket)
-        {
-            historyHelper.TicketHistoryEdit(oldTicket, newTicket);
-            notificationHelper.TicketChangeNotification(oldTicket, newTicket);
-        }
+        //public void TicketEdit(Ticket oldTicket, Ticket newTicket)
+        //{
+        //    historyHelper.TicketHistoryEdit(oldTicket, newTicket);
+        //    notificationHelper.TicketChangeNotification(oldTicket, newTicket);
+        //}
         #endregion
         //public void ManageTicketNotifications(Ticket oldTicket, Ticket newTicket)
         //{

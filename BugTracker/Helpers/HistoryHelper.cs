@@ -22,19 +22,19 @@ namespace BugTracker.Helpers
         }
         private void CreateHistory(Ticket newTicket, string oldValue, string newValue, string property)
         {
-            var user = db.Users.Find(HttpContext.Current.User.Identity.GetUserId());
+            var userId = HttpContext.Current.User.Identity.GetUserId();
             var history = new TicketHistory()
             {
 
                 TicketId = newTicket.Id,
-                User = user,
-                UserId = user.Id,
+                UserId = userId,
                 ChangedOn = DateTime.Now,
                 Property = property,
                 OldValue = oldValue,
                 NewValue = newValue
             };
             db.TicketHistories.Add(history);
+            db.SaveChanges();
         }
         private void DeveloperUpdate(Ticket oldTicket, Ticket newTicket)
         {
@@ -118,7 +118,7 @@ namespace BugTracker.Helpers
                 var NewHistory = new ProjectHistory()
                 {
                     ProjectId = newProject.Id,
-                    UserId = HttpContext.Current.User.Identity.GetUserId(),
+                    User = db.Users.Find(HttpContext.Current.User.Identity.GetUserId()),
                     ChangedOn = DateTime.Now,
                     Property = $"User added to: {newProject.Name}",
                     OldValue = "",
@@ -131,7 +131,7 @@ namespace BugTracker.Helpers
                 var NewHistory = new ProjectHistory()
                 {
                     ProjectId = newProject.Id,
-                    UserId = HttpContext.Current.User.Identity.GetUserId(),
+                    User = db.Users.Find(HttpContext.Current.User.Identity.GetUserId()),
                     ChangedOn = DateTime.Now,
                     Property = $"User removed to: {newProject.Name}",
                     OldValue = "",
@@ -170,6 +170,17 @@ namespace BugTracker.Helpers
 
         #endregion
         #region user History
+        //public void CheckUserEdits(ApplicationUser oldUser, ApplicationUser newUser)
+        //{
+
+        //}
+        //private void FirstNameChange(ApplicationUser oldUser, ApplicationUser newUser)
+        //{
+        //    if (oldUser.FristName != newUser.OldName)
+        //    {
+
+        //    }
+        //}
         #endregion
     }
 }

@@ -16,11 +16,11 @@ namespace BugTracker.Models
         public virtual ICollection<Project> Projects { get; set; }
         public virtual ICollection<TicketAttachment> Attachments { get; set; }
         public virtual ICollection<TicketComment> Comments { get; set; }
-        //public virtual ICollection<TicketHistory> Histories { get; set; }
-        //public virtual ICollection<TicketNotification> TicketNotifications { get; set; }
-        //public virtual ICollection<ProjectNotification> ProjectNotifications { get; set; }
-        public virtual ICollection<UserHistory> Histories { get; set; }
-        public virtual ICollection<Notification> Notifications { get; set; }
+        public virtual ICollection<TicketHistory> TicketHistories { get; set; }
+        public virtual ICollection<ProjectHistory> ProjectHistories { get; set; }
+        public virtual ICollection<UserHistory> UserHistories { get; set; }
+        public virtual ICollection<TicketNotification> TicketNotifications { get; set; }
+        public virtual ICollection<ProjectNotification> ProjectNotifications { get; set; }
         public virtual ICollection<Connection> Connections { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
 
@@ -47,11 +47,11 @@ namespace BugTracker.Models
         {
             Projects = new HashSet<Project>();
             Attachments = new HashSet<TicketAttachment>();
-            //Histories = new HashSet<TicketHistory>();
-            //TicketNotifications = new HashSet<TicketNotification>();
-            //ProjectNotifications = new HashSet<ProjectNotification>();
-            Histories = new HashSet<UserHistory>();
-            Notifications = new HashSet<Notification>();
+            TicketHistories = new HashSet<TicketHistory>();
+            ProjectHistories = new HashSet<ProjectHistory>();
+            UserHistories = new HashSet<UserHistory>();
+            TicketNotifications = new HashSet<TicketNotification>();
+            ProjectNotifications = new HashSet<ProjectNotification>();            
             Comments = new HashSet<TicketComment>();
             Connections = new HashSet<Connection>();
             Messages = new HashSet<Message>();
@@ -91,7 +91,6 @@ namespace BugTracker.Models
         public DbSet<UserHistory> UserHistories { get; set; }
         public DbSet<TicketNotification> TicketNotifications { get; set; }
         public DbSet<ProjectNotification> ProjectNotifications { get; set; }
-        public DbSet<Notification> Notifications { get; set; }
         public DbSet<AttachmentHistory> AttachmentHistories { get; set; }
         public DbSet<Connection> Connections { get; set; }
         public DbSet<Message> Messages { get; set; }

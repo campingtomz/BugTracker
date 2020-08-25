@@ -191,7 +191,7 @@
                     <div class="tab-pane " id="Notifiations" role="tabpanel">
                         <div class="card-body">
                             <div class="row">
-                                @if (user.Notifications.Count > 0)
+                                @if (user.TicketNotifications.Count > 0)
                                 {
                                     <div class="table-responsive m-t-40">
                                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
@@ -204,7 +204,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach (var notification in user.Notifications)
+                                                @foreach (var notification in user.TicketNotifications)
                                                 {
                                                     <tr>
                                                         <td>@notification.Subject</td>
@@ -212,7 +212,7 @@
                                                         <td>@Html.Label(notification.Created.ToString("MMM dd yyyy"))</td>
                                                         @if (notification.NotificationType == "Project")
                                                         {
-                                                            <td> @Html.ActionLink("View Project", "Details", "Projects", new { id = notification.ProjectId }, null)</td>
+                                                            <td> @Html.ActionLink("View Ticket", "Details", "Projects", new { id = notification.TicketId }, null)</td>
                                                         }
                                                     </tr>
                                                 }
@@ -227,7 +227,7 @@
                     </div>
                     <div class="tab-pane tabcontent-border" id="histories" role="tabpanel">
                         <div class="card-body">
-                            @if (user.Histories.Count > 0)
+                            @if (user.UserHistories.Count > 0)
                             {
                                 <div class="row ">
                                     <div class="col-12">
@@ -244,7 +244,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach (var history in user.Histories.ToList())
+                                                        @foreach (var history in user.UserHistories.ToList())
                                                         {
                                                             <tr>
                                                                 <th>@history.User.FullName</th>

@@ -203,6 +203,7 @@
     <Compile Include="Helpers\ImageUploadValidator.cs" />
     <Compile Include="Helpers\NotificationHelper.cs" />
     <Compile Include="Helpers\ProjectHelper.cs" />
+    <Compile Include="Helpers\SeedHelper.cs" />
     <Compile Include="Helpers\Slugger.cs" />
     <Compile Include="Helpers\StringUtilities.cs" />
     <Compile Include="Helpers\TicketHelper.cs" />
@@ -214,11 +215,9 @@
     <Compile Include="Models\AttachmentHistory.cs" />
     <Compile Include="Models\Connection.cs" />
     <Compile Include="Models\EmailModel.cs" />
-    <Compile Include="Models\History.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Message.cs" />
-    <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\Project.cs" />
     <Compile Include="Models\ProjectHistory.cs" />
     <Compile Include="Models\ProjectNotification.cs" />
@@ -239,6 +238,10 @@
     <Compile Include="ViewModels\ProjectWizardVM.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Avatars\cf637332187507735803.PNG" />
+    <Content Include="Avatars\cf637332187991905727.PNG" />
+    <Content Include="Avatars\cf637332194652357593.PNG" />
+    <Content Include="Avatars\cf637333593126346913.PNG" />
     <Content Include="Avatars\DemoUserAvatars\1.jpg" />
     <Content Include="Avatars\DemoUserAvatars\2.jpg" />
     <Content Include="Avatars\DemoUserAvatars\3.jpg" />
@@ -253,6 +256,9 @@
     <Content Include="Avatars\DemoUserAvatars\d4.jpg" />
     <Content Include="Avatars\DemoUserAvatars\d5.jpg" />
     <Content Include="Avatars\DemoUserAvatars\profile.png" />
+    <Content Include="Avatars\factorial637332185411015962.PNG" />
+    <Content Include="Avatars\factorial637332187245987455.PNG" />
+    <Content Include="Avatars\fizzbuzz637332184483528946.PNG" />
     <Content Include="Content\Fonts\dropify.eot" />
     <Content Include="Content\Fonts\dropify.ttf" />
     <Content Include="Content\Fonts\dropify.woff" />
@@ -287,6 +293,7 @@
     <Content Include="Content\Fonts\dropify.svg" />
     <Content Include="Content\images\switch.png" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Images\Default_Avatar.png" />
     <Content Include="Scripts\bootstrap-select.min.js" />
     <Content Include="Scripts\bootstrap-tagsinput.min.js" />
     <Content Include="Scripts\chat.js" />
@@ -1104,6 +1111,7 @@
     <Content Include="Views\Shared\_SideBar.cshtml" />
     <Content Include="Views\UserManagment\ViewAllUsers.cshtml" />
     <Content Include="Views\UserManagment\UserProfile.cshtml" />
+    <None Include="Properties\PublishProfiles\TZRogueBugTracker - Web Deploy.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

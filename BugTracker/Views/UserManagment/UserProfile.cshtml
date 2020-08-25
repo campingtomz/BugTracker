@@ -7,6 +7,7 @@
 @{ var userRoleHelper = new UserRoleHelper(); }
 @{ var projectHelper = new ProjectHelper();
     var ticketHelper = new TicketHelper();
+    var notificationHelper = new NotificationHelper();
 }
 
 <div class="container-fluid p-t-10">
@@ -23,7 +24,7 @@
                         <img src="@Model.AvatarPath" class="img-circle" width="150" />
                         <h4 class="card-title m-t-10">@Model.FullName</h4>
                         <h6 class="card-subtitle">@userRoleHelper.ListUserRoles(Model.Id).FirstOrDefault()</h6>
-                       
+
                     </center>
                 </div>
                 <div>
@@ -181,7 +182,7 @@
                     <div class="tab-pane " id="Notifiations" role="tabpanel">
                         <div class="card-body">
                             <div class="row">
-                                @if (Model.Notifications.Count > 0)
+                                @if (Model.TicketNotifications.Count > 0)
                                 {
                                     <div class="table-responsive m-t-40">
                                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
@@ -189,44 +190,71 @@
                                                 <tr>
                                                     <th>Project Name</th>
                                                     <th>Project Manager</th>
-                                                    <th>Project Created Date</th>
-                                                    <th>Project Due Date</th>
-                                                    <th>Number Of Tickets</th>
+                                                    <th>Ticket Number</th>
+                                                    <th>Subject</th>
+                                                    <th>Message</th>
+                                                    <th>Date Created</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach (var Notifications in Model.Notifications)
+                                                @foreach (var Notifications in Model.TicketNotifications)
+                                                { var ticket = notificationHelper.getTicket(Notifications.TicketId);
+                                                <tr>
+                                                    <td><a href="@Url.Action("Details", "Projects", new { id = ticket.project.Id })"> @ticket.project.Name</a></td>
+                                                    <td>@projectHelper.ListUserOnProjectInRole(ticket.project.Id, "ProjectManager")</td>
+                                                    <td><a href="@Url.Action("Dashboard", "Tickets", new { id = ticket.Id })"> @ticket.Id</a></td>
+                                                    <td>@Notifications.Subject</td>
+                                                    <td>@Notifications.Message</td>
+                                                    <td>@Notifications.Created.ToString("MMM dd yyyy")</td>
+                                                </tr>
+                                                
+                                            }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    }
+                                    else
+                                    { <h4 class="card-title">No Projecst are assigned to this user</h4>}
+                            </div>
+                            <div class="row">
+                                @if (Model.ProjectNotifications.Count > 0)
+                                {
+                                    <div class="table-responsive m-t-40">
+                                        <table class=" example26 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Project Name</th>
+                                                    <th>Project Manager</th>
+                                                    <th>Subject</th>
+                                                    <th>Message</th>
+                                                    <th>Date Created</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var Notifications in Model.ProjectNotifications)
                                                 {
-                                                    @*<tr>
-                                                            <td><a href="@Url.Action("Details", "Projects", new { id = Notifications.Id })"> @Notifications.Name</a></td>
+                                                    var project = notificationHelper.getProject(Notifications.ProjectId);
+                                                    <tr>
+                                                        <td><a href="@Url.Action("Details", "Projects", new { id = project.Id })"> @project.Name</a></td>
+                                                        <td>@projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager")</td>
+                                                        <td>@Notifications.Subject</td>
+                                                        <td>@Notifications.Message</td>
+                                                        <td>@Notifications.Created.ToString("MMM dd yyyy")</td>
+                                                    </tr>
 
-                                                            <td>
-                                                                @{var projectManager = projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager"); }
-                                                                @if (projectManager != null)
-                                                                {
-                                                                    @Html.Label(projectManager.FirstOrDefault().FullName) }
-                                                                else
-                                                                {
-                                                                    <span>No Project Manager Assigned</span>
-                                                                }
-                                                            </td>
-                                                            <td>@Html.Label(project.Created.ToString("MMM dd yyyy"))</td>
-                                                            <td>@Html.Label(project.DueDate.ToString("MMM dd yyyy"))</td>
-                                                            <td>@project.Tickets.Count</td>
-                                                        </tr>*@
                                                 }
                                             </tbody>
-                                        </table>
-                                    </div>
-                                }
-                                else
-                                { <h4 class="card-title">No Projecst are assigned to this user</h4>}
+                                            </table>
+                                        </div>
+                                    }
+                                    else
+                                    { <h4 class="card-title">No Projecst are assigned to this user</h4>}
                             </div>
                         </div>
                     </div>
                     <div class="tab-pane tabcontent-border" id="histories" role="tabpanel">
                         <div class="card-body">
-                            @if (Model.Histories.Count > 0)
+                            @if (Model.UserHistories.Count > 0)
                             {
                                 <div class="row ">
                                     <div class="col-12">
@@ -243,7 +271,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach (var history in Model.Histories.ToList())
+                                                        @foreach (var history in Model.UserHistories.ToList())
                                                         {
                                                             <tr>
                                                                 <th>@history.User.FullName</th>

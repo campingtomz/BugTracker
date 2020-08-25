@@ -14,6 +14,10 @@ namespace BugTracker.Migrations
     {
         public Configuration()
         {
+            //if (System.Diagnostics.Debugger.IsAttached == false)
+            //{
+            //    System.Diagnostics.Debugger.Launch();
+            //}
             AutomaticMigrationsEnabled = true;
         }
         private Tuple<string, string> generateRandomName()
@@ -33,6 +37,8 @@ namespace BugTracker.Migrations
             UserRoleHelper roleHelper = new UserRoleHelper();
             ProjectHelper projectHelper = new ProjectHelper();
             TicketHelper ticketHelper = new TicketHelper();
+            SeedHelper seedHelper = new SeedHelper();
+            var rand = new Random();
             #region User Roles
 
             var roleManager = new RoleManager<IdentityRole>(
@@ -331,13 +337,13 @@ namespace BugTracker.Migrations
 
 
             Connection seedConnection = new Connection();
-                seedConnection.Users.Add(user1);
-                seedConnection.Users.Add(user2);
-                seedConnection.isArchived = false;
-                seedConnection.Created = DateTime.Now;
-                context.Connections.Add(seedConnection);
+            seedConnection.Users.Add(user1);
+            seedConnection.Users.Add(user2);
+            seedConnection.isArchived = false;
+            seedConnection.Created = DateTime.Now;
+            context.Connections.Add(seedConnection);
 
-            
+
             #endregion
             context.SaveChanges();
             #region add Messages to Chat
@@ -370,9 +376,8 @@ namespace BugTracker.Migrations
             List<ApplicationUser> ProjectManagers = roleHelper.UsersInRole("ProjectManager").ToList();
             List<ApplicationUser> Developers = roleHelper.UsersInRole("Developer").ToList();
             List<ApplicationUser> Submitters = roleHelper.UsersInRole("Submitter").ToList();
-            foreach (var project in context.Projects)
+            foreach (var project in context.Projects.ToList())
             {
-                var rand = new Random();
                 projectHelper.AddUserToProject(ProjectManagers[rand.Next(ProjectManagers.Count)].Id, project.Id);
                 for (int i = 0; i < 3; i++)
                 {
@@ -382,15 +387,14 @@ namespace BugTracker.Migrations
                     projectHelper.AddUserToProject(Submitters[randSub].Id, project.Id);
                 }
             }
-#endregion
-            context.SaveChanges();   
+            #endregion
+            context.SaveChanges();
             #region seed tickets 10 tickets/project
             List<TicketPriority> ticketPriorities = ticketHelper.ListTicketProities();
             List<TicketType> ticketTypes = ticketHelper.ListTicketTypes();
             var StatusId = context.TicketStatuses.Where(ts => ts.Name == "Open").FirstOrDefault().Id;
-            foreach (var project in context.Projects)
+            foreach (var project in context.Projects.ToList())
             {
-                var rand = new Random();
                 List<ApplicationUser> projectDevelopers = projectHelper.ListUserOnProjectInRole(project.Id, "Developer").ToList();
                 List<ApplicationUser> projectSubmitters = projectHelper.ListUserOnProjectInRole(project.Id, "Submitter").ToList();
 
@@ -414,10 +418,85 @@ namespace BugTracker.Migrations
                     context.Tickets.Add(seedTicket);
                 }
             }
-            
             #endregion
             context.SaveChanges();
-            #region seed 
+            #region seed notifications and Histories
+            #region project creation notification
+            foreach (var project in context.Projects.ToList())
+            {              
+                    foreach (var user in project.Users)
+                    {
+                        var newNotification = new ProjectNotification()
+                        {
+                            ProjectId = project.Id,
+                            UserId = user.Id,
+                            Created = DateTime.Now,
+                            Subject = $"Added to Project Id: {project.Id}",
+                            Message = $"Hello, {user.FullName} you have been Added to the project: {project.Name}",
+                        };
+                        context.ProjectNotifications.Add(newNotification);                    
+                }
+
+            }
+            context.SaveChanges();
+            #endregion
+            #region project edit add users, remove users. 
+            foreach (var project in context.Projects.ToList())
+            {
+                List<ApplicationUser> UsersNotInProject = projectHelper.ListUsersNotOnProject(project.Id).ToList();
+                List<ApplicationUser> oldUserList = projectHelper.ListUsersOnProject(project.Id).ToList();
+
+                var oldProject = context.Projects.AsNoTracking().FirstOrDefault(p => p.Id == project.Id);
+                for (int i = 0; i < 5; i++)
+                {
+                    var userAddId = UsersNotInProject[rand.Next(UsersNotInProject.Count)].Id;
+                    projectHelper.RemoveUserFromProject(oldUserList[rand.Next(oldUserList.Count)].Id, project.Id);
+                    projectHelper.AddUserToProject(userAddId, project.Id);
+                    context.SaveChanges();
+                }
+
+                project.DueDate = DateTime.Now;
+                project.Name = $"{project.Name} Name has been changed to this";
+                project.Description = $"{project.Description} Description has been changed to this";
+                context.SaveChanges();
+                var newProject = context.Projects.AsNoTracking().FirstOrDefault(p => p.Id == project.Id);
+                seedHelper.ProjectHistoriesEdit(oldProject, newProject);
+                seedHelper.ProjectChangedNotification(newProject, oldProject, oldUserList);
+            }
+            context.SaveChanges();
+            #endregion
+
+            #region seed ticket creation Notifications
+            foreach (var ticket in context.Tickets)
+            {
+                seedHelper.NewTicketNotification(ticket);
+            }
+            #endregion
+
+            #region seed ticket edit notifications and Histories
+            var TicketPriorities = context.TicketPriorities.ToList();
+            var TicketStatuses = context.TicketStatuses.ToList();
+            var TicketTypes = context.TicketTypes.ToList();
+            foreach (var ticket in context.Tickets.ToList().Take(10))
+            {
+                var oldTicket = context.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
+
+                List<ApplicationUser> projectDevelopers = projectHelper.ListUserOnProjectInRole(ticket.project.Id, "Developer").ToList();
+
+                //ticket.TicketPriorityId;
+                ticket.TicketPriorityId = TicketPriorities[rand.Next(TicketPriorities.Count)].Id;
+                ticket.TicketStatusId = TicketStatuses[rand.Next(TicketStatuses.Count)].Id;
+                ticket.TicketTypeId = TicketTypes[rand.Next(TicketTypes.Count)].Id;
+                ticket.Issue = $"This is a test issue for ticket number: {ticket.Id}";
+                ticket.IssueDescription = $"This is a test IssueDescription for ticket number: {ticket.Id}";
+                ticket.DeveloperId = projectDevelopers[rand.Next(projectDevelopers.Count)].Id;
+                context.SaveChanges();
+                var newTicket = context.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
+                seedHelper.TicketHistoryEdit(oldTicket, newTicket);
+                seedHelper.TicketChangeNotification(oldTicket, newTicket);
+            }
+            context.SaveChanges();
+            #endregion
             #endregion
         }
     }

@@ -22,6 +22,7 @@ namespace BugTracker.Controllers
         //private UserHelper userHelper = new UserHelper();
         private UserRoleHelper roleHelper = new UserRoleHelper();
         private ProjectHelper projectHelper = new ProjectHelper();
+        private HistoryHelper historyHelper = new HistoryHelper();
         private NotificationHelper notificationHelper = new NotificationHelper();
         // GET: Projects
         public ActionResult Index()
@@ -131,7 +132,7 @@ namespace BugTracker.Controllers
             }
         }
         // GET: Projects/Edit/5
-        public ActionResult Edit(int? id, string userId, int? AddRemoveUser)
+        public ActionResult Edit(int? id)
         {
             if (id == null)
             {
@@ -142,18 +143,8 @@ namespace BugTracker.Controllers
             {
                 return HttpNotFound();
             }
-            if (AddRemoveUser != null && !String.IsNullOrWhiteSpace(userId))
-            {
-                if (AddRemoveUser == 0)
-                {
-                    projectHelper.AddUserToProject(userId, model.Id);
-                }
-                else if (AddRemoveUser == 1)
-                {
-                    projectHelper.RemoveUserFromProject(userId, model.Id);
-                }
-            }
-            ViewBag.UsersNotInProject = new List<ApplicationUser>(projectHelper.ListUsersNotOnProject(model.Id));
+            
+            ViewBag.UsersNotInProject = new MultiSelectList(projectHelper.ListUsersNotOnProject(model.Id), "Id", "FullName");
             var projectPM = projectHelper.ListUserOnProjectInRole(model.Id, "ProjectManager");
             if(projectPM.Count > 0)
             {
@@ -164,8 +155,8 @@ namespace BugTracker.Controllers
                 ViewBag.ProjectManagers = new SelectList(roleHelper.UsersInRole("ProjectManager"), "Id", "FullName");
             }
              
-            ViewBag.Submitters = new List<ApplicationUser>(projectHelper.ListUserOnProjectInRole(model.Id, "Submitter"));
-            ViewBag.Developers = new List<ApplicationUser>(projectHelper.ListUserOnProjectInRole(model.Id, "Developer"));
+            ViewBag.Submitters = new MultiSelectList(projectHelper.ListUserOnProjectInRole(model.Id, "Submitter"),"Id", "FullName");
+            ViewBag.Developers = new MultiSelectList(projectHelper.ListUserOnProjectInRole(model.Id, "Developer"),"Id", "FullName");
             return View(model);
         }
 
@@ -180,6 +171,7 @@ namespace BugTracker.Controllers
             //projectVM.projectValue.IsArchive = false;
             db.Entry(project).State = EntityState.Modified;
             db.SaveChanges();
+
             var projectPm = projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager");
             if (projectPm.Count > 0)
             {
@@ -188,7 +180,10 @@ namespace BugTracker.Controllers
             projectHelper.AddUserToProject(ProjectManagers, project.Id);
             var newProject = db.Projects.AsNoTracking().FirstOrDefault(p => p.Id == project.Id);
 
-            projectHelper.ProjectEdits(oldProject, newProject);
+
+            historyHelper.ProjectHistoriesEdit(oldProject, newProject);
+            notificationHelper.ProjectChangedNotification(newProject, oldProject, project.Users.ToList());
+            //projectHelper.ProjectEdits(oldProject, newProject, project.Users.ToList());
             return RedirectToAction("Index"); 
         }
 
