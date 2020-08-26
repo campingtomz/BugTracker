@@ -208,6 +208,30 @@ namespace BugTracker.Helpers
             }
 
         }
+        public List<Ticket> GetTicketsAssignedToUser(string userId)
+        {  
+                var myRole = userRoleHelper.ListUserRoles(userId).FirstOrDefault();
+                switch (myRole)
+                {
+                    case "Admin":
+                        return db.Tickets.ToList();
+                    case "ProjectManager":
+                        var ticketList = new List<Ticket>();
+                        foreach (var project in projectHelper.ListUserProjects(userId).ToList())
+                        {
+                            ticketList.AddRange(project.Tickets.ToList());
+                        }
+                        return ticketList;
+                    case "Developer":
+                        return db.Tickets.Where(t => t.DeveloperId == userId).ToList();
+                    case "Submitter":
+                        return db.Tickets.Where(t => t.SubmitterId == userId).ToList();
+                    default:
+                        return null;
+                }
+
+            }
+        
         //lists all the tickets in every project the user is assinged  
         public List<Ticket> GetAllProjectTicketsForUser(string userId)
         {
@@ -216,6 +240,18 @@ namespace BugTracker.Helpers
             return user.Projects.SelectMany(p => p.Tickets).ToList();
         }
         //lists all the tickets on a project
+        public List<Ticket> GetTicketsByStatus(string status)
+        {
+            return db.Tickets.Where(t => t.TicketStatus.Name == status).ToList();
+        }
+        public List<Ticket> GetTicketsByPriority(string priority)
+        {
+            return db.Tickets.Where(t => t.TicketPriority.Name ==priority).ToList();
+        }
+        public List<Ticket> GetTicketsByType(string type)
+        {
+            return db.Tickets.Where(t => t.TicketType.Name == type).ToList();
+        }
         public ICollection<Ticket> ListProjectTickets(int projectId)
         {
             var projects = db.Projects.Find(projectId);

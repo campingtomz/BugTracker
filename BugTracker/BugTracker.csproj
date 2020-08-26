@@ -186,6 +186,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
+    <Compile Include="Controllers\MorrisChartsController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Controllers\TicketAttachmentsController.cs" />
     <Compile Include="Controllers\TicketCommentsController.cs" />
@@ -234,6 +235,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\ManageUserVM.cs" />
+    <Compile Include="ViewModels\MorrisChartData.cs" />
+    <Compile Include="ViewModels\MultiSelectData.cs" />
     <Compile Include="ViewModels\ProjectManageVM.cs" />
     <Compile Include="ViewModels\ProjectWizardVM.cs" />
   </ItemGroup>
@@ -1119,6 +1122,8 @@
     <Folder Include="Content\Icons\" />
     <Folder Include="Uploads\" />
     <Folder Include="Views\Messages\" />
+    <Folder Include="Views\MorrisCharts\" />
+    <Folder Include="Views\MultiSelect\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

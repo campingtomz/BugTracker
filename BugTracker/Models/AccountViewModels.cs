@@ -15,8 +15,27 @@ namespace BugTracker.Models
     {
         public string ReturnUrl { get; set; }
     }
+    public class ExternalLoginConfirmationViewModelExtended : ExternalLoginConfirmationViewModel
+    {
+        [Required]
+        [StringLength(40, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
 
-    public class SendCodeViewModel
+        [Required]
+        [StringLength(40, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        public HttpPostedFileBase Avatar { get; set; }
+
+        [StringLength(40, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
+        [Display(Name = "Display Name")]
+        public string DisplayName { get; set; }
+    }
+
+
+        public class SendCodeViewModel
     {
         public string SelectedProvider { get; set; }
         public ICollection<System.Web.Mvc.SelectListItem> Providers { get; set; }

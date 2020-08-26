@@ -572,7 +572,7 @@ namespace BugTracker.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
+        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModelExtended model, string returnUrl)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -587,7 +587,24 @@ namespace BugTracker.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    AvatarPath = WebConfigurationManager.AppSettings["DefaultAvatarPath"]
+                };
+                if (model.Avatar != null)
+                {
+                    if (FileUploadValidator.IsWebFriendlyImage(model.Avatar))
+                    {
+                        var fileName = FileStamp.MakeUnique(model.Avatar.FileName);
+                        var AvatarFolder = WebConfigurationManager.AppSettings["DefaultAvatarFolder"];
+                        model.Avatar.SaveAs(Path.Combine(Server.MapPath(AvatarFolder), fileName));
+                        user.AvatarPath = $"{AvatarFolder}{fileName}";
+                    }
+                }
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

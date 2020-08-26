@@ -65,6 +65,13 @@ namespace BugTracker.Helpers
                 db.SaveChanges();
             }
         }
+        public void AddGroupOfUsersToProject(ICollection<string> userIds, int projectId)
+        {
+            foreach(var userId in userIds.ToList())
+            {
+                AddUserToProject(userId, projectId);
+            }
+        }
         public ICollection<Project> ListUserProjects(string userId)
         {
             ApplicationUser user = db.Users.Find(userId);
@@ -88,6 +95,13 @@ namespace BugTracker.Helpers
             db.SaveChanges();
             return result;
 
+        }
+        public void RemoveAllUsersFromProject(int projectId)
+        {
+            foreach(var user in ListUsersOnProject(projectId))
+            {
+                RemoveUserFromProject(user.Id, projectId);
+            }
         }
         public List<ApplicationUser> ListUsersOnProject(int projectId)
         {
@@ -135,12 +149,26 @@ namespace BugTracker.Helpers
             }
             return resultList;
         }
-    
+        public List<ApplicationUser> ListUserNotOnProjectInRole(int projectId, string roleName)
+        {
+            var userList = ListUsersNotOnProject(projectId);
+            var resultList = new List<ApplicationUser>();
+            foreach (var user in userList)
+            {
+                if (userRoleHelper.IsUserInRole(user.Id, roleName))
+                {
+                    resultList.Add(user);
+                }
+            }
+            return resultList;
+        }
+
+
         //public void ProjectEdits(Project oldProject, Project newProject, List<ApplicationUser> OldUserList)
         //{
         //    historyHelper.ProjectHistoriesEdit( oldProject,  newProject);
         //    notificationHelper.ProjectChangedNotification(newProject, oldProject, OldUserList);
         //}
-        
+
     }
 }

@@ -19,7 +19,7 @@
 
     <link href="~/Content/css/animate.css" rel="stylesheet" />
     <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/Content/css/material.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
     <link href="~/Content/css/style.css" rel="stylesheet" />
     <link href="~/Content/css/colors/blue-dark.css" rel="stylesheet" />
 
@@ -51,6 +51,8 @@
             </nav>
         </header>
         @Html.Partial("_SideBar")
+
+        <!-- Main page-->
     </div>
     <div class="page-wrapper">
         @RenderBody()
@@ -69,9 +71,9 @@
     <script src="~/Scripts/sidebarmenu.js"></script>
     <script src="~/Scripts/sticky-kit.min.js"></script>
     <script src="~/Scripts/custom.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
     <script src="~/Scripts/jquery.sparkline.min.js"></script>
-    <script src="~/Scripts/raphael-min.js"></script>
-    <script src="~/Scripts/morris.min.js"></script>
     <script src="~/Scripts/dashboard1.js"></script>
 
     <script src="~/Scripts/jquery.steps.min.js"></script>
@@ -87,7 +89,7 @@
     <script src="~/Scripts/MaskInpu.js"></script>
     <script src="https://cdn.syncfusion.com/18.2.0.44/js/web/ej.web.all.min.js"></script>
 
-
+    
     @RenderSection("scripts", required: false)
 </body>
 

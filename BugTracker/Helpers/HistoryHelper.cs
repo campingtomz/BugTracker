@@ -170,17 +170,17 @@ namespace BugTracker.Helpers
 
         #endregion
         #region user History
-        //public void CheckUserEdits(ApplicationUser oldUser, ApplicationUser newUser)
-        //{
+        public void CheckUserEdits(ApplicationUser oldUser, ApplicationUser newUser)
+        {
 
-        //}
-        //private void FirstNameChange(ApplicationUser oldUser, ApplicationUser newUser)
-        //{
-        //    if (oldUser.FristName != newUser.OldName)
-        //    {
+        }
+        private void FirstNameChange(ApplicationUser oldUser, ApplicationUser newUser)
+        {
+            if (oldUser.FirstName != newUser.FirstName)
+            {
 
-        //    }
-        //}
+            }
+        }
         #endregion
     }
 }
