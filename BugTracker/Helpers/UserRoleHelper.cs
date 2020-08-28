@@ -69,5 +69,16 @@ namespace BugTracker.Helpers
                     return false;
             }
         }
+        public void ManageUserRoles(List<string> userIds, string roleName)
+        {
+            if (userIds != null && userIds.Count > 0) {
+                foreach (var userId in userIds)
+                {
+                    RemoveUserFromRole(userId, userManager.GetRoles(userId).FirstOrDefault());
+                    AddUserToRole(userId, roleName);
+                }
+            }
+        }
+     
     }
 }

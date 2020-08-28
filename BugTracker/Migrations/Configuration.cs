@@ -443,8 +443,8 @@ namespace BugTracker.Migrations
             #region project edit add users, remove users. 
             foreach (var project in context.Projects.ToList())
             {
-                List<ApplicationUser> UsersNotInProject = projectHelper.ListUsersNotOnProject(project.Id).ToList();
-                List<ApplicationUser> oldUserList = projectHelper.ListUsersOnProject(project.Id).ToList();
+                List<ApplicationUser> UsersNotInProject = projectHelper.ListUsesNotOnProjectInExceptInRole(project.Id, "ProjectManager").ToList();
+                List<ApplicationUser> oldUserList = projectHelper.ListUserOnProjectExceptInRole(project.Id, "ProjectManager").ToList();
 
                 var oldProject = context.Projects.AsNoTracking().FirstOrDefault(p => p.Id == project.Id);
                 for (int i = 0; i < 5; i++)

@@ -1,0 +1,122 @@
+﻿
+@using (Html.BeginForm("ManageRoleUsers", "UserManagment", FormMethod.Post, new { id = "myform" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <div class="card card-outline-info">
+
+                <div class="card-body">
+                    <div class="row p-t-20">
+
+                        <div class="col-4">
+                            <div class="row justify-content-end">
+                                <div class="col-8 ">
+                                    <label class="control-label">Submitters</label>
+                                    @Html.ListBox("Submitters", null, new { @class = "form-control " })
+                                </div>
+                                <div class="btn-group m-b-40 m-t-40" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-success" onclick="javascript: MoveListBoxItem('DefaultRole', 'Submitters')"><i class="fa fa-fast-backward"></i></button>
+                                    <button type="button" class="btn btn-success" onclick="javascript: MoveListBoxItem('Submitters', 'DefaultRole')"><i class="fa fa-fast-forward"></i></button>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row justify-content-end">
+                                <div class="col-8">
+                                    <label class="control-label">Developers</label>
+                                    @Html.ListBox("Developers", null, new { @class = "form-control " })
+                                </div>
+                                <div class="btn-group m-b-40 m-t-40" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-success" onclick="javascript: MoveListBoxItem('DefaultRole', 'Developers')"><i class="fa fa-fast-backward"></i></button>
+                                    <button type="button" class="btn btn-success" onclick="javascript: MoveListBoxItem('Developers', 'DefaultRole')"><i class="fa fa-fast-forward"></i></button>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row justify-content-end">
+                                <div class="col-8">
+                                    <label class="control-label">Project Managers</label>
+                                    @Html.ListBox("ProjectManagers", null, new { @class = "form-control " })
+                                </div>
+                                <div class="btn-group m-b-40 m-t-40" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-success" onclick="javascript: MoveListBoxItem('DefaultRole', 'ProjectManagers')"><i class="fa fa-fast-backward"></i></button>
+                                    <button type="button" class="btn btn-success" onclick="javascript: MoveListBoxItem('ProjectManagers', 'DefaultRole')"><i class="fa fa-fast-forward"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-6">
+                            <div class="col-6">
+                                <label class="control-label">Unassigned Users</label>
+                                @Html.ListBox("DefaultRole", null, new { @class = "form-control", size = "19" })
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="row p-t-20">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="offset-sm-3 col-md-9">
+                                    <button type="submit" id="btn-submit" class="btn btn-success"> <i class="fa fa-check"></i> Submit</button>
+
+                                    @Html.ActionLink("Cancel", "Index", null, new { @type = "button", @class = "btn btn-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section scripts{
+    <script>
+        function MoveListBoxItem(fromId, toId) {
+            $("#" + fromId + " option:selected").remove().appendTo("#" + toId);
+        }
+
+    </script>
+    <script>
+        $('#btn-submit').on("click", function (e) {
+            e.preventDefault();
+            var roleDevs = new Array();
+            $('#Developers option').each(function () {
+                roleDevs.push($(this).val())
+            })
+            $('#Developers').val(roleDevs)
+
+            var roleSubs = new Array();
+            $('#Submitters option').each(function () {
+                roleSubs.push($(this).val())
+            })
+            $('#Submitters').val(roleSubs)
+
+            var Pms = new Array();
+            $('#ProjectManagers option').each(function () {
+                Pms.push($(this).val())
+            })
+            $('#ProjectManagers').val(Pms)
+
+            var defaultRole = new Array();
+            $('#DefaultRole option').each(function () {
+                defaultRole.push($(this).val())
+            })
+            $('#DefaultRole').val(defaultRole)
+            //var UserProjectIds = new Array();
+            //$('#UserProjects option').each(function () {
+            //    UserProjectIds.push($(this).val())
+            //})
+
+            ////alert(UserProjectIds)
+            //$('#ProjectIds').val(UserProjectIds)
+            ////var test = `${$("#UserProjects").children("option:selected").val()},${UserProjects.join(',')}`
+
+            //////alert($("#ProjectManagers").children("option:selected").val() += `,${Submitters.join(',')}`)
+            ////$("#UserProjects").children("option:selected").val(test);
+            $("#myform").submit()
+        })
+    </script>
+}

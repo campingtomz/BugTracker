@@ -13,6 +13,7 @@ namespace BugTracker.Models
 
         #region Actual Properties { get; set; }
         //This property of the ticket that was changed( status, type attachemtn
+        public string ChangedByUserId { get; set; }
         public string Property { get; set; }
         //what the property was originally set to 
         public string OldValue { get; set; }

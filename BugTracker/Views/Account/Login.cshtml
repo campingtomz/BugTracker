@@ -33,6 +33,8 @@
                 <div class="card-body">
                     @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
                     {
+                        @Html.AntiForgeryToken()
+
                         <h3 class="box-title m-b-20">Sign In</h3>
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 

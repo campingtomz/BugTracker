@@ -135,7 +135,7 @@ namespace BugTracker.Helpers
                 UserId = projectManager.Id,
                 Created = DateTime.Now,
                 Subject = $"New Ticket has been Created Id: {newTicket.Id}",
-                Message = $"Hello {projectManager.FullName}, A New Ticket new Ticket has been Created {newTicket.Issue} on Project {newTicket.project.Name}"
+                Message = $"Hello {projectManager.FullName}, A New Ticket new Ticket has been Created {newTicket.Issue} on Project "
             };
             db.TicketNotifications.Add(newNotification);
             db.SaveChanges();

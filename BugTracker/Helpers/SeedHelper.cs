@@ -43,7 +43,7 @@ namespace BugTracker.Helpers
                     ProjectId = newProject.Id,
                     UserId = userId,
                     ChangedOn = DateTime.Now,
-                    Property = $"User removed to: {newProject.Name}",
+                    Property = $"User removed from: {newProject.Name}",
                     OldValue = "",
                     NewValue = user.Email
                 };

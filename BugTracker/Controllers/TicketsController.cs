@@ -85,14 +85,22 @@ namespace BugTracker.Controllers
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
                 notificationHelper.NewTicketNotification(ticket);
-                return RedirectToAction("Index");
+                if (onPage)
+                {
+                    return RedirectToAction("Details", "Projects", new { id = ticket.ProjectId});
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
             }
             ViewBag.ProjectId = new SelectList(projectHelper.ListUserProjects(userId), "Id", "Name");
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
             ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
+
             if (onPage)
             {
-                return RedirectToAction("Index", "Projects", new { id = ticket.project.Id });
+                return RedirectToAction("Details", "Projects", new { id = ticket.project.Id });
             }
             else
             {

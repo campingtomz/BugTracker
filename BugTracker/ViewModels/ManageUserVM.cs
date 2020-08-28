@@ -17,6 +17,7 @@ namespace BugTracker.ViewModels
         public string PhoneNumber { get; set; }    
         public string userRole { get; set; }
         public string AvatarPath { get; set; }
+        public string ProjectIds { get; set; }
         public HttpPostedFileBase Avatar { get; set; }
 
     }

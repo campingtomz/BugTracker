@@ -15,7 +15,7 @@
 
 
 
-@using (Html.BeginForm("Edit", "Projects", FormMethod.Post))
+@using (Html.BeginForm("Edit", "Projects", FormMethod.Post, new { id = "myform" }))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -31,115 +31,109 @@
                     <h4 class="m-b-0 text-white">Edit Project @Model.Name</h4>
                 </div>
                 <div class="card-body">
-                    <form action="#" class="form-horizontal">
-                        <div class="form-body">
-                            <hr class="m-t-0 m-b-40">
-                            <div class="row p-t-20">
+                    <hr class="m-t-0 m-b-40">
+                    <div class="row p-t-20">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Project Name:</label>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @placehoder = "@Model.Name" } })
+                                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                        <div class="col-md-6">
+                            <div class="form-group ">
+                                <label class="control-label">Due Date:</label>
+                                <div class="col-md-6">
+                                    <input type="date" class="form-control" placeholder="@Model.DueDate.ToString("MMM dd yyyy")">
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                    </div>
+                    <!--/row-->
+                    <div class="row p-t-20">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Description</label>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="control-label">Project Name:</label>
-                                        <div class="col-md-6">
-                                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @placehoder = "@Model.Name" } })
-                                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--/span-->
-                                <div class="col-md-6">
-                                    <div class="form-group ">
-                                        <label class="control-label">Due Date:</label>
-                                        <div class="col-md-6">
-                                            <input type="date" class="form-control" placeholder="@Model.DueDate.ToString("MMM dd yyyy")">
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--/span-->
-                            </div>
-                            <!--/row-->
-                            <div class="row p-t-20">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="control-label">Description</label>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                @Html.TextAreaFor(model => model.Description, new { @class = "form-control ", @placeholder = "Enter a Description" })
-                                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--/span-->
-                                <!--/span-->
-                            </div>
-                            <!--/row-->
-                            @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
-                            {
-                                <h4 class="box-title">Project Manager</h4>
-                                <hr class="m-t-0 m-b-40">
-                                <div class="row p-t-20">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <div class="col-md-6">
-                                                @Html.DropDownList("ProjectManagers", null, new { @class = "form-control " })
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-
-                            <hr class="m-t-0 m-b-40">
-
-
-
-
-                            <div class="row">
-                                <div class="col-3">
-                                    <label class="control-label">Developers on Project</label>
-
-                                    @Html.ListBox("Developers", null, new { @class = "form-control " })
-                                </div>
-
-                                <input type="button" value=">>" onclick="javascript: MoveListBoxItem('Developers', 'DevelopersNotOnProject')" /><br />
-                                <input type="button" value="<<" onclick="javascript: MoveListBoxItem('DevelopersNotOnProject', 'Developers')" />
-
-                                <div class="col-3">
-                                    <label class="control-label">Developers Not on Project</label>
-                                    @Html.ListBox("DevelopersNotOnProject", null, new { @class = "form-control " })
-                                </div>
-                            </div>
-                            <hr class="m-t-0 m-b-40">
-
-                            <div class="row">
-                                <div class="col-3">
-                                    <label class="control-label">Submitters on Project</label>
-                                    @Html.ListBox("Submitters", null, new { @class = "form-control " })
-                                </div>
-                                <div class="btn-group m-b-40 m-t-40" role="group" aria-label="Basic example">
-                                    <button type="button" class="btn btn-success" onclick="javascript: MoveListBoxItem('SubmittersNotOnProject', 'Submitters')"><i class="fa fa-fast-backward"></i></button>
-                                    <button type="button" class="btn btn-success" onclick="javascript: MoveListBoxItem('Submitters', 'SubmittersNotOnProject')"><i class="fa fa-fast-forward"></i></button>
-                                </div>
-                                <div class="col-3">
-                                    <label class="control-label">Submitters Not on Project</label>
-                                    @Html.ListBox("SubmittersNotOnProject", null, new { @class = "form-control " })
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-success" onclick="getDeveloperValues()">Alerttest</button>
-
-                            <hr>
-                            <div class="form-actions">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <div class="col-md-offset-3 col-md-9">
-                                                <button type="submit" class="btn btn-success" onclick="javascript: SubmitLists()">Submit</button>
-                                                @Html.ActionLink("Cancel", "Details", new { id = Model.Id }, new { @type = "button", @class = "btn btn-inverse" })
-                                            </div>
-                                        </div>
+                                        @Html.TextAreaFor(model => model.Description, new { @class = "form-control ", @placeholder = "Enter a Description" })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                        <!--/span-->
+                        <!--/span-->
+                    </div>
+                    <!--/row-->
+                    @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                    {
+                        <h4 class="box-title">Project Manager</h4>
+                        <hr class="m-t-0 m-b-40">
+                        <div class="row p-t-20">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-md-6">
+                                        @Html.DropDownList("ProjectManagers", null, new { @class = "form-control " })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <hr class="m-t-0 m-b-40">
+
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="control-label">Developers on Project</label>
+
+                            @Html.ListBox("Developers", null, new { @class = "form-control " })
+                        </div>
+                        <div class="btn-group m-b-40 m-t-40" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-success" onclick="javascript: MoveListBoxItem('DevelopersNotOnProject', 'Developers')"><i class="fa fa-fast-backward"></i></button>
+                            <button type="button" class="btn btn-success" onclick="javascript: MoveListBoxItem('Developers', 'DevelopersNotOnProject')"><i class="fa fa-fast-forward"></i></button>
+                        </div>
+                        <div class="col-3">
+                            <label class="control-label">Developers Not on Project</label>
+                            @Html.ListBox("DevelopersNotOnProject", null, new { @class = "form-control " })
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="control-label">Submitters on Project</label>
+                            @Html.ListBox("Submitters", null, new { @class = "form-control " })
+                        </div>
+                        <div class="btn-group m-b-40 m-t-40" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-success" onclick="javascript: MoveListBoxItem('SubmittersNotOnProject', 'Submitters')"><i class="fa fa-fast-backward"></i></button>
+                            <button type="button" class="btn btn-success" onclick="javascript: MoveListBoxItem('Submitters', 'SubmittersNotOnProject')"><i class="fa fa-fast-forward"></i></button>
+                        </div>
+                        <div class="col-3">
+                            <label class="control-label">Submitters Not on Project</label>
+                            @Html.ListBox("SubmittersNotOnProject", null, new { @class = "form-control " })
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button class="btn btn-success" type="submit" id="btn-submit">Submit</button>
+
+                                        @Html.ActionLink("Cancel", "Details", new { id = Model.Id }, new { type = "button", @class = "btn btn-inverse", id = "backtodetails" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -148,27 +142,15 @@
 
 
 @section scripts{
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script>
         function MoveListBoxItem(fromId, toId) {
-            $("#" + fromId + " option:selected").remove().appendTo("#" + toId);     
+            $("#" + fromId + " option:selected").remove().appendTo("#" + toId);
         }
     </script>
-    
     <script>
-        function getDeveloperValues() {
-            var Submitters = new Array();
-            $('#Submitters option').each(function () {
-                Submitters.push($(this).val())               
-            }) 
-            alert(Submitters)
-            var Developers = new Array();
-            $('#Developers option').each(function () {
-                Developers.push($(this).val())
-            })
-            
-        }
-        function SubmitLists() {
+        $('#btn-submit').on("click", function (e) {
+            e.preventDefault();
+
             var Submitters = new Array();
             $('#Submitters option').each(function () {
                 Submitters.push($(this).val())
@@ -177,15 +159,38 @@
             $('#Developers option').each(function () {
                 Developers.push($(this).val())
             })
-            console.log(Developers)
-            console.log(Submitters)
-            $.ajax({
-                url: "Projects/Edit",
-                data: { DeveloperIds: Developers, SubmitterIds: Submitters },
-                type: "post"
+            var test = `${$("#ProjectManagers").children("option:selected").val()},${Submitters.join(',')},${Developers.join(',')}`
 
-            });
-        }
+            //alert($("#ProjectManagers").children("option:selected").val() += `,${Submitters.join(',')}`)
+            $("#ProjectManagers").children("option:selected").val(test);
+            $("#myform").submit()
+        })
     </script>
-    
+}
+@*$('#btn-submit').on('click', function (e) {
+        e.preventDefault();
+        var form = $(this).closest("form");
+        var Submitters = new Array();
+        $('#Submitters option').each(function () {
+            Submitters.push($(this).val())
+        })
+        var Developers = new Array();
+        $('#Developers option').each(function () {
+            Developers.push($(this).val())
+        })
+
+        var url = '@Url.Action("Edit", "Projects")'
+        var data = form.serialize() + '&DeveloperId=' + Developers.toString() + '&SubmitterId=' + Submitters.toString()
+
+        $.ajax({
+            url: url,
+            data: data,
+            type: "post",
+            success: function (redirect) {
+                window.location = redirect;
+
+        });
+        function test()  {
+        $("#backtodetails").click()
     }
+    });*@

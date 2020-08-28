@@ -199,6 +199,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ChatHelper.cs" />
+    <Compile Include="Helpers\CustomComparer.cs" />
     <Compile Include="Helpers\FileStamp.cs" />
     <Compile Include="Helpers\FileUploadValidator.cs" />
     <Compile Include="Helpers\ImageUploadValidator.cs" />
@@ -1115,6 +1116,7 @@
     <Content Include="Views\UserManagment\ViewAllUsers.cshtml" />
     <Content Include="Views\UserManagment\UserProfile.cshtml" />
     <None Include="Properties\PublishProfiles\TZRogueBugTracker - Web Deploy.pubxml" />
+    <Content Include="Views\UserManagment\ManageRoleUsers.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1134,7 +1136,6 @@
     <Content Include="Views\Assignments\ManageProjectUsers.cshtml" />
     <Content Include="Views\Projects\ProjectWizard.cshtml" />
     <Content Include="Views\UserManagment\Index.cshtml" />
-    <Content Include="Views\UserManagment\ManageUserRoles.cshtml" />
     <Content Include="Views\UserManagment\ManageUser.cshtml" />
     <Content Include="Scripts\tinymce\skins\ui\oxide\fonts\tinymce-mobile.woff" />
     <Content Include="Scripts\tinymce\skins\ui\oxide-dark\fonts\tinymce-mobile.woff" />

@@ -28,12 +28,6 @@ namespace BugTracker.Controllers
         public ActionResult Index()
         {
 
-            //var model = db.Projects.ToList().OrderByDescending(p => p.Created);
-            //foreach (var project in db.Projects.ToList())
-            //{
-            //    var projectVm = new ProjectManageVM(project);
-            //    projectList.Add(projectVm);
-            //}
             if (projectHelper.CanViewAllProjects())
             {
                 ViewBag.AllProjects = new List<Project>(db.Projects.ToList().OrderByDescending(p => p.Created).ToList());
@@ -105,7 +99,9 @@ namespace BugTracker.Controllers
             {
                 Project project = new Project();
                 project.Name = model.Name;
+                project.Description = model.Description;
                 project.Created = DateTime.Now;
+                project.DueDate = DateTime.Now.AddDays(+100);
                 project.IsArchive = false;
                 db.Projects.Add(project);
                 db.SaveChanges();
@@ -167,37 +163,21 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Project project, string ProjectManagers, List<string> DeveloperIds, List<string> SubmitterIds)
+        public ActionResult Edit(Project project, string ProjectManagers)
         {
+
             var oldProject = db.Projects.AsNoTracking().FirstOrDefault(p => p.Id == project.Id);
             var oldUserList = project.Users.ToList();
             //projectVM.projectValue.IsArchive = false;
             db.Entry(project).State = EntityState.Modified;
+            //var userIdList = $"{ProjectManagers},{DeveloperId},{SubmitterId}";
+            projectHelper.UpdateProjectUserIds(ProjectManagers, project.Id);
+           
             db.SaveChanges();
-
-            var projectPm = projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager");
-            if (projectPm.Count > 0)
-            {
-                projectHelper.RemoveUserFromProject(projectPm.FirstOrDefault().Id, project.Id);
-            }
-            if (DeveloperIds.Count > 0) 
-            {
-                projectHelper.RemoveAllUsersFromProject(project.Id);
-                projectHelper.AddGroupOfUsersToProject(DeveloperIds, project.Id);
-            }
-            if (SubmitterIds.Count > 0)
-            {
-                projectHelper.RemoveAllUsersFromProject(project.Id);
-                projectHelper.AddGroupOfUsersToProject(SubmitterIds, project.Id);
-            }
-
-            projectHelper.AddUserToProject(ProjectManagers, project.Id);
             var newProject = db.Projects.AsNoTracking().FirstOrDefault(p => p.Id == project.Id);
-
 
             historyHelper.ProjectHistoriesEdit(oldProject, newProject);
             notificationHelper.ProjectChangedNotification(newProject, oldProject, oldUserList);
-            //projectHelper.ProjectEdits(oldProject, newProject, project.Users.ToList());
             return RedirectToAction("Index");
         }
 
@@ -235,6 +215,6 @@ namespace BugTracker.Controllers
             }
             base.Dispose(disposing);
         }
-        
+
     }
 }

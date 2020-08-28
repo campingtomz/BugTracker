@@ -138,7 +138,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="tab-pane " id="Tickets" role="tabpanel">
                         <div class="card-body">
                             <div class="row">
@@ -188,13 +187,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane " id="Notifiations" role="tabpanel">
+                    <div class="tab-pane " id="Notifications" role="tabpanel">
                         <div class="card-body">
                             <div class="row">
                                 @if (user.TicketNotifications.Count > 0)
                                 {
                                     <div class="table-responsive m-t-40">
-                                        <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                        <table class="example25 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                                             <thead>
                                                 <tr>
                                                     <th>Subject</th>
@@ -221,7 +220,7 @@
                                     </div>
                                 }
                                 else
-                                { <h4 class="card-title">No Projecst are assigned to this user</h4>}
+                                { <h4 class="card-title">No Notifications</h4>}
                             </div>
                         </div>
                     </div>
@@ -233,7 +232,7 @@
                                     <div class="col-12">
                                         <div class=" form-group">
                                             <div class="table-responsive">
-                                                <table class="example24 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                                <table class="example26 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                                                     <thead>
                                                         <tr>
                                                             <th>User</th>
@@ -262,7 +261,7 @@
                                 </div>
                             }
                             else
-                            { <h4 class="card-title">No Logs for this Ticket</h4>}
+                            { <h4 class="card-title">No Logs</h4>}
                         </div>
                     </div>
                     <div class="tab-pane " id="Settings" role="tabpanel">

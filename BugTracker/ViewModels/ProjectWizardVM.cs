@@ -10,6 +10,7 @@ namespace BugTracker.ViewModels
     {
         [Required]
         public string Name { get; set; }
+        public string Description { get; set; }
         public string ProjectManagerId { get; set; }
         public ICollection<string> DeveloperIds { get; set; }
         public ICollection<string> SubmitterIds { get; set; }

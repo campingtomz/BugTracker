@@ -12,7 +12,7 @@ namespace BugTracker.Helpers
         //new access to the database 
         private ApplicationDbContext db = new ApplicationDbContext();
         private UserRoleHelper userRoleHelper = new UserRoleHelper();
-     
+
         public bool CanCreateProject()
         {
             var userId = HttpContext.Current.User.Identity.GetUserId();
@@ -65,9 +65,16 @@ namespace BugTracker.Helpers
                 db.SaveChanges();
             }
         }
-        public void AddGroupOfUsersToProject(ICollection<string> userIds, int projectId)
+        public void AddGroupOfUsersToProject(List<string> userIds, int projectId)
         {
-            foreach(var userId in userIds.ToList())
+            foreach (var userId in userIds.ToList())
+            {
+                AddUserToProject(userId, projectId);
+            }
+        }
+        public void AddGroupOfProjectsToUser(List<int> projectIds, string userId)
+        {
+            foreach(var projectId in projectIds)
             {
                 AddUserToProject(userId, projectId);
             }
@@ -87,6 +94,15 @@ namespace BugTracker.Helpers
             //var projects = user.Projects.ToList();
             return (projects);
         }
+        public ICollection<Project> ListUserNotOnProjectsbyRole(string userId, string RoleName)
+        {
+            ApplicationUser user = db.Users.Find(userId);
+            var projects = db.Projects.ToList();
+            var userProjects = ListUserProjects(userId);
+            projects = projects.Except(userProjects).ToList();
+            //var projects = user.Projects.ToList();
+            return (projects);
+        }
         public bool RemoveUserFromProject(string userId, int projectId)
         {
             var project = db.Projects.Find(projectId);
@@ -96,13 +112,75 @@ namespace BugTracker.Helpers
             return result;
 
         }
+        public void RemoveGroupOfUsersFromProject(List<ApplicationUser> users, int projectId)
+        {
+            foreach (var user in users)
+            {
+                RemoveUserFromProject(user.Id, projectId);
+            }
+
+        }
         public void RemoveAllUsersFromProject(int projectId)
         {
-            foreach(var user in ListUsersOnProject(projectId))
+            foreach (var user in ListUsersOnProject(projectId))
             {
                 RemoveUserFromProject(user.Id, projectId);
             }
         }
+        public void RemoveAllProjectsFromUser(string userId)
+        {
+            var user = db.Users.Find(userId);
+            foreach (var project in user.Projects.ToList())
+            {
+                RemoveUserFromProject(user.Id, project.Id);
+            }
+        }
+        public void UpdateProjectUserIds(string userIds, int projectId)
+        {
+            RemoveAllUsersFromProject(projectId);
+            if (!String.IsNullOrWhiteSpace(userIds))
+            {
+                List<string> userIdsList = userIds.Split(',').ToList();
+                AddGroupOfUsersToProject(userIdsList, projectId);
+            }
+        }
+        public void UpdateProjectUsers(string users, string role, int projectId)
+        {
+            var usersList = ListUserOnProjectInRole(projectId, role);
+            RemoveGroupOfUsersFromProject(usersList, projectId);
+            if (!String.IsNullOrWhiteSpace(users))
+            {
+                List<string> userIds = users.Split(',').ToList();
+                if (userIds.Count > 0)
+                {
+                    AddGroupOfUsersToProject(userIds, projectId);
+                }
+            }
+
+            //if (DeveloperIds.Count > 0)
+            //{
+            //    var devs = ListUserOnProjectInRole(projectId, "Developer");
+            //    RemoveGroupOfUsersFromProject(devs, projectId);
+            //    AddGroupOfUsersToProject(DeveloperIds, projectId);
+            //}
+            //if (SubmitterIds.Count > 0)
+            //{
+            //    var subs = ListUserOnProjectInRole(projectId, "Submitter");
+            //    RemoveGroupOfUsersFromProject(subs, projectId);
+            //    AddGroupOfUsersToProject(SubmitterIds, projectId);
+            //}
+        }
+        public void updateUserProjects(string userId, string projectIds)
+        {
+            RemoveAllProjectsFromUser(userId);
+            if (!String.IsNullOrWhiteSpace(projectIds))
+            {
+                List<int> projectIdList = projectIds.Split(',').Select(i => int.Parse(i)).ToList();
+                AddGroupOfProjectsToUser(projectIdList, userId);
+            }
+            db.SaveChanges();
+        }
+
         public List<ApplicationUser> ListUsersOnProject(int projectId)
         {
             var project = db.Projects.Find(projectId);
@@ -115,7 +193,8 @@ namespace BugTracker.Helpers
             var resultList = new List<ApplicationUser>();
             foreach (var user in db.Users.ToList())
             {
-                if(!isUserOnProject(user.Id, projectId)){
+                if (!isUserOnProject(user.Id, projectId))
+                {
                     resultList.Add(user);
                 }
             }
@@ -127,14 +206,14 @@ namespace BugTracker.Helpers
             var project = db.Projects.Find(projectId);
             //var user = db.Users.Find(userId);
             //return project.Users.Contains(user);
-            return project.Users.Any(u=> u.Id == userId);
+            return project.Users.Any(u => u.Id == userId);
         }
         public List<ApplicationUser> ListUsesOnMyProjects(string userId)
         {
             List<ApplicationUser> userList = new List<ApplicationUser>();
             var user = db.Users.Find(userId);
-            return user.Projects.SelectMany(p => p.Users).Distinct().OrderByDescending(p=>p.Email).ToList();
-            
+            return user.Projects.SelectMany(p => p.Users).Distinct().OrderByDescending(p => p.Email).ToList();
+
         }
         public List<ApplicationUser> ListUserOnProjectInRole(int projectId, string roleName)
         {
@@ -142,7 +221,20 @@ namespace BugTracker.Helpers
             var resultList = new List<ApplicationUser>();
             foreach (var user in userList)
             {
-                if(userRoleHelper.IsUserInRole(user.Id, roleName))
+                if (userRoleHelper.IsUserInRole(user.Id, roleName))
+                {
+                    resultList.Add(user);
+                }
+            }
+            return resultList;
+        }
+        public List<ApplicationUser> ListUserOnProjectExceptInRole(int projectId, string roleName)
+        {
+            var userList = ListUsersOnProject(projectId);
+            var resultList = new List<ApplicationUser>();
+            foreach (var user in userList)
+            {
+                if (!userRoleHelper.IsUserInRole(user.Id, roleName))
                 {
                     resultList.Add(user);
                 }
@@ -156,6 +248,19 @@ namespace BugTracker.Helpers
             foreach (var user in userList)
             {
                 if (userRoleHelper.IsUserInRole(user.Id, roleName))
+                {
+                    resultList.Add(user);
+                }
+            }
+            return resultList;
+        }
+        public List<ApplicationUser> ListUsesNotOnProjectInExceptInRole(int projectId, string roleName)
+        {
+            var userList = ListUsersNotOnProject(projectId);
+            var resultList = new List<ApplicationUser>();
+            foreach (var user in userList)
+            {
+                if (!userRoleHelper.IsUserInRole(user.Id, roleName))
                 {
                     resultList.Add(user);
                 }
