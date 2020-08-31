@@ -27,7 +27,7 @@ namespace BugTracker.Controllers
                 {
                 Label = priority.Name,
                 Value = tickets.Where(t => t.TicketPriorityId == priority.Id).Count()
-                });;
+                });
             }
             return Json(data);
         }

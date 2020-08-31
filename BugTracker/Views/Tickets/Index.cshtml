@@ -21,12 +21,12 @@
                                 <tr>
                                     <th>Project Name</th>
                                     <th>Project Manager</th>
+                                    <th>Issue</th>
                                     <th>Ticket Priority</th>
                                     <th>Ticket Status</th>
                                     <th>Ticket Type</th>
                                     <th>Developer</th>
                                     <th>Submitter</th>
-                                    <th>Issue</th>
                                     <th>Created Data</th>
                                     <th>Action</th>
                                 </tr>
@@ -38,8 +38,23 @@
                                 <tr>
                                     <td><a href="@Url.Action("Details", "Projects", new { id = ticket.ProjectId })"> @Html.DisplayName(ticket.project.Name)</a></td>
                                     @*<td>@Html.DisplayName(ticket.project.Name)</td>*@
-
-                                    <td><a href="@Url.Action( "Index", "Manage", new { userId = projectManager.Id })">@projectManager.FullName</a></td>
+                                    @if (projectManager != null)
+                                    {
+                                        <td><a href="@Url.Action("Index", "Manage", new { userId = projectManager.Id })">@projectManager.FullName</a></td>
+                                    }
+                                    else
+                                    {
+                                        <td> No Project Manager</td>
+                                    }
+                                    <td>@Html.DisplayName(ticket.Submitter.FullName)</td>
+                                    @if (ticket.Issue != null)
+                                    {
+                                        <td>@Html.DisplayName(ticket.Issue)</td>
+                                    }
+                                    else
+                                    {
+                                        <td>No issue</td>
+                                    }
                                     @*<td>@Html.DisplayName(projectHelper.ListUserOnProjectInRole(ticket.ProjectId, "ProjectManager").FirstOrDefault().FullName)</td>*@
                                     <td>@Html.DisplayName(ticket.TicketPriority.Name)</td>
                                     <td>@Html.DisplayName(ticket.TicketStatus.Name)</td>
@@ -53,22 +68,11 @@
                                     {
                                         <td>No User assinged to Developer</td>
                                     }
-                                    <td>@Html.DisplayName(ticket.Submitter.FullName)</td>
-                                    @if (ticket.Issue != null)
-                                    {
-                                        <td>@Html.DisplayName(ticket.Issue)</td>
-                                    }
-                                    else
-                                    {
-                                        <td>No issue</td>
-                                    }
+
                                     <td>@Html.DisplayName(ticket.Created.ToString("MMM dd yyyy"))</td>
                                     <td>
 
-                                        @if (!User.IsInRole("Submitter"))
-                                        {
-                                            @Html.ActionLink("Edit", "Edit", new { id = ticket.Id }) <span>|</span>
-                                        }
+
                                         @Html.ActionLink("Details", "Dashboard", new { id = ticket.Id }) |
                                     </td>
                                 </tr>

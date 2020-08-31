@@ -1,7 +1,10 @@
 ﻿@*@model BugTracker.ViewModels.ProjectManageVM*@
 @model BugTracker.Models.Project
 @using BugTracker.Helpers;
-@{var projectHelper = new ProjectHelper(); }
+@{var projectHelper = new ProjectHelper();
+    var projectManager = projectHelper.ListUserOnProjectInRole(Model.Id, "ProjectManager").FirstOrDefault();
+    
+}
 <div class="container-fluid p-t-20">
     <div class="row">
         <div class="col-lg-12">
@@ -73,7 +76,6 @@
                         <div class="card-body">
                             <h3 class="box-title">Project Manager</h3>
                             <hr class="m-t-0 m-b-40">
-                            @{var projectManager = projectHelper.ListUserOnProjectInRole(Model.Id, "ProjectManager").FirstOrDefault();}
                             @if (projectManager != null)
                             {
                                 <div class="row">
@@ -217,7 +219,13 @@
                                             {
                                                 <tr>
                                                     <td><a href="@Url.Action("Dashboard", "Tickets", new { id = ticket.Id })"> @ticket.Id</a></td>
-                                                    <td>@Html.DisplayName(projectHelper.ListUserOnProjectInRole(ticket.ProjectId, "ProjectManager").FirstOrDefault().FullName)</td>
+                                                    @if (projectManager != null) {
+                                                    <td>@Html.DisplayName(projectManager.FullName)</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>No Project Manager </td>
+                                                    }
                                                     <td>@Html.DisplayName(ticket.TicketPriority.Name)</td>
                                                     <td>@Html.DisplayName(ticket.TicketStatus.Name)</td>
                                                     <td>@Html.DisplayName(ticket.TicketType.Name)</td>

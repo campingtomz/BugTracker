@@ -19,7 +19,17 @@
                     {
                         if (p.AuthenticationType == "Google")
                         {
-                            <button type="submit" class="btn btn-googleplus" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account"><i aria-hidden="true" class="fa fa-google-plus"></i>@p.AuthenticationType</button>
+                            <button type="submit" class="btn btn-googleplus" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account"><i aria-hidden="true" class="fa fa-google"></i> @p.AuthenticationType</button>
+
+                        }
+                        if (p.AuthenticationType == "GitHub")
+                        {
+                            <button type="submit" class="btn btn-github" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account"><i aria-hidden="true" class="fa  fa-github"></i >@p.AuthenticationType</button>
+
+                        }
+                        if (p.AuthenticationType == "LinkedIn")
+                        {
+                            <button type="submit" class="btn btn-linkedin" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account"><i aria-hidden="true" class="fa  fa-linkedin"></i> @p.AuthenticationType</button>
 
                         }
                         @*<button type="submit" class="btn btn-default" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">@p.AuthenticationType</button>*@

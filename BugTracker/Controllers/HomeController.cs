@@ -3,15 +3,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using BugTracker.Helpers;
+using BugTracker.Models;
+using BugTracker.ViewModels;
+using Microsoft.AspNet.Identity;
 
 namespace BugTracker.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
+        private ApplicationDbContext db = new ApplicationDbContext();
+        private UserHelper userHelper = new UserHelper();
+        private UserRoleHelper roleHelper = new UserRoleHelper();
+        private ProjectHelper projectHelper = new ProjectHelper();
+        private HistoryHelper historyHelper = new HistoryHelper();
+        private TicketHelper ticketHelper = new TicketHelper();
+        private HomeViewHelper homeHelper = new HomeViewHelper();
         public ActionResult Index()
         {
-            return View();
+            var user = userHelper.getUser(User.Identity.GetUserId());
+            var model = new HomeVM();
+            model.UserId = user.Id;
+            model.User = user;
+            model.Tickets = ticketHelper.GetMyTickets().ToList();
+            model.TotalNotificationsCount = user.TicketNotifications.Count + user.ProjectNotifications.Count;
+            model.UsersOnMyProjects = projectHelper.GetUsersOnMyProjects();
+            List<int> ProjectIds = new List<int>();
+
+            foreach(var project in projectHelper.GetUserProjects())
+            {
+                ProjectIds.Add(project.Id);
+            }
+            model.ProjectIds = ProjectIds;
+            return View(model);
         }
 
         public ActionResult About()

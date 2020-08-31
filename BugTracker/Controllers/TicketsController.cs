@@ -24,8 +24,8 @@ namespace BugTracker.Controllers
         // GET: Tickets
         public ActionResult Index()
         {
-            
-            return View(ticketHelper.GetMyTickets());
+            var model = ticketHelper.GetMyTickets();
+            return View(model);
         }
 
 

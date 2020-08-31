@@ -184,7 +184,7 @@ namespace BugTracker.Helpers
             return UserList;
         }
         //gets all the tickets assigned to the  logged in user. 
-        public List<Ticket> GetMyTickets()
+        public ICollection<Ticket> GetMyTickets()
         {
             var userId = HttpContext.Current.User.Identity.GetUserId();
             var myRole = userRoleHelper.ListUserRoles(userId).FirstOrDefault();
@@ -238,6 +238,15 @@ namespace BugTracker.Helpers
             var user = db.Users.Find(userId);
             var ticketList = new List<Ticket>();
             return user.Projects.SelectMany(p => p.Tickets).ToList();
+        }
+        public List<Ticket> ListProjectsTickets(List<int> projectIds)
+        {
+            List<Ticket> tickets = new List<Ticket>();
+            foreach (var projectId in projectIds)
+            {
+                tickets.AddRange(db.Tickets.Where(t => t.ProjectId == projectId));
+            }
+            return (tickets);
         }
         //lists all the tickets on a project
         public List<Ticket> GetTicketsByStatus(string status)
@@ -311,5 +320,7 @@ namespace BugTracker.Helpers
         //        db.SaveChanges();
         //    }
         //}
+
+        
     }
 } 

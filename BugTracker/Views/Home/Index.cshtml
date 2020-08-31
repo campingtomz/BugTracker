@@ -1,38 +1,444 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿
+@using BugTracker.ViewModels
+@model HomeVM
+@using BugTracker.Helpers;
+@using Microsoft.AspNet.Identity;
+@{ UserRoleHelper roleHelper = new UserRoleHelper();
+    ProjectHelper projectHelper = new ProjectHelper();
+    UserHelper userHelper = new UserHelper();
+    TicketHelper ticketHelper = new TicketHelper();
 }
+<div class="container">
+    <div class="row p-t-20">
+        <!-- Column -->
+        <div class="col-lg-3 col-md-6 projectButton">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Row -->
+                    <div class="row">
+                        <div class="col-8 ">
+                            <h2>Projects</h2>
+                            <h6>@Model.User.Projects.Count </h6>
 
-<div id="myfirstchart" style="height: 250px;"></div>
+                        </div>
+                        <div class="col-4 align-self-center text-right  p-l-0">
+                            <div id="sparklinedash3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Column -->
+        <div class="col-lg-3 col-md-6 ticketButton">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Row -->
+                    <div class="row">
+                        <div class="col-8 ">
+                            <h2>TIckets</h2>
+                            <h6 class="">@Model.Tickets.Count </h6>
+
+                        </div>
+                        <div class="col-4 align-self-center text-right p-l-0">
+                            <div id="sparklinedash"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Column -->
+        <div class="col-lg-3 col-md-6 notificationButton">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Row -->
+                    <div class="row">
+                        <div class="col-10">
+                            <h2>Notifications</h2>
+                            <h6>@Model.TotalNotificationsCount </h6>
+
+                        </div>
+                        <div class="col-4 align-self-center text-right p-l-0">
+                            <div id="sparklinedash2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Column -->
+        <div class="col-lg-3 col-md-6 UserButton">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Row -->
+                    <div class="row">
+                        <div class="col-8">
+                            <h2>Users</h2>
+                            <h6>@Model.UsersOnMyProjects.Count </h6>
+
+                        </div>
+                        <div class="col-4 align-self-center text-right p-l-0">
+                            <div id="sparklinedash4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="row ">
+        <div class="col-lg-8 col-md-7">
+            <div class="row m-l-40 m-r-40 projectTable">
+                <div class="card card-default">
+                    <div class="card-body">
+                        <h4 class="card-title">Projects</h4>
+                        <div class="table-responsive ">
+                            <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Project Name</th>
+                                        <th>Project Manager</th>
+                                        <th>Project Developers</th>
+                                        <th>Project Submitters</th>
+                                        <th>View</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var project in @Model.User.Projects)
+                                    {
+                                        var projectManager = projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager");
+                                        var Submitters = projectHelper.ListUserOnProjectInRole(project.Id, "Submitter");
+                                        var Developers = projectHelper.ListUserOnProjectInRole(project.Id, "Developer");
+                                        <tr id="@project.Id" class="projectRow">
+                                            <td>
+                                                <a class="form-control-static" href="@Url.Action("Details", "Projects", new { id = project.Id })"> @project.Name</a>
+                                            </td>
+                                            <td>
+                                                @if (projectManager.Count > 0)
+                                                {
+                                                    foreach (var user in projectManager)
+                                                    {
+                                                        @user.FullName
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span>No Project Manager Assigned</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (Developers.Count > 0)
+                                                {
+                                                    <select class="form-control custom-select" tabindex="1">
+                                                        @foreach (var user in Developers)
+                                                        {
+                                                            <option>@user.FullName</option>
+                                                        }
+                                                    </select>
+                                                }
+                                                else
+                                                {
+                                                    <span>No Developers Assigned</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (Submitters.Count > 0)
+                                                {
+                                                    <select class="form-control custom-select" tabindex="1">
+                                                        @foreach (var user in Submitters)
+                                                        {
+                                                            <option>@user.FullName</option>
+                                                        }
+                                                    </select>
+                                                }
+                                                else
+                                                {
+                                                    <span>No Submitters Assigned</span>
+                                                }
+                                            </td>
+                                            <td>@Html.ActionLink("Details", "Details", new { id = project.Id })</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            @if (projectHelper.CanCreateProject())
+                            {
+                                <div class="row p-t-20">
+                                    @Html.ActionLink("Create New", "ProjectWizard", "Projects", null, new { @class = "btn btn-success " })
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row m-l-40 m-r-40">
+                <div class="card card-default">
+
+                    <div class="card-body">
+                        <h4 class="card-title"> Tickets</h4>
+                        <div class="table-responsive ">
+                            <table id="TicketTable" class="TicketTable display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Ticket Id</th>
+                                        <th>Project Name</th>
+                                        <th>Ticket Issue</th>
+                                        <th>Ticket Submitter</th>
+                                        <th>Ticket Developers</th>
+                                        <th>Number Of Comments</th>
+
+                                    </tr>
+                                </thead>
+
+                            </table>
+                            @if (ticketHelper.CanCreateTicket())
+                            {
+                                <div class="row p-t-20">
+                                    @Html.ActionLink("Create New", "Create", "Tickets", null, new { @class = "btn btn-success " })
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row m-l-40 m-r-40">
+                <div class="card card-default">
+
+                    <div class="card-body">
+                        <h4 class="card-title"> Users</h4>
+                        <div class="table-responsive ">
+                            <table id="TicketTable" class="TicketTable display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Project Name</th>
+                                        <th>Ticket Issue</th>
+                                        <th>Ticket Submitter</th>
+                                        <th>Ticket Developers</th>
+                                        <th>Number Of Comments</th>
+
+                                    </tr>
+                                </thead>
+
+                            </table>
+                            @if (ticketHelper.CanCreateTicket())
+                            {
+                                <div class="row p-t-20">
+                                    @Html.ActionLink("Create New", "Create", "Tickets", null, new { @class = "btn btn-success " })
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <div class="col-lg-4 col-md-5">
+            <div class="row">
+                <!-- Column -->
+                <div class="card card-default">
+                    <div class="card-body">
+                        <h4 class="m-b-0 "> Ticket Priority</h4>
+
+                        <canvas id="Priority" width="400" height="400"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <!-- Column -->
+                <div class="card card-default">
+                    <div class="card-body">
+                        <h4 class="m-b-0 "> Ticket Status</h4>
+                        <canvas id="Status" width="400" height="400"></canvas>
+
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="row">
+                <!-- Column -->
+                <div class="card card-default">
+                    <div class="card-body">
+                        <h4 class="m-b-0 "> Ticket Type</h4>
+                        <canvas id="Type" width="400" height="400"></canvas>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
 
 @section scripts{
 
+   
     <script>
-        var url = '@Url.Action("GetTicketPriorityData", "MorrisCharts")'
-        $.ajax({
+        $(document).ready(function () {
+            loadCharts( @Html.Raw(Json.Encode(Model.ProjectIds)));
+            loadTicketsTable( @Html.Raw(Json.Encode(Model.ProjectIds)));
+
+            //loadTicketsTable()
+        });
+
+
+        $(".TicketRow").on("click", function () {
+            alert(this.id);
+        });
+        $(".projectRow").on("click", function () {
+            var projectId = this.id;
+            $(".projectTable").hide();
+            loadCharts(parseInt(projectId));
+        });
+        $(".projectButton").on("click", function () {
+            var projectId = @Html.Raw(Json.Encode(Model.ProjectIds));
+            $(".projectTable").show();
+            loadCharts(parseInt(projectId));
+            loadTicketsTable(parseInt(projectId));
+        });
+        $(".ticketButton").on("click", function () {
+            var projectId = @Html.Raw(Json.Encode(Model.ProjectIds));
+            $(".projectTable").hide();
+            loadCharts(parseInt(projectId));
+            loadTicketsTable(parseInt(projectId));
+        });
+
+
+        function loadCharts(projects) {
+            var ticketCharts = [['Priority', '@Url.Action("GetTicketPriorityData", "HomeTableChart")'], ['Status', '@Url.Action("GetTicketStatusData", "HomeTableChart")'], ['Type', '@Url.Action("GetTicketTypeData", "HomeTableChart")']];
+            for (var i = 0; i < ticketCharts.length; i++) {
+                var test = ticketCharts[i][0]
+
+                var url = ticketCharts[i][1];
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    url: url,
+                    data: JSON.stringify({ 'projectIds': projects }),
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        var ctx = document.getElementById(test).getContext('2d');
+                        var colorList = getRandomColorList(response.label.length);
+                        new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                datasets: [{
+                                    data: response.data,
+                                    backgroundColor: colorList,
+                                }],
+                                labels: response.label,
+                            },
+                        });
+                    },
+                    error: function () {
+                        alert("Error while inserting data");
+                    }
+                });
+            };
+        }
+        function getRandomColorList(length) {
+            var colors = [
+                'rgba(238, 198, 67',
+                'rgba(20, 20, 20)',
+                'rgba(13, 33, 161)',
+                'rgba(1, 22, 56)',
+                'rgba(150, 2, 0)',
+                'rgba(206, 108, 71)',
+                'rgba(118, 146, 255)',
+                'rgba(27, 44, 193)',
+                'rgba(84, 101, 255)',
+                'rgba(224, 255, 79)'];
+            var colorList = [];
+            for (var i = 0; i < length; i++) {
+                var random = Math.floor(Math.random() * colors.length);
+                while (colorList.includes(colors[random])) {
+                     random = Math.floor(Math.random() * colors.length);
+
+                }
+                    colorList.push(colors[random])
+
+            }
+            return colorList;
+        }
+    function loadTicketsTable(projects) {
+
+        
+            var url = '@Url.Action("GetProjectTickets", "HomeTableChart")'
+            $.ajax({
                 type: "POST",
+
                 url: url,
+                data: JSON.stringify({ 'projectIds': projects }),
                 dataType: 'json',
                 contentType: "application/json; charset=utf-8",
-            success: function (response) {
-                    new Morris.Bar({
-                        // ID of the element in which to draw the chart.
-                        element: 'myfirstchart',
-                        // Chart data records -- each entry in this array corresponds to a point on
-                        // the chart.
-                        data: response,
-                        // The name of the data record attribute that contains x-values.
-                        xkey: 'Label',
-                        // A list of names of data record attributes that contain y-values.
-                        ykeys: ['Value'],
-                        // Labels for the ykeys -- will be displayed when you hover over the
-                        // chart.
-                        labels: ['Value']
+                success: function (response) {
+                    $('#TicketTable').DataTable().destroy();
+                    $('#TicketTable tbody').empty();
+                    var data = new Array();
+
+                    response.forEach(function (response) {
+
+                        data.push([response.Id, response.ProjectName, response.Issue,  response.SubmitterName,  response.DeveloperName, response.NumberOfComments])
+
+                    });
+
+                    $('.TicketTable').DataTable({
+
+                        data: data,
+
+                  
+                        dom: 'Bfrtip',
+                        buttons: [
+                            'copy', 'csv', 'excel', 'pdf', 'print'
+                        ]
                     });
                 },
-                error: function () {
+                error: function (response) {
+
                     alert("Error while inserting data");
                 }
             });
+
+
+        };
+
+
     </script>
-    
+
 }
+
+@*
+    
+    
+    
+    
+    
+    
+    var table = document.getElementById('TicketTable');
+    $('#TicketTable').DataTable().destroy();
+    $('#TicketTable tbody').empty();
+    response.forEach(function (response) {
+            var tr = document.createElement('tr');
+            //tr.addClass("TicketRow");
+            //tr.attr('id', response.Id);
+            tr.innerHTML =
+                '<td>' + response.ProjectName + '</td>' +
+                 '<td>' + response.Issue + '</td>' +
+                '<td>' + response.SubmitterName + '</td>' +
+                '<td>' + response.DeveloperName + '</td>' +
+                '<td>' + response.NumberOfComments + '</td>';
+                table.appendChild(tr);
+
+
+    });*@
