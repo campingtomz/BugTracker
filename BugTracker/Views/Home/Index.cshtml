@@ -8,91 +8,115 @@
     UserHelper userHelper = new UserHelper();
     TicketHelper ticketHelper = new TicketHelper();
 }
-<div class="container">
-    <div class="row p-t-20">
-        <!-- Column -->
-        <div class="col-lg-3 col-md-6 projectButton">
-            <div class="card">
-                <div class="card-body">
-                    <!-- Row -->
-                    <div class="row">
-                        <div class="col-8 ">
-                            <h2>Projects</h2>
-                            <h6>@Model.User.Projects.Count </h6>
-
+    <div class="container">
+        <div class="row p-t-20">
+           
+            <div class="col-lg-3 col-md-6 projectButton">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-row">
+                            <div class="round align-self-center round-success"><i class="ti-files"></i></div>
+                            <div class="m-l-10 align-self-center">
+                                <h3 class="m-b-0">Projects</h3>
+                                <h5 class="text-muted m-b-0">@Model.ProjectIds.Count</h5>
+                            </div>
                         </div>
-                        <div class="col-4 align-self-center text-right  p-l-0">
-                            <div id="sparklinedash3"></div>
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 ticketButton">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Row -->
+                        <div class="d-flex flex-row">
+                            <div class="round align-self-center round-info"><i class=" ti-ticket"></i></div>
+                            <div class="m-l-10 align-self-center">
+                                <h3 class="m-b-0">@Model.TicketsCount</h3>
+                                <h5 class="text-muted m-b-0">Tickets </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Column -->
+            <div class="col-lg-3 col-md-6 notificationButton">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-row">
+                            <div class="round align-self-center round-warning"><i class="ti-announcement"></i></div>
+                            <div class="m-l-10 align-self-center">
+                                <h3 class="m-b-0">@Model.TotalNotificationsCount</h3>
+                                <h5 class="text-muted m-b-0">Notifications </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Column -->
+            <div class="col-lg-3 col-md-6 UserButton">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-row">
+                            <div class="round align-self-center round-danger"><i class="ti-user"></i></div>
+                            <div class="m-l-10 align-self-center">
+                                <h3 class="m-b-0">Users</h3>
+                                <h5 class="text-muted m-b-0">@Model.UsersCount </h5>
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row NotificationDisplay " style="display:none">
+            <div class="notifications">
+                <div class="card card-default">
+                    <div class="card-body">
+                        <h4 class="card-title">Ticket Notifications</h4>
+                        <div class="comment-widgets m-b-20">
+                            <div class="chat-box b-all">
+                                <ul class="notificationList chat-list">
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Column -->
-        <div class="col-lg-3 col-md-6 ticketButton">
-            <div class="card">
-                <div class="card-body">
-                    <!-- Row -->
-                    <div class="row">
-                        <div class="col-8 ">
-                            <h2>TIckets</h2>
-                            <h6 class="">@Model.Tickets.Count </h6>
+        <div class="row userTableDisplay">
+            <div class="card card-default">
 
-                        </div>
-                        <div class="col-4 align-self-center text-right p-l-0">
-                            <div id="sparklinedash"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Column -->
-        <div class="col-lg-3 col-md-6 notificationButton">
-            <div class="card">
                 <div class="card-body">
-                    <!-- Row -->
-                    <div class="row">
-                        <div class="col-10">
-                            <h2>Notifications</h2>
-                            <h6>@Model.TotalNotificationsCount </h6>
+                    <h4 class="card-title"> Users</h4>
+                    <div class="table-responsive ">
+                        <table id="UserTable" class="UserTable display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                    <th>Role</th>
+                                    <th># Tickets</th>
+                                    <th>View</th>
 
-                        </div>
-                        <div class="col-4 align-self-center text-right p-l-0">
-                            <div id="sparklinedash2"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Column -->
-        <div class="col-lg-3 col-md-6 UserButton">
-            <div class="card">
-                <div class="card-body">
-                    <!-- Row -->
-                    <div class="row">
-                        <div class="col-8">
-                            <h2>Users</h2>
-                            <h6>@Model.UsersOnMyProjects.Count </h6>
-
-                        </div>
-                        <div class="col-4 align-self-center text-right p-l-0">
-                            <div id="sparklinedash4"></div>
-                        </div>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 <div>
     <div class="row ">
-        <div class="col-lg-8 col-md-7">
-            <div class="row m-l-40 m-r-40 projectTable">
+        <div class="col-lg-8 col-md-7 tableDisplay">
+            <div class="row-12 m-l-40  projectTableDisplay">
                 <div class="card card-default">
                     <div class="card-body">
                         <h4 class="card-title">Projects</h4>
                         <div class="table-responsive ">
-                            <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                            <table class="projectTable nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
                                         <th>Project Name</th>
@@ -104,7 +128,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var project in @Model.User.Projects)
+                                    @foreach (var project in projectHelper.GetProjecstByIds(Model.ProjectIds))
                                     {
                                         var projectManager = projectHelper.ListUserOnProjectInRole(project.Id, "ProjectManager");
                                         var Submitters = projectHelper.ListUserOnProjectInRole(project.Id, "Submitter");
@@ -161,164 +185,316 @@
                                     }
                                 </tbody>
                             </table>
-                            @if (projectHelper.CanCreateProject())
-                            {
-                                <div class="row p-t-20">
-                                    @Html.ActionLink("Create New", "ProjectWizard", "Projects", null, new { @class = "btn btn-success " })
-                                </div>
-                            }
+                            @*@if (projectHelper.CanCreateProject())
+                                {
+                                    <div class="row p-t-20">
+                                        @Html.ActionLink("Create New", "ProjectWizard", "Projects", null, new { @class = "btn btn-success " })
+                                    </div>
+                                }*@
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row m-l-40 m-r-40">
+            <div class="row-12 m-l-40 ticketTableDisplay style="display:none"">
                 <div class="card card-default">
-
                     <div class="card-body">
                         <h4 class="card-title"> Tickets</h4>
                         <div class="table-responsive ">
                             <table id="TicketTable" class="TicketTable display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
-                                        <th>Ticket Id</th>
+
                                         <th>Project Name</th>
                                         <th>Ticket Issue</th>
                                         <th>Ticket Submitter</th>
                                         <th>Ticket Developers</th>
-                                        <th>Number Of Comments</th>
+                                        <th>View</th>
 
                                     </tr>
                                 </thead>
 
                             </table>
-                            @if (ticketHelper.CanCreateTicket())
-                            {
-                                <div class="row p-t-20">
-                                    @Html.ActionLink("Create New", "Create", "Tickets", null, new { @class = "btn btn-success " })
-                                </div>
-                            }
+                            @*@if (ticketHelper.CanCreateTicket())
+                                {
+                                    <div class="row p-t-20">
+                                        @Html.ActionLink("Create New", "Create", "Tickets", null, new { @class = "btn btn-success " })
+                                    </div>
+                                }*@
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row m-l-40 m-r-40">
+           
+            <div class="row-12 m-l-40 ticketInfoDisplay" style="display:none">
                 <div class="card card-default">
-
                     <div class="card-body">
-                        <h4 class="card-title"> Users</h4>
+                        <h4 class="card-title"> Ticket Info</h4>
+                        <div class="ticketInfo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-12 m-l-40 ticketAttachments " style=" display:none">
+                <div class="card card-default">
+                    <div class="card-body">
+                        <h4 class="card-title"> Ticket Attachments</h4>
                         <div class="table-responsive ">
-                            <table id="TicketTable" class="TicketTable display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                            <table id="AttachmentTable" class="AttachmentTable display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Project Name</th>
-                                        <th>Ticket Issue</th>
-                                        <th>Ticket Submitter</th>
-                                        <th>Ticket Developers</th>
-                                        <th>Number Of Comments</th>
-
+                                        <th>Attachment Name</th>
+                                        <th>Attachment Submitter</th>
+                                        <th>Description</th>
+                                        <th>Upload Date</th>
+                                        <th>File</th>
                                     </tr>
                                 </thead>
-
                             </table>
-                            @if (ticketHelper.CanCreateTicket())
-                            {
-                                <div class="row p-t-20">
-                                    @Html.ActionLink("Create New", "Create", "Tickets", null, new { @class = "btn btn-success " })
-                                </div>
-                            }
                         </div>
                     </div>
                 </div>
             </div>
-
-
+           
         </div>
-
-
-        <div class="col-lg-4 col-md-5">
-            <div class="row">
-                <!-- Column -->
-                <div class="card card-default">
-                    <div class="card-body">
-                        <h4 class="m-b-0 "> Ticket Priority</h4>
-
-                        <canvas id="Priority" width="400" height="400"></canvas>
-                    </div>
-                </div>
-
+        <div class="col-4  chartCommentSection">
+            <div class="row m-r-20 chartSection">
             </div>
-
-            <div class="row">
-                <!-- Column -->
+            <div class="row commentSection " style="display:none">
                 <div class="card card-default">
                     <div class="card-body">
-                        <h4 class="m-b-0 "> Ticket Status</h4>
-                        <canvas id="Status" width="400" height="400"></canvas>
+                        <div class="row p-t-20 boarder justify-content-center">
+                            <div class="col-12">
+                                <div class="comment-widgets m-b-20">
+                                    <div class="chat-box b-all">
+                                        <ul class="chat-list">
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row p-t-20  justify-content-center">
+                            <div class="col-12">
+                                <label class="control-label">Add Comment</label>
 
+                                @Html.TextArea("Comment", new { @class = "form-control ticketComment", @rows = "5" })
+                                <hr />
+                                <button id="btn-submit" class="btn btn-info"> <i class="fa fa-pencil"></i> Add New Comment</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-
-            </div>
-            <div class="row">
-                <!-- Column -->
-                <div class="card card-default">
-                    <div class="card-body">
-                        <h4 class="m-b-0 "> Ticket Type</h4>
-                        <canvas id="Type" width="400" height="400"></canvas>
-
-                    </div>
-
-                </div>
-
             </div>
         </div>
     </div>
-
 </div>
+</div>
+
 
 
 @section scripts{
 
-   
+
     <script>
+        var projectIds = new Array();
+        var ticketId;
         $(document).ready(function () {
-            loadCharts( @Html.Raw(Json.Encode(Model.ProjectIds)));
-            loadTicketsTable( @Html.Raw(Json.Encode(Model.ProjectIds)));
+            $(".userTableDisplay").hide();
+            $('.projectTable').DataTable({
 
-            //loadTicketsTable()
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+            $('.TicketTable').DataTable({
+
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+            $('.UserTable').DataTable({
+
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+            $('.AttachmentTable').DataTable({
+
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+            projectIds = JSON.parse('@Html.Raw(Json.Encode(@Model.ProjectIds))')
+            loadCharts(projectIds);
+            loadTicketsTable(projectIds);
+            loadUserTable(projectIds);
+
         });
 
+        $('#TicketTable').on('click', 'tbody tr td', function () {
+            if ($(this).index() == 4) return false;
 
-        $(".TicketRow").on("click", function () {
-            alert(this.id);
+            var table = $('#TicketTable').DataTable();
+            var $row = $(this).parent();
+            var data = table.row($row).node().id;
+            getTicketInfo(data);
+            $(".projectTableDisplay").hide();
+            $(".userTableDisplay").hide();
+            $(".ticketTableDisplay").hide();
+            $(".chartSection").empty();
+            $(".NotificationDisplay").hide();
+            getTicketComments(data);
+            getTicketAttachments(data);
+            ticketId = data;
+
+
+
         });
-        $(".projectRow").on("click", function () {
-            var projectId = this.id;
-            $(".projectTable").hide();
-            loadCharts(parseInt(projectId));
+        $('.projectTable').on('click', 'tbody tr td', function () {
+
+            if ($(this).index() == 2 || $(this).index() == 3 || $(this).index() == 4) return false;
+            var table = $('.projectTable').DataTable();
+            var $row = $(this).parent();
+            var data = table.row($row).node().id;
+            projectIds = parseInt(data);
+            $(".projectTableDisplay").hide();
+            $(".NotificationDisplay").hide();
+
+            loadCharts(projectIds);
+            loadTicketsTable(projectIds);
+            loadUserTable(projectIds);
+
         });
         $(".projectButton").on("click", function () {
-            var projectId = @Html.Raw(Json.Encode(Model.ProjectIds));
-            $(".projectTable").show();
-            loadCharts(parseInt(projectId));
-            loadTicketsTable(parseInt(projectId));
+            projectIds = JSON.parse('@Html.Raw(Json.Encode(@Model.ProjectIds))')
+            $(".projectTableDisplay").show();
+            $(".userTableDisplay").hide();
+            $(".ticketTableDisplay").show();
+            $(".chartSection").show();
+            $(".chartSection").show();
+            $(".ticketInfoDisplay").hide();
+            $(".ticketInfo").empty();
+            $(".ticketAttachments").hide();
+            $(".AttachmentTable").empty();
+            $(".commentSection").hide();
+            $(".NotificationDisplay").hide();
+
+            loadCharts(projectIds);
+            loadTicketsTable(projectIds);
+            loadUserTable(projectIds);
         });
         $(".ticketButton").on("click", function () {
-            var projectId = @Html.Raw(Json.Encode(Model.ProjectIds));
-            $(".projectTable").hide();
-            loadCharts(parseInt(projectId));
-            loadTicketsTable(parseInt(projectId));
+            projectIds = JSON.parse('@Html.Raw(Json.Encode(@Model.ProjectIds))')
+            $(".projectTableDisplay").hide();
+            $(".userTableDisplay").hide();
+            $(".ticketTableDisplay").show();
+            $(".chartSection").show();
+            $(".ticketInfoDisplay").hide();
+            $(".ticketInfo").empty();
+            $(".ticketAttachments").hide();
+            $(".AttachmentTable").empty();
+            $(".commentSection").hide();
+            loadCharts(projectIds);
+            loadTicketsTable(projectIds);
+            $(".NotificationDisplay").hide();
+
         });
+        $(".UserButton").on("click", function () {
+            projectIds = JSON.parse('@Html.Raw(Json.Encode(@Model.ProjectIds))')
+            $(".projectTableDisplay").hide();
+            $(".userTableDisplay").show();
+            $(".ticketTableDisplay").hide();
+            $(".chartSection").hide();
+            $(".ticketInfoDisplay").hide();
+            $(".ticketInfo").empty();
+            $(".ticketAttachments").hide();
+            $(".AttachmentTable").empty();
+            $(".commentSection").hide();
+            $(".NotificationDisplay").hide();
 
 
+            loadUserTable(projectIds);
+        });
+        $(".notificationButton").on("click", function () {
+            projectIds = JSON.parse('@Html.Raw(Json.Encode(@Model.ProjectIds))')
+            $(".projectTableDisplay").hide();
+            $(".userTableDisplay").hide();
+            $(".ticketTableDisplay").hide();
+            $(".chartSection").hide();
+            $(".chartSection").hide();
+            $(".ticketInfoDisplay").hide();
+            $(".ticketInfo").empty();
+            $(".ticketAttachments").hide();
+            $(".AttachmentTable").empty();
+            $(".commentSection").hide();
+            getUserNotifications();
+        });
+        $('#btn-submit').on("click", function (e) {
+            var url = '@Url.Action("createComment", "HomeTableChart")'
+            var comment = $(".ticketComment").val();
+            $(".ticketComment").val("");
+            $.ajax({
+                type: "POST",
+                async: false,
+                url: url,
+                data: JSON.stringify({ 'comment': comment, 'ticketId': ticketId }),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    getTicketComments(ticketId)
+                },
+                error: function () {
+                    alert("Error while inserting data");
+                }
+            });
+
+
+        });
+        $('.notificaionClose').on("click", function (e) {
+             var url = '@Url.Action("setNotificationIsRead", "HomeTableChart")'
+            var notification = $(".notificaionClose").val();
+           
+            $.ajax({
+                type: "POST",
+                async: false,
+                url: url,
+                data: JSON.stringify({ "notificationId": notification }),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    getTicketComments(ticketId)
+                },
+                error: function () {
+                    alert("Error while inserting data");
+                }
+            });
+
+
+        })
+        function LoadTicketByProperty(label, property) {
+
+            if (property =="Priority") {
+                var url = '@Url.Action("GetTicketByPriority", "HomeTableChart")';
+            } else if (property =="Status") {
+                var url = '@Url.Action("GetTicketByStatus", "HomeTableChart")';
+            } else if (property =="Type") {
+                var url = '@Url.Action("GetTicketByType", "HomeTableChart")';
+            }
+
+            loadTicketsTableByProperty(label, url, projectIds);
+
+        };
         function loadCharts(projects) {
+            $('.chartSection').empty();
             var ticketCharts = [['Priority', '@Url.Action("GetTicketPriorityData", "HomeTableChart")'], ['Status', '@Url.Action("GetTicketStatusData", "HomeTableChart")'], ['Type', '@Url.Action("GetTicketTypeData", "HomeTableChart")']];
-            for (var i = 0; i < ticketCharts.length; i++) {
-                var test = ticketCharts[i][0]
 
+            for (var i = 0; i < ticketCharts.length; i++) {
+                var property = ticketCharts[i][0]
                 var url = ticketCharts[i][1];
                 $.ajax({
                     type: "POST",
@@ -328,17 +504,40 @@
                     dataType: 'json',
                     contentType: "application/json; charset=utf-8",
                     success: function (response) {
-                        var ctx = document.getElementById(test).getContext('2d');
+                        $(".chartSection").append(`<div class="row m-l-40">
+                                <div class="card card-default">
+                                    <div class="card-body">
+                                        <h4 class="m-b-0 "> Ticket ${property}</h4>
+
+                                        <canvas id="${property}" width="350" height="350"></canvas>
+                                    </div>
+                                </div>
+                            </div>`);
+                        var ticketChart = document.getElementById(property);
+                        var propertyValue = property
                         var colorList = getRandomColorList(response.label.length);
-                        new Chart(ctx, {
-                            type: 'doughnut',
-                            data: {
-                                datasets: [{
-                                    data: response.data,
-                                    backgroundColor: colorList,
-                                }],
-                                labels: response.label,
+                        var ticketData = {
+                            labels: response.label,
+                            datasets: [{
+                                data: response.data,
+                                backgroundColor: colorList,
+
                             },
+                            ],
+                        }
+                        var options = {
+                            onClick: (evt, item) => {
+
+                                chart.update()
+                                item[0]._model.outerRadius += 10
+                                LoadTicketByProperty(item[0]['_model'].label, propertyValue)
+                            },
+                        }
+                        var chart = new Chart(ticketChart, {
+                            type: 'doughnut',
+                            data: ticketData,
+                            options: options,
+
                         });
                     },
                     error: function () {
@@ -371,38 +570,54 @@
             }
             return colorList;
         }
-    function loadTicketsTable(projects) {
+        function loadTicketsTableByProperty(label, url, projects) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: JSON.stringify({ 'PropertyName':label, 'projectIds': projects }),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    var table = $('#TicketTable').DataTable();
+                    table.clear();
+                    response.forEach(function (response) {
+                        table.row.add([
+                            response.ProjectName, response.Issue, response.SubmitterName, response.DeveloperName,'<a href="/Tickets/Dashboard/' + response.Id + '" >Details</a>'
 
-        
+
+                        ]).draw().node().id = response.Id;
+                    })
+
+                    $(".ticketTableDisplay").show();
+
+                },
+                error: function (response) {
+
+                    alert("Error while inserting data");
+                }
+            });
+        }
+        function loadTicketsTable(projects) {
+
+
             var url = '@Url.Action("GetProjectTickets", "HomeTableChart")'
             $.ajax({
                 type: "POST",
-
                 url: url,
                 data: JSON.stringify({ 'projectIds': projects }),
                 dataType: 'json',
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
-                    $('#TicketTable').DataTable().destroy();
-                    $('#TicketTable tbody').empty();
-                    var data = new Array();
-
+                    var table = $('#TicketTable').DataTable();
+                    table.clear();
                     response.forEach(function (response) {
+                         table.row.add([
+                            response.ProjectName, response.Issue, response.SubmitterName, response.DeveloperName,  '<a href="/Tickets/Dashboard/' + response.Id + '" >Details</a>'
+                        ]).draw().node().id = response.Id;
+                    })
 
-                        data.push([response.Id, response.ProjectName, response.Issue,  response.SubmitterName,  response.DeveloperName, response.NumberOfComments])
 
-                    });
-
-                    $('.TicketTable').DataTable({
-
-                        data: data,
-
-                  
-                        dom: 'Bfrtip',
-                        buttons: [
-                            'copy', 'csv', 'excel', 'pdf', 'print'
-                        ]
-                    });
+                    $(".ticketTableDisplay").show();
                 },
                 error: function (response) {
 
@@ -412,33 +627,236 @@
 
 
         };
+        function loadUserTable(projects) {
 
+
+            var url = '@Url.Action("GetUsersByProjects", "HomeTableChart")'
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: JSON.stringify({ 'projectIds': projects }),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    var table = $('#UserTable').DataTable();
+                    table.clear();
+
+
+                    response.forEach(function (response) {
+                        table.row.add([
+                            '<img src="' + response.AvatarPath + '" alt="user"width="40"class="img-circle" />'+response.FullName, response.Email, response.PhoneNumber, response.UserRole, response.TicketCount,'<a href="/UserManagment/UserProfile/' + response.Id + '" >Details</a>'
+                        ]).draw().node().id = response.Id;
+                    })
+                },
+                error: function (response) {
+                    alert("Error while inserting data");
+                }
+            });
+
+        };
+        function getTicketInfo(ticketId) {
+             var url = '@Url.Action("GetTicketInfo", "HomeTableChart")'
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: JSON.stringify({ 'ticketId': ticketId }),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $(".ticketInfo").append(
+                        `
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label ">Ticket Issue:</label>
+
+                                        <p class="form-control-static">${response.Issue}</p>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label ">Ticket Description :</label>
+                                        <p class="form-control-static">${response.IssueDescription}</p>
+                                            </div>
+                                </div>
+                            </div>
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Ticket Submitter :</label>
+                                        <p class="form-control-static"> ${response.SubmitterName}  </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label class="control-label">Ticket Developer :</label>
+
+                                                <p class="form-control-static">${response.DeveloperName}  </p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label ">Ticket Type:</label>
+                                        <p class="form-control-static">  ${response.TicketType} </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Created Date:</label>
+                                        <p class="form-control-static"> ${response.Created} </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Ticket Priority:</label>
+
+                                        <p class="form-control-static"> ${response.TicketPriority} </p>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Last Update:</label>
+
+                                        <p class="form-control-static"> ${response.Updated} </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <label class="control-label">Ticket Status:</label>
+                                        <p class="form-control-static"> ${response.TicketStatus} </p>
+
+                        </div>`
+
+                    )
+                    $(".ticketInfoDisplay").show();
+                },
+                error: function (response) {
+                    alert("Error while inserting data");
+                }
+            });
+        }
+        function getTicketComments(ticketId) {
+            var url = '@Url.Action("GetTicketComments", "HomeTableChart")'
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: JSON.stringify({ 'ticketId': ticketId }),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $(".chat-list").empty();
+
+                    if (typeof response != "undefined" && response != null && response.length != null && response.length > 0) {
+                        response.forEach(function (response) {
+                            $(".chat-list").append(
+                                `<li>
+                                 <div class="d-flex flex-row comment-row  b-all">
+                                 <div class="p-2"><span class="round"><img src=${response.AvatarPath} alt="user" width="50"/></span></div>
+                                 <div class="comment-text w-100">
+                                 <h5>${response.UserName}</h5>
+                                 <div class="comment-footer">
+                                 <span class="date">${response.Created}</span>
+                                 </div>
+                                 <p class="m-b-5 m-t-10">${response.Comment}</p>
+                                 </div>
+                                 </div>
+                             </li>`
+                            )
+                        })
+
+
+                    } else {
+                        $(".chat-list").append(` <h4 class= "card-title"> No Comments on The Ticket</h4>`)
+                    }
+                    $(".commentSection").show();
+                },
+                error: function (response) {
+                    alert("Error while inserting data");
+                }
+
+            });
+        }
+        function getTicketAttachments(ticketId) {
+            var url = '@Url.Action("GetTicketAttachments", "HomeTableChart")'
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: JSON.stringify({ 'ticketId': ticketId }),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+
+
+                    if ( response != "undefined" && response != null && response.length > 0) {
+                        var table = $('#AttachmentTable').DataTable();
+                        table.clear();
+                        response.forEach(function (response) {
+                            table.row.add([
+                                response.Name, response.Uploader, response.Description, response.Created, response.FilePath
+                            ]).draw()
+                        })
+                    } else {
+                        $(".chat-list").append(` <h4 class= "card-title"> No Attachments on The Ticket</h4>`)
+                    }
+                    $(".ticketAttachments").show();
+                },
+                error: function (response) {
+                    alert("Error while inserting data");
+                }
+
+            });
+        }
+        function getUserNotifications() {
+             var url = '@Url.Action("getUserNotificationS", "HomeTableChart")'
+            $.ajax({
+                type: "POST",
+                url: url,
+                //data: JSON.stringify({ 'ticketId': ticketId }),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $(".notificationList").empty();
+
+                    if (typeof response != "undefined" && response != null && response.length != null && response.length > 0) {
+                        response.forEach(function (response) {
+                            $(".notificationList").append(
+                                `<div class="alert alert-${response.Type}">
+                                         <h6>${response.Created}</h6>
+                                            <button type="button" value="${response.Id},${response.notificationVersion}" class="close notificaionClose" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+                                            <h3 class="text-${response.Type}"><i class="fa ${response.Icon}"></i> ${response.Subject}</h3> ${response.Message}
+                                        </div>`
+                            )
+                        })
+
+
+                    } else {
+                        $(".chat-list").append(` <h4 class= "card-title"> No Comments on The Ticket</h4>`)
+                    }
+                    $(".NotificationDisplay").show();
+                },
+                error: function (response) {
+                    alert("Error while inserting data");
+                }
+
+            });
+        }
 
     </script>
 
 }
 
-@*
-    
-    
-    
-    
-    
-    
-    var table = document.getElementById('TicketTable');
-    $('#TicketTable').DataTable().destroy();
-    $('#TicketTable tbody').empty();
-    response.forEach(function (response) {
-            var tr = document.createElement('tr');
-            //tr.addClass("TicketRow");
-            //tr.attr('id', response.Id);
-            tr.innerHTML =
-                '<td>' + response.ProjectName + '</td>' +
-                 '<td>' + response.Issue + '</td>' +
-                '<td>' + response.SubmitterName + '</td>' +
-                '<td>' + response.DeveloperName + '</td>' +
-                '<td>' + response.NumberOfComments + '</td>';
-                table.appendChild(tr);
-
-
-    });*@

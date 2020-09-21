@@ -40,10 +40,10 @@ var projectHelper = new ProjectHelper(); }
 
                                     <td> @Html.DropDownListFor(modelItem => user.Id, new SelectList(user.Projects, "id", "Name", "-- NO Project --"), new { @class = "form-control" })</td>
                                     <td>
-                                        @Html.ActionLink("Manage User", "ManageUser", new { userid = user.Id }) |
+                                        @Html.ActionLink("Manage User", "ManageUser", new { userid = user.Id }) 
                                         @if (User.IsInRole("Admin"))
-                                        {
-                                            @Html.ActionLink("Delete", "Delete", new { userid = user.Id })
+                                        { 
+                                            @Html.ActionLink("| Delete", "Delete", new { userid = user.Id })
                                         }
                                         </td>
                                 </tr>

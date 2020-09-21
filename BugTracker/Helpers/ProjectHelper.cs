@@ -92,7 +92,7 @@ namespace BugTracker.Helpers
         public ICollection<Project> ListUserProjects(string userId)
         {
             ApplicationUser user = db.Users.Find(userId);
-            var projects = user.Projects.ToList();
+            var projects = user.Projects;
             return (projects);
         }
         public ICollection<Project> ListUserNotOnProjects(string userId)
@@ -221,9 +221,14 @@ namespace BugTracker.Helpers
         public List<ApplicationUser> ListUsesOnMyProjects(string userId)
         {
             List<ApplicationUser> userList = new List<ApplicationUser>();
-            var user = db.Users.Find(userId);
-            return user.Projects.SelectMany(p => p.Users).Distinct().OrderByDescending(p => p.Email).ToList();
-
+            var user = db.Users.Find(userId);     
+            var projects = db.Projects.ToList();
+            foreach(var project in projects)
+            {
+                userList.AddRange(project.Users);
+            }
+            //return user.Projects.SelectMany(p => p.Users).Distinct().OrderByDescending(p => p.Email).ToList();
+            return userList;
         }
         public List<ApplicationUser> ListUserOnProjectInRole(int projectId, string roleName)
         {

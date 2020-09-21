@@ -2,9 +2,8 @@
 @model BugTracker.Models.ExtendedRegisterViewModel
 
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", @enctype = "multipart/form-data" }))
-{
-    @Html.AntiForgeryToken()
+
+   
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -25,12 +24,12 @@
     </head>
 
     <body>
-
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", @enctype = "multipart/form-data" }))
+        {@Html.AntiForgeryToken()
         <section id="wrapper">
             <div class="login-register" style="background-image: url(~/Content/images/background/login-register.jpg);">
                 <div class="login-box card">
                     <div class="card-body">
-                        <form class="form-horizontal form-material" id="loginform" action="index.html">
                             <h3 class="box-title m-b-20">Sign Up</h3>
                             <div class="form-group">
                                 <div class="col-xs-12">
@@ -79,11 +78,12 @@
                                     <div>Already have an account? <a href="pages-login.html" class="text-info m-l-5"><b>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</b></a></div>
                                 </div>
                             </div>
-                        </form>
+                      
                     </div>
                 </div>
             </div>
         </section>
+        }
     </body>
 </html>
 <script src="~/Scripts/jquery.min.js"></script>
@@ -97,7 +97,7 @@
     });
 </script>
 
-}
+
 
 
 

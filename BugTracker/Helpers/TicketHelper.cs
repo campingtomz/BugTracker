@@ -184,7 +184,7 @@ namespace BugTracker.Helpers
             return UserList;
         }
         //gets all the tickets assigned to the  logged in user. 
-        public ICollection<Ticket> GetMyTickets()
+        public List<Ticket> GetMyTickets()
         {
             var userId = HttpContext.Current.User.Identity.GetUserId();
             var myRole = userRoleHelper.ListUserRoles(userId).FirstOrDefault();
@@ -204,7 +204,7 @@ namespace BugTracker.Helpers
                 case "Submitter":
                     return db.Tickets.Where(t => t.SubmitterId == userId).ToList();
                 default:
-                    return null;
+                    return db.Tickets.Where(t => t.DeveloperId == userId).ToList();
             }
 
         }
@@ -227,7 +227,7 @@ namespace BugTracker.Helpers
                     case "Submitter":
                         return db.Tickets.Where(t => t.SubmitterId == userId).ToList();
                     default:
-                        return null;
+                        return db.Tickets.Where(t => t.DeveloperId == userId).ToList();
                 }
 
             }

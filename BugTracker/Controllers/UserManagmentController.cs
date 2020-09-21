@@ -29,15 +29,21 @@ namespace BugTracker.Controllers
         // GET: UserManagment 
         public ActionResult Index()
         {
-            var userId = User.Identity.GetUserId();
+            var user = userHelper.getUser(User.Identity.GetUserId());
             var model = new List<ApplicationUser>();
-            if (!User.IsInRole("Admin"))
-            {
-                model = projectHelper.ListUsesOnMyProjects(userId);
+            if (User.IsInRole("Admin"))
+            { 
+                model = db.Users.ToList();
             }
             else
             {
-                model = db.Users.ToList();
+                foreach(var project in user.Projects)
+                {
+                    model.AddRange(project.Users);
+                }
+                //model = user.Projects;
+               //model = projectHelper.ListUsesOnMyProjects(userId);
+
             }
             return View(model);
         }

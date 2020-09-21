@@ -236,7 +236,7 @@ namespace BugTracker.Controllers
             }
 
             // If we got this far, something failed, redisplay form
-            return View(model);
+            return RedirectToAction("Login", "Account");
         }
 
 
@@ -716,6 +716,12 @@ namespace BugTracker.Controllers
                 }
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
+        }
+        public ActionResult NotAuthorized()
+        {
+
+
+            return View();
         }
         #endregion
     }

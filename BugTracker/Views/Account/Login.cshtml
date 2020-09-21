@@ -100,7 +100,17 @@
                                 }
                             </div>
                         </div>
+                        <div class="row ">
+                            <div class="col-12">
 
+                                @using (Html.BeginForm("DemoLoginAsync", "Account", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken();
+                                    @Html.Hidden("emailKey", "DPM")
+                                    <button type="submit" class="btn btn-info  btn-block waves-effect waves-light"> Demo Project Manager </button>
+                                }
+                            </div>
+                        </div>
                         <div class="row ">
                             <div class="col-12">
                                 @using (Html.BeginForm("DemoLoginAsync", "Account", FormMethod.Post))
@@ -122,17 +132,7 @@
                                 }
                             </div>
                         </div>
-                        <div class="row ">
-                            <div class="col-12">
 
-                                @using (Html.BeginForm("DemoLoginAsync", "Account", FormMethod.Post))
-                                {
-                                    @Html.AntiForgeryToken();
-                                    @Html.Hidden("emailKey", "DPM")
-                                    <button type="submit" class="btn btn-info  btn-block waves-effect waves-light"> Demo ProjectManager </button>
-                                }
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

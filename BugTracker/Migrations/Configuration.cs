@@ -125,16 +125,16 @@ namespace BugTracker.Migrations
             #region Project Seed
             context.Projects.AddOrUpdate(
                 p => p.Name,
-                new Project() { Name = "Seed1", Created = DateTime.Now.AddDays(-60), DueDate = DateTime.Now.AddDays(-10), IsArchive = true },
-                new Project() { Name = "Seed2", Created = DateTime.Now.AddDays(-10), DueDate = DateTime.Now.AddDays(+100) },
-                new Project() { Name = "Seed3", Created = DateTime.Now.AddDays(-45), DueDate = DateTime.Now.AddDays(+100) },
-                new Project() { Name = "Seed4", Created = DateTime.Now.AddDays(-30), DueDate = DateTime.Now.AddDays(+100) },
-                new Project() { Name = "Seed5", Created = DateTime.Now.AddDays(-4), DueDate = DateTime.Now.AddDays(+100) },
-                new Project() { Name = "Seed6", Created = DateTime.Now.AddDays(-60), DueDate = DateTime.Now.AddDays(-10), IsArchive = true },
-                new Project() { Name = "Seed7", Created = DateTime.Now.AddDays(-10), DueDate = DateTime.Now.AddDays(+100) },
-                new Project() { Name = "Seed8", Created = DateTime.Now.AddDays(-45), DueDate = DateTime.Now.AddDays(+100) },
-                new Project() { Name = "Seed9", Created = DateTime.Now.AddDays(-30), DueDate = DateTime.Now.AddDays(+100) },
-                new Project() { Name = "Seed10", Created = DateTime.Now.AddDays(-4), DueDate = DateTime.Now.AddDays(+100) }
+                new Project() { Name = "User Interface for Banking", Created = DateTime.Now.AddDays(-60), DueDate = DateTime.Now.AddDays(-10), IsArchive = true },
+                new Project() { Name = "Commercial Blog Site", Created = DateTime.Now.AddDays(-10), DueDate = DateTime.Now.AddDays(+100) },
+                new Project() { Name = "Financial API", Created = DateTime.Now.AddDays(-45), DueDate = DateTime.Now.AddDays(+100) },
+                new Project() { Name = "Sunset Light calculator", Created = DateTime.Now.AddDays(-30), DueDate = DateTime.Now.AddDays(+100) },
+                new Project() { Name = "Factorial Calculator", Created = DateTime.Now.AddDays(-4), DueDate = DateTime.Now.AddDays(+100) },
+                new Project() { Name = "Movie Comparer", Created = DateTime.Now.AddDays(-60), DueDate = DateTime.Now.AddDays(-10), IsArchive = true },
+                new Project() { Name = "Fizz Buzz", Created = DateTime.Now.AddDays(-10), DueDate = DateTime.Now.AddDays(+100) },
+                new Project() { Name = "Tacos and Cats", Created = DateTime.Now.AddDays(-45), DueDate = DateTime.Now.AddDays(+100) },
+                new Project() { Name = "Fear the sums", Created = DateTime.Now.AddDays(-30), DueDate = DateTime.Now.AddDays(+100) },
+                new Project() { Name = "Finacial portal", Created = DateTime.Now.AddDays(-4), DueDate = DateTime.Now.AddDays(+100) }
                 );
             #endregion
             context.SaveChanges();
@@ -149,7 +149,7 @@ namespace BugTracker.Migrations
                     UserName = "AndrewRussell@coderfoundry.com",
                     FirstName = "Andrew",
                     LastName = "Russell",
-                    AvatarPath = "/Images/Default_Avatar.png",
+                    AvatarPath = "/Avatars/DemoUserAvatars/1.jpg",
                     PhoneNumber = "(111)111-1111"
 
 
@@ -170,7 +170,7 @@ namespace BugTracker.Migrations
                     UserName = "thomas.j.zanis@gmail.com",
                     FirstName = "Thomas",
                     LastName = "Zanis",
-                    AvatarPath = "/Images/Default_Avatar.png",
+                    AvatarPath = "/Avatars/DemoUserAvatars/2.jpg",
                     PhoneNumber = RandomPhoneNumber(),
                     Description = "Administrator of the Site"
 
@@ -190,7 +190,7 @@ namespace BugTracker.Migrations
                     UserName = "DemoAdmin@mailinator.com",
                     FirstName = "Admin",
                     LastName = "Demo",
-                    AvatarPath = "/Images/Default_Avatar.png",
+                    AvatarPath = "/Avatars/DemoUserAvatars/3.jpg",
                     PhoneNumber = RandomPhoneNumber(),
                     Description = "Demo Administrator of the Site"
                 },
@@ -208,7 +208,7 @@ namespace BugTracker.Migrations
                     UserName = "DemoSubmitter@mailinator.com",
                     FirstName = "Submitter",
                     LastName = "Demo",
-                    AvatarPath = "/Images/Default_Avatar.png",
+                    AvatarPath = "/Avatars/DemoUserAvatars/4.jpg",
                     PhoneNumber = RandomPhoneNumber(),
                     Description = "Demo Submitter of the Site"
 
@@ -228,7 +228,7 @@ namespace BugTracker.Migrations
                     UserName = "DemoProjectManager@mailinator.com",
                     FirstName = "ProjectManager",
                     LastName = "Demo",
-                    AvatarPath = "/Images/Default_Avatar.png",
+                    AvatarPath = "/Avatars/DemoUserAvatars/5.jpg",
                     PhoneNumber = RandomPhoneNumber(),
                     Description = "Demo ProjectManager of the Site"
                 },
@@ -246,7 +246,7 @@ namespace BugTracker.Migrations
                     UserName = "DemoDeveloper@mailinator.com",
                     FirstName = "Developer",
                     LastName = "Demo",
-                    AvatarPath = "/Images/Default_Avatar.png",
+                    AvatarPath = "/Avatars/DemoUserAvatars/6.jpg",
                     PhoneNumber = RandomPhoneNumber(),
                     Description = "Demo Developer of the Site"
 
@@ -270,7 +270,8 @@ namespace BugTracker.Migrations
                         UserName = emailCurr,
                         FirstName = $"{name.Item1}",
                         LastName = $"{name.Item2}",
-                        AvatarPath = "/Images/Default_Avatar.png",
+                        Description = "Developer",
+                        AvatarPath = "/Avatars/DemoUserAvatars/7.jpg",
                         PhoneNumber = RandomPhoneNumber()
 
                     },
@@ -294,11 +295,12 @@ namespace BugTracker.Migrations
                         UserName = emailCurr,
                         FirstName = $"{name.Item1}",
                         LastName = $"{name.Item2}",
-                        AvatarPath = "/Images/Default_Avatar.png",
+                        Description = "ProjectManager",
+                        AvatarPath = "/Avatars/DemoUserAvatars/8.jpg",
                         PhoneNumber = RandomPhoneNumber()
 
                     },
-                    "123456Abc$");
+                    "123456Abc$"); ;
 
 
                 }
@@ -317,8 +319,10 @@ namespace BugTracker.Migrations
                         Email = emailCurr,
                         UserName = emailCurr,
                         FirstName = $"{name.Item1}",
+                        Description = "Submitter",
+
                         LastName = $"{name.Item2}",
-                        AvatarPath = "/Images/Default_Avatar.png",
+                        AvatarPath = "/Avatars/DemoUserAvatars/d1.jpg",
                         PhoneNumber = RandomPhoneNumber()
 
                     },
@@ -390,6 +394,16 @@ namespace BugTracker.Migrations
             #endregion
             context.SaveChanges();
             #region seed tickets 10 tickets/project
+            List<string> supportIssues = new List<string>() { "The Login is not working for 3rd party", "Tickets do not Display text for zero notifications or histories",
+                "Project names are not displayed right", "Need to add Users to projects", "add verification for file/image upload",
+                "add a new Helper class for notifications", "Seed method duplicating notifications when update-database is ran","Setup default Avatar images for users",
+                "When uploading custom avatar image, it does not update database", "upload database to Azure","test"};
+
+            List<string> supportDiscription = new List<string>() { "The 3rd party login is not connecting to the correct service.","Where there are zero notifications or histories for a ticket. It is displaying a empty data table"
+            ,"The project names are displaying the incorrect value.","create a seed method to add users to projects. Also create a manage project to add users to the project","File/image verification. so only certain files formats are uploaded. ",
+                "Create a helper class that deals with all the methods for creating and displaying notifications for tickets, projects and users.","when updateDatabase is ran, it is duplicating methods in the seed methods, causing issues with projects and tickets."
+                ,"There is no default Avatar image set up for the users. Add a feature in registry and manage user profile for uploading an avatar. if no avatar is uploaded add a default image","the custom avatar image path is not being updated in the database.",
+            "create a new database in Azure and upload the current working database to it.","test"};
             List<TicketPriority> ticketPriorities = ticketHelper.ListTicketProities();
             List<TicketType> ticketTypes = ticketHelper.ListTicketTypes();
             var StatusId = context.TicketStatuses.Where(ts => ts.Name == "Open").FirstOrDefault().Id;
@@ -411,7 +425,8 @@ namespace BugTracker.Migrations
                     seedTicket.TicketPriorityId = ticketPriorities[rand.Next(ticketPriorities.Count)].Id;
                     seedTicket.TicketTypeId = ticketTypes[rand.Next(ticketTypes.Count)].Id;
                     seedTicket.Created = DateTime.Now;
-                    seedTicket.Issue = $"There is an issue with {project.Name}";
+                    seedTicket.Issue = supportIssues[i];
+                    seedTicket.IssueDescription = supportDiscription[i];
                     seedTicket.IsArchived = false;
                     seedTicket.IsResolved = false;
                     seedTicket.ProjectId = project.Id;
@@ -423,18 +438,18 @@ namespace BugTracker.Migrations
             #region seed notifications and Histories
             #region project creation notification
             foreach (var project in context.Projects.ToList())
-            {              
-                    foreach (var user in project.Users)
+            {
+                foreach (var user in project.Users)
+                {
+                    var newNotification = new ProjectNotification()
                     {
-                        var newNotification = new ProjectNotification()
-                        {
-                            ProjectId = project.Id,
-                            UserId = user.Id,
-                            Created = DateTime.Now,
-                            Subject = $"Added to Project Id: {project.Id}",
-                            Message = $"Hello, {user.FullName} you have been Added to the project: {project.Name}",
-                        };
-                        context.ProjectNotifications.Add(newNotification);                    
+                        ProjectId = project.Id,
+                        UserId = user.Id,
+                        Created = DateTime.Now,
+                        Subject = $"Added to Project Id: {project.Id}",
+                        Message = $"Hello, {user.FullName} you have been Added to the project: {project.Name}",
+                    };
+                    context.ProjectNotifications.Add(newNotification);
                 }
 
             }
@@ -456,7 +471,7 @@ namespace BugTracker.Migrations
                 }
 
                 project.DueDate = DateTime.Now;
-                project.Name = $"{project.Name} Name has been changed to this";
+                project.Name = $"{project.Name}v2";
                 project.Description = $"{project.Description} Description has been changed to this";
                 context.SaveChanges();
                 var newProject = context.Projects.AsNoTracking().FirstOrDefault(p => p.Id == project.Id);
@@ -487,8 +502,6 @@ namespace BugTracker.Migrations
                 ticket.TicketPriorityId = TicketPriorities[rand.Next(TicketPriorities.Count)].Id;
                 ticket.TicketStatusId = TicketStatuses[rand.Next(TicketStatuses.Count)].Id;
                 ticket.TicketTypeId = TicketTypes[rand.Next(TicketTypes.Count)].Id;
-                ticket.Issue = $"This is a test issue for ticket number: {ticket.Id}";
-                ticket.IssueDescription = $"This is a test IssueDescription for ticket number: {ticket.Id}";
                 ticket.DeveloperId = projectDevelopers[rand.Next(projectDevelopers.Count)].Id;
                 context.SaveChanges();
                 var newTicket = context.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
@@ -498,6 +511,166 @@ namespace BugTracker.Migrations
             context.SaveChanges();
             #endregion
             #endregion
+            #region seed ticket comments and attachments
+            List<Project> projects = context.Projects.ToList();
+            foreach (var project in projects)
+            {
+                List<ApplicationUser> UsersInProject = projectHelper.ListUsersOnProject(project.Id);
+                var tickets = context.Tickets.Where(t=>t.ProjectId == project.Id).ToList();
+                
+                    TicketComment newTicket0Comment = new TicketComment()
+                    {
+                        TicketId = tickets[0].Id,
+                        UserId = tickets[0].DeveloperId,
+                        Comment = "Checked the Code for the 3rd part ports and SMTP server. Looks correct. ",
+                        Created = DateTime.Now
+                    };
+                context.TicketComments.Add(newTicket0Comment);
+                //TicketAttachment newTicketAttachment0 = new TicketAttachment()
+                //{
+                //    TicketId = tickets[0].Id,
+                //    UserId = tickets[0].DeveloperId,
+                //    Created = DateTime.Now,
+                //    FilePath =
+                //};
+                //context.TicketAttachments.Add(newTicketAttachment0);
+
+                TicketComment newTicket0Comment2 = new TicketComment()
+                {
+                    TicketId = tickets[0].Id,
+                    UserId = tickets[0].DeveloperId,
+                    Comment = "Checked Account controller. The 3rd party login code was commented out. un-commented and it is working ",
+                    Created = DateTime.Now
+                };
+                context.TicketComments.Add(newTicket0Comment2);
+
+                TicketComment newTicket1Comment1 = new TicketComment()
+                {
+                    TicketId = tickets[1].Id,
+                    UserId = tickets[1].DeveloperId,
+                    Comment = "looked at the Controller and the view for tickets. Created a If statement in the view",
+                    Created = DateTime.Now
+                };
+                context.TicketComments.Add(newTicket1Comment1);
+                TicketAttachment newTicket1Attachment0 = new TicketAttachment()
+                {
+                    TicketId = tickets[1].Id,
+                    UserId = tickets[1].DeveloperId,
+                    Created = DateTime.Now,
+                    FilePath = "/Uploads/ticketif.PNG",
+                    FileName = "ticketif.PNG",
+                    Description = "ticketif.PNG"
+                };
+                context.TicketAttachments.Add(newTicket1Attachment0);
+                TicketAttachment newTicket1Attachment1 = new TicketAttachment()
+                {
+                    TicketId = tickets[1].Id,
+                    UserId = tickets[1].DeveloperId,
+                    Created = DateTime.Now,
+                    FilePath = "/Uploads/attachmentview.PNG",
+                    FileName = "attachmentview.PNG",
+                    Description = "attachmentview.PNG"
+                };
+                context.TicketAttachments.Add(newTicket1Attachment1);
+
+                TicketComment newTicket1Comment2 = new TicketComment()
+                {
+                    TicketId = tickets[1].Id,
+                    UserId = tickets[1].DeveloperId,
+                    Comment = "Found that I needed to make sure the list of notifications or histories where checked against null and length of Zero",
+                    Created = DateTime.Now
+                };
+                context.TicketComments.Add(newTicket1Comment2);
+                TicketComment newTicket2Comment0 = new TicketComment()
+                {
+                    TicketId = tickets[2].Id,
+                    UserId = tickets[2].DeveloperId,
+                    Comment = "Checked the View, it was not referencing the project name, it was looking at a null object",
+                    Created = DateTime.Now
+                };
+                context.TicketComments.Add(newTicket2Comment0);
+                TicketComment newTicket3Comment0 = new TicketComment()
+                {
+                    TicketId = tickets[3].Id,
+                    UserId = tickets[3].DeveloperId,
+                    Comment = "Created a Seed section for adding users to a project",
+                    Created = DateTime.Now
+                };
+                context.TicketComments.Add(newTicket3Comment0);
+                TicketAttachment newTicket3Attachment1 = new TicketAttachment()
+                {
+                    TicketId = tickets[1].Id,
+                    UserId = tickets[1].DeveloperId,
+                    Created = DateTime.Now,
+                    FilePath = "/Uploads/seetprojectuser.PNG",
+                    FileName = "seetprojectuser.PNG",
+                    Description = "seetprojectuser.PNG"
+
+                };
+                context.TicketAttachments.Add(newTicket3Attachment1);
+                TicketAttachment newTicket3Attachment2 = new TicketAttachment()
+                {
+                    TicketId = tickets[1].Id,
+                    UserId = tickets[1].DeveloperId,
+                    Created = DateTime.Now,
+                    FilePath = "/Uploads/projectviewListBox.PNG",
+                    FileName = "projectviewListBox.PNG",
+                    Description = "projectviewListBox.PNG"
+                };
+                context.TicketAttachments.Add(newTicket3Attachment2);
+                TicketComment newTicket3Comment1 = new TicketComment()
+                {
+                    TicketId = tickets[3].Id,
+                    UserId = tickets[3].DeveloperId,
+                    Comment = "Created a multiselect List in the create and edit for projects users and users not in the project ",
+                    Created = DateTime.Now
+                };
+                context.TicketComments.Add(newTicket3Comment1);
+                TicketComment newTicket3Comment2 = new TicketComment()
+                {
+                    TicketId = tickets[3].Id,
+                    UserId = tickets[3].DeveloperId,
+                    Comment = "Created a method in the post that looped through the selected users added to project ",
+                    Created = DateTime.Now
+                };
+                context.TicketComments.Add(newTicket3Comment2);
+                TicketComment newTicket3Comment3 = new TicketComment()
+                {
+                    TicketId = tickets[3].Id,
+                    UserId = tickets[3].DeveloperId,
+                    Comment = "in the method, removed all the previous user then add the new list from the edit and create. It is working now ",
+                    Created = DateTime.Now
+                };
+                context.TicketComments.Add(newTicket3Comment3);
+                TicketComment newTicket4Comment0 = new TicketComment()
+                {
+                    TicketId = tickets[4].Id,
+                    UserId = tickets[4].DeveloperId,
+                    Comment = "In the register and edit user viewModels added a Avatar HttpPostedFileBase property",
+                    Created = DateTime.Now
+                };
+                context.TicketComments.Add(newTicket4Comment0);
+                TicketComment newTicket4Comment1 = new TicketComment()
+                {
+                    TicketId = tickets[4].Id,
+                    UserId = tickets[4].DeveloperId,
+                    Comment = "Created helper files FileUploadValidator, sluggerHelper, StringUtilites",
+                    Created = DateTime.Now
+                };
+                context.TicketComments.Add(newTicket4Comment1);
+                TicketComment newTicket4Comment2 = new TicketComment()
+                {
+                    TicketId = tickets[4].Id,
+                    UserId = tickets[4].DeveloperId,
+                    Comment = "Added the method to verify the input file for the avatar and create a custom name. then added it to the User",
+                    Created = DateTime.Now
+                };
+                context.TicketComments.Add(newTicket4Comment2);
+                context.SaveChanges();
+
+            }
+            #endregion
+
         }
     }
 }

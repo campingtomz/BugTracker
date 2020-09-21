@@ -23,12 +23,16 @@ namespace BugTracker.Controllers
         public ActionResult Index()
         {
             var user = userHelper.getUser(User.Identity.GetUserId());
+            if (roleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Default")
+            {
+                return RedirectToAction("Index", "Manage");
+            }
             var model = new HomeVM();
             model.UserId = user.Id;
             model.User = user;
-            model.Tickets = ticketHelper.GetMyTickets().ToList();
+            model.TicketsCount = ticketHelper.GetMyTickets().ToList().Count;
             model.TotalNotificationsCount = user.TicketNotifications.Count + user.ProjectNotifications.Count;
-            model.UsersOnMyProjects = projectHelper.GetUsersOnMyProjects();
+            model.UsersCount = projectHelper.GetUsersOnMyProjects().Count;
             List<int> ProjectIds = new List<int>();
 
             foreach(var project in projectHelper.GetUserProjects())
@@ -45,7 +49,7 @@ namespace BugTracker.Controllers
 
             return View();
         }
-
+        
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";

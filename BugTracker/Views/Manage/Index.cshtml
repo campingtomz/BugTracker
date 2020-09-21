@@ -189,44 +189,20 @@
                     </div>
                     <div class="tab-pane " id="Notifications" role="tabpanel">
                         <div class="card-body">
-                            <div class="row">
-                                @if (user.TicketNotifications.Count > 0)
-                                {
-                                    <div class="table-responsive m-t-40">
-                                        <table class="example25 display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>Subject</th>
-                                                    <th>Ticket Type</th>
-                                                    <th>Project Created Date</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var notification in user.TicketNotifications)
-                                                {
-                                                    <tr>
-                                                        <td>@notification.Subject</td>
-                                                        <td>@notification.NotificationType</td>
-                                                        <td>@Html.Label(notification.Created.ToString("MMM dd yyyy"))</td>
-                                                        @if (notification.NotificationType == "Project")
-                                                        {
-                                                            <td> @Html.ActionLink("View Ticket", "Details", "Projects", new { id = notification.TicketId }, null)</td>
-                                                        }
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
+                            <div class="m-l-20 row">
+                                @*<h4 class="card-title">Ticket Notifications</h4>*@
+                                <div class="comment-widgets m-b-20">
+                                    <div class="chat-box b-all">
+                                        <ul class="notificationList chat-list">
+                                        </ul>
                                     </div>
-                                }
-                                else
-                                { <h4 class="card-title">No Notifications</h4>}
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="tab-pane tabcontent-border" id="histories" role="tabpanel">
                         <div class="card-body">
-                            @if (user.UserHistories.Count > 0)
+                            @if (user.UserHistories.Count > 0 && user.UserHistories != null)
                             {
                                 <div class="row ">
                                     <div class="col-12">
@@ -266,18 +242,34 @@
                     </div>
                     <div class="tab-pane " id="Settings" role="tabpanel">
                         <div class="card-body">
-                            <h4>Change your account settings</h4>
-                            <div class="row">
+                            <h2>Change your account settings</h2>
+                            <hr />
+                            <div class="row p-l-20">
 
-                                <hr />
-                                <div class="col-md-3 col-xs-6 b-r">
-                                    @Html.ActionLink("Change your password", "ChangePassword")
+                                <div class="col-6">
+                                    <h4 class="card-title">Change Proile Information</h4>
+                                    <h6 class="card-subtitle p-l-20">Change Name, Email, Phone Number, Avatar Picture</h6>
+                                    @Html.ActionLink("Edit Account", "ManageUser", "Manage", new { userId = user.Id }, new { @class = "p-l-20" })
                                 </div>
-                                <div class="col-md-3 col-xs-6 b-r">
-                                    @Html.ActionLink("Edit Account", "ManageUser", "UserManagment", new { userid = user.Id }, null)
-                                </div>
-
                             </div>
+                            <hr />
+                            <div class="row p-l-20">
+                                <div class="col-6">
+                                    <h4 class="card-title">Change Password</h4>
+                                    <h6 class="card-subtitle p-l-20">Change Password</h6>
+                                    @Html.ActionLink("Change Password", "ChangePassword", "Manage", new { userId = user.Id }, new { @class = "p-l-20" })
+                                </div>
+                            </div>
+                            @if (userRoleHelper.ListUserRoles(user.Id).FirstOrDefault() != "Default")
+                            {
+                                <hr />
+                                <div class="row p-l-20">
+                                    <div class="col-6">
+                                        <h4 class="card-title">Leave HouseHold</h4>
+                                        @Html.ActionLink("Leave Household", "LeaveAsync", "HouseHolds", new { @class = "p-l-20" })
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -286,87 +278,72 @@
     </div>
 </div>
 
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            getUserNotifications();
+        });
+        $('.notificaionClose').on("click", function (e) {
+             var url = '@Url.Action("setNotificationIsRead", "HomeTableChart")'
+            var notification = $(".notificaionClose").val();
+
+            $.ajax({
+                type: "POST",
+                async: false,
+                url: url,
+                data: JSON.stringify({ "notificationId": notification }),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    getTicketComments(ticketId)
+                },
+                error: function () {
+                    alert("Error while inserting data");
+                }
+            });
 
 
-<!-- Row -->
-<!-- ============================================================== -->
-<!-- End PAge Content -->
-@*<div>
-    <h4>Change your account settings</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>Password:</dt>
-        <dd>
-            [
-            @if (Model.HasPassword)
-            {
-                @Html.ActionLink("Change your password", "ChangePassword")
-            }
-            else
-            {
-                @Html.ActionLink("Create", "SetPassword")
-            }
-            ]
-        </dd>
-        <dt>External Logins:</dt>
-        <dd>
-            @Model.Logins.Count [
-            @Html.ActionLink("Manage", "ManageLogins") ]
-        </dd>*@
-@*
-    Phone Numbers can used as a second factor of verification in a two-factor authentication system.
+        })
 
-     See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
-        for details on setting up this ASP.NET application to support two-factor authentication using SMS.
 
-     Uncomment the following block after you have set up two-factor authentication
-*@
-@*
-    <dt>Phone Number:</dt>
-    <dd>
-        @(Model.PhoneNumber ?? "None")
-        @if (Model.PhoneNumber != null)
-        {
-            <br />
-            <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
-            using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                <text>[<input type="submit" value="Remove" class="btn-link" />]</text>
-            }
+         function getUserNotifications() {
+             var url = '@Url.Action("getUserNotificationS", "HomeTableChart")'
+            $.ajax({
+                type: "POST",
+                url: url,
+                //data: JSON.stringify({ 'ticketId': ticketId }),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $(".notificationList").empty();
+
+                    if (typeof response != "undefined" && response != null && response.length != null && response.length > 0) {
+                        response.forEach(function (response) {
+                            $(".notificationList").append(
+                                `<div class="alert alert-${response.Type}">
+                                         <h6>${response.Created}</h6>
+                                            <button type="button" value="${response.Id},${response.notificationVersion}" class="close notificaionClose" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+                                            <h3 class="text-${response.Type}"><i class="fa ${response.Icon}"></i> ${response.Subject}</h3> ${response.Message}
+                                        </div>`
+                            )
+                        })
+
+
+                    } else {
+                        $(".chat-list").append(` <h4 class= "card-title"> No Comments on The Ticket</h4>`)
+                    }
+                    $(".NotificationDisplay").show();
+                },
+                error: function (response) {
+                    alert("Error while inserting data");
+                }
+
+            });
         }
-        else
-        {
-            <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
-        }
-    </dd>
-*@
-@*<dt>Two-Factor Authentication:</dt>
-    <dd>
-        <p>
-            There are no two-factor authentication providers configured. See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
-            for details on setting up this ASP.NET application to support two-factor authentication.
-        </p>*@
-@*@if (Model.TwoFactor)
-    {
-        using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-        {
-            @Html.AntiForgeryToken()
-            <text>Enabled
-            <input type="submit" value="Disable" class="btn btn-link" />
-            </text>
-        }
-    }
-    else
-    {
-        using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-        {
-            @Html.AntiForgeryToken()
-            <text>Disabled
-            <input type="submit" value="Enable" class="btn btn-link" />
-            </text>
-        }
-    }*@
-@*</dd>
-        </dl>
-    </div>*@
+    </script>
+
+
+
+
+}
+

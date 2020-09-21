@@ -49,6 +49,7 @@ namespace BugTracker
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
+                    await Task.FromResult(0);
                 }
             }
 

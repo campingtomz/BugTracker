@@ -72,7 +72,7 @@ namespace BugTracker.Controllers
             TempData["Error"] = "Model Invalid";
             return RedirectToAction("Dashboard", "Tickets", new { id = ticketComment.TicketId });
         }
-
+       
         // GET: TicketComments/Edit/5
         //public ActionResult Edit(int? id)
         //{

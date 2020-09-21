@@ -40,7 +40,7 @@
                                 </div>
                             </li>
                             <li>
-                                <a href="@Url.Action( "DisplayNotifications", "UserManagment", new { userid = user.Id })" class="nav-link text-center"><strong>Check all notifications</strong> <i class="fa fa-angle-right"></i></a>
+                                <a href="@Url.Action( "Index", "Manage", new { userid = user.Id })" class="nav-link text-center"><strong>Check all notifications</strong> <i class="fa fa-angle-right"></i></a>
                                 @*<a class="nav-link text-center" href="javascript:void(0);"> <strong>Check all notifications</strong> <i class="fa fa-angle-right"></i> </a>*@
                             </li>
                         }
@@ -63,12 +63,12 @@
                     <!-- ============================================================== -->
                     <!-- Search -->
                     <!-- ============================================================== -->
-                    <li class="nav-item hidden-sm-down search-box">
+                    @*<li class="nav-item hidden-sm-down search-box">
                         <a class="nav-link hidden-sm-down text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="ti-search"></i></a>
                         <form class="app-search">
                             <input type="text" class="form-control" placeholder="Search & enter"> <a class="srh-btn"><i class="ti-close"></i></a>
                         </form>
-                    </li>
+                    </li>*@
 
                     <!-- ============================================================== -->
                     <!-- Profile -->
@@ -91,7 +91,7 @@
                                 <li>
                                     <a href="@Url.Action("Index", "Manage")"><i class="mdi mdi-account"></i><span class="hide-menu"> Account</span></a>
                                 </li>
-                                <li><a href="#"><i class="ti-email"></i> Inbox</a></li>
+                                @*<li><a href="#"><i class="ti-email"></i> Inbox</a></li>*@
                                 @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
                                 {
                                     @Html.AntiForgeryToken()
