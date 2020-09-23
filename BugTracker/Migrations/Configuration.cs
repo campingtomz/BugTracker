@@ -446,10 +446,12 @@ namespace BugTracker.Migrations
                         ProjectId = project.Id,
                         UserId = user.Id,
                         Created = DateTime.Now,
+                        Icon = "fa-sitemap",
+                        NotificationType = "success",
                         Subject = $"Added to Project Id: {project.Id}",
                         Message = $"Hello, {user.FullName} you have been Added to the project: {project.Name}",
                     };
-                    context.ProjectNotifications.Add(newNotification);
+                    context.Notifications.Add(newNotification);
                 }
 
             }

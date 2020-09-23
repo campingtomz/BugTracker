@@ -43,7 +43,7 @@ namespace BugTracker.Helpers
                     return false;
             }
         }
-        public bool CanCreateTicket()
+        public bool CanCreateTicket(int projectId)
         {
             var userId = HttpContext.Current.User.Identity.GetUserId();
             var myRole = userRoleHelper.ListUserRoles(userId).FirstOrDefault();
@@ -52,8 +52,27 @@ namespace BugTracker.Helpers
             {
                 case "Admin":
                 case "Submitter":
-                    return true;
+                    if(projectHelper.isUserOnProject(userId, projectId))
+                    {
+                        return true;
+                    }
+                    return false;
                default:
+                    return false;
+            }
+        }
+        public bool CanCreateTickets()
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            var myRole = userRoleHelper.ListUserRoles(userId).FirstOrDefault();
+
+            switch (myRole)
+            {
+                case "Admin":
+                case "Submitter":
+                    
+                    return true;
+                default:
                     return false;
             }
         }
@@ -235,9 +254,25 @@ namespace BugTracker.Helpers
         //lists all the tickets in every project the user is assinged  
         public List<Ticket> GetAllProjectTicketsForUser(string userId)
         {
-            var user = db.Users.Find(userId);
-            var ticketList = new List<Ticket>();
-            return user.Projects.SelectMany(p => p.Tickets).ToList();
+            var myRole = userRoleHelper.ListUserRoles(userId).FirstOrDefault();
+            switch (myRole)
+            {
+                case "Admin":
+                    return db.Tickets.ToList();
+                case "ProjectManager":
+                    var ticketList = new List<Ticket>();
+                    foreach (var project in projectHelper.ListUserProjects(userId).ToList())
+                    {
+                        ticketList.AddRange(project.Tickets.ToList());
+                    }
+                    return ticketList;
+                case "Developer":
+                    return db.Tickets.Where(t => t.DeveloperId == userId).ToList();
+                case "Submitter":
+                    return db.Tickets.Where(t => t.SubmitterId == userId).ToList();
+                default:
+                    return db.Tickets.Where(t => t.DeveloperId == userId).ToList();
+            }
         }
         public List<Ticket> ListProjectsTickets(List<int> projectIds)
         {

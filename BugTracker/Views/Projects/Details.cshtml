@@ -2,6 +2,7 @@
 @model BugTracker.Models.Project
 @using BugTracker.Helpers;
 @{var projectHelper = new ProjectHelper();
+    var ticketHelper = new TicketHelper();
     var projectManager = projectHelper.ListUserOnProjectInRole(Model.Id, "ProjectManager").FirstOrDefault();
     
 }
@@ -19,7 +20,7 @@
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#Tickets" role="tab">Project Tickets</a> </li>
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#History" role="tab">Project History</a> </li>
 
-                    @if (User.IsInRole("Submitter") || User.IsInRole("Admin"))
+                    @if (ticketHelper.CanCreateTicket(Model.Id))
                     {
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#AddTicket" role="tab">Create Ticket</a> </li>
                     }
@@ -295,7 +296,7 @@
                             }
                         </div>
                     </div>
-                    @if (User.IsInRole("Submitter") || User.IsInRole("Admin"))
+                    @if (ticketHelper.CanCreateTicket(Model.Id))
                     {
                         <div class="tab-pane tabcontent-border" id="AddTicket" role="tabpanel">
                             <div class="card-body">

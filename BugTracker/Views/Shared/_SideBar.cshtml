@@ -83,7 +83,7 @@
                             <li>
                                 <a href="@Url.Action("Index", "Tickets")"><i class="mdi mdi-ticket-confirmation"> Manage Tickets</i></a>
                             </li>
-                            @if (ticketHelper.CanCreateTicket())
+                            @if (ticketHelper.CanCreateTickets())
                             {
                                 <li>
                                     <a href="@Url.Action("Create", "Tickets")"><i class="mdi mdi-ticket-account"> Create New Ticket</i></a>

@@ -73,7 +73,7 @@ namespace BugTracker.Controllers
         }
         public ActionResult ViewAllUsers()
         {
-            var model = db.Users.ToList();
+            var model = db.Users.OrderByDescending(u=>u.FirstName). ToList();
             return View(model);
         }
         [Authorize(Roles = "Admin, ProjectManager")]

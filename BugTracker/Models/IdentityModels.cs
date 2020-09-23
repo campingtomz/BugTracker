@@ -12,21 +12,20 @@ namespace BugTracker.Models
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
-        #region Parents/Childrem
+        #region Parents/children
         public virtual ICollection<Project> Projects { get; set; }
         public virtual ICollection<TicketAttachment> Attachments { get; set; }
         public virtual ICollection<TicketComment> Comments { get; set; }
         public virtual ICollection<TicketHistory> TicketHistories { get; set; }
         public virtual ICollection<ProjectHistory> ProjectHistories { get; set; }
         public virtual ICollection<UserHistory> UserHistories { get; set; }
-        public virtual ICollection<TicketNotification> TicketNotifications { get; set; }
-        public virtual ICollection<ProjectNotification> ProjectNotifications { get; set; }
+        public virtual ICollection<Notification> Notifications { get; set; }
         public virtual ICollection<Connection> Connections { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
 
 
         #endregion
-        #region Actuall Properties
+        #region Actual Properties
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string AvatarPath { get; set; }
@@ -50,8 +49,7 @@ namespace BugTracker.Models
             TicketHistories = new HashSet<TicketHistory>();
             ProjectHistories = new HashSet<ProjectHistory>();
             UserHistories = new HashSet<UserHistory>();
-            TicketNotifications = new HashSet<TicketNotification>();
-            ProjectNotifications = new HashSet<ProjectNotification>();            
+            Notifications = new HashSet<Notification>();
             Comments = new HashSet<TicketComment>();
             Connections = new HashSet<Connection>();
             Messages = new HashSet<Message>();
@@ -89,8 +87,7 @@ namespace BugTracker.Models
         public DbSet<TicketHistory> TicketHistories { get; set; }
         public DbSet<ProjectHistory> ProjectHistories { get; set; }
         public DbSet<UserHistory> UserHistories { get; set; }
-        public DbSet<TicketNotification> TicketNotifications { get; set; }
-        public DbSet<ProjectNotification> ProjectNotifications { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         public DbSet<AttachmentHistory> AttachmentHistories { get; set; }
         public DbSet<Connection> Connections { get; set; }
         public DbSet<Message> Messages { get; set; }

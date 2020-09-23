@@ -73,9 +73,10 @@
             <div class="notifications">
                 <div class="card card-default">
                     <div class="card-body">
-                        <h4 class="card-title">Ticket Notifications</h4>
+                        <h4 class="card-title">Notifications</h4>
+                        <h5 class="text-muted noNotificationsDisplay m-b-0">No new Notifications</h5>
                         <div class="comment-widgets m-b-20">
-                            <div class="chat-box b-all">
+                            <div class="notificationListBox chat-box b-all">
                                 <ul class="notificationList chat-list">
                                 </ul>
                             </div>
@@ -115,7 +116,7 @@
                 <div class="card card-default">
                     <div class="card-body">
                         <h4 class="card-title">Projects</h4>
-                        <div class="table-responsive ">
+                        <div class="table-responsive projectTableDisplayInfo ">
                             <table class="projectTable nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
@@ -200,7 +201,7 @@
                 <div class="card card-default">
                     <div class="card-body">
                         <h4 class="card-title"> Tickets</h4>
-                        <div class="table-responsive ">
+                        <div class="table-responsive  ticketTableDisplayInfo">
                             <table id="TicketTable" class="TicketTable display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
@@ -334,7 +335,7 @@
             loadTicketsTable(projectIds);
             loadUserTable(projectIds);
 
-        });
+      
 
         $('#TicketTable').on('click', 'tbody tr td', function () {
             if ($(this).index() == 4) return false;
@@ -455,19 +456,18 @@
 
 
         });
-        $('.notificaionClose').on("click", function (e) {
-             var url = '@Url.Action("setNotificationIsRead", "HomeTableChart")'
-            var notification = $(".notificaionClose").val();
+        $(document).on("click",".notificaionClose", function () {
+             var url = '@Url.Action("DeleteNotification", "HomeTableChart")'
+            var notificationId = $(this).val();
            
             $.ajax({
                 type: "POST",
-                async: false,
                 url: url,
-                data: JSON.stringify({ "notificationId": notification }),
+                data: JSON.stringify({ "notificationId": notificationId }),
                 dataType: 'json',
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
-                    getTicketComments(ticketId)
+                    getUserNotifications(response)
                 },
                 error: function () {
                     alert("Error while inserting data");
@@ -491,20 +491,24 @@
         };
         function loadCharts(projects) {
             $('.chartSection').empty();
-            var ticketCharts = [['Priority', '@Url.Action("GetTicketPriorityData", "HomeTableChart")'], ['Status', '@Url.Action("GetTicketStatusData", "HomeTableChart")'], ['Type', '@Url.Action("GetTicketTypeData", "HomeTableChart")']];
+            if (typeof projects != "undefined" && projects != null && projects.length != null && projects.length > 0) {
 
-            for (var i = 0; i < ticketCharts.length; i++) {
-                var property = ticketCharts[i][0]
-                var url = ticketCharts[i][1];
-                $.ajax({
-                    type: "POST",
-                    async: false,
-                    url: url,
-                    data: JSON.stringify({ 'projectIds': projects }),
-                    dataType: 'json',
-                    contentType: "application/json; charset=utf-8",
-                    success: function (response) {
-                        $(".chartSection").append(`<div class="row m-l-40">
+            
+                var ticketCharts = [['Priority', '@Url.Action("GetTicketPriorityData", "HomeTableChart")'], ['Status', '@Url.Action("GetTicketStatusData", "HomeTableChart")'], ['Type', '@Url.Action("GetTicketTypeData", "HomeTableChart")']];
+
+                for (var i = 0; i < ticketCharts.length; i++) {
+                    var property = ticketCharts[i][0]
+                    var url = ticketCharts[i][1];
+                    $.ajax({
+                        type: "POST",
+                        async: false,
+                        url: url,
+                        data: JSON.stringify({ 'projectIds': projects }),
+                        dataType: 'json',
+                        contentType: "application/json; charset=utf-8",
+                        success: function (response) {
+                            if (typeof response != "undefined" && response != null) {
+                                $(".chartSection").append(`<div class="row m-l-40">
                                 <div class="card card-default">
                                     <div class="card-body">
                                         <h4 class="m-b-0 "> Ticket ${property}</h4>
@@ -513,38 +517,49 @@
                                     </div>
                                 </div>
                             </div>`);
-                        var ticketChart = document.getElementById(property);
-                        var propertyValue = property
-                        var colorList = getRandomColorList(response.label.length);
-                        var ticketData = {
-                            labels: response.label,
-                            datasets: [{
-                                data: response.data,
-                                backgroundColor: colorList,
+                                var ticketChart = document.getElementById(property);
+                                var propertyValue = property
+                                var colorList = getRandomColorList(response.label.length);
+                                var ticketData = {
+                                    labels: response.label,
+                                    datasets: [{
+                                        data: response.data,
+                                        backgroundColor: colorList,
 
-                            },
-                            ],
+                                    },
+                                    ],
+                                }
+                                var options = {
+                                    onClick: (evt, item) => {
+
+                                        chart.update()
+                                        item[0]._model.outerRadius += 10
+                                        LoadTicketByProperty(item[0]['_model'].label, propertyValue)
+                                    },
+                                }
+                                var chart = new Chart(ticketChart, {
+                                    type: 'doughnut',
+                                    data: ticketData,
+                                    options: options,
+
+                                });
+                            }
+                            else {
+                                $(".chartSection").append("No Chart Data Available!");
+
+                            }
+                          
+                        },
+                        error: function () {
+                            alert("Error while inserting data");
                         }
-                        var options = {
-                            onClick: (evt, item) => {
+                    });
+                };
+            }
+            else {
+                $(".chartSection").append("No Chart Data Available!");
 
-                                chart.update()
-                                item[0]._model.outerRadius += 10
-                                LoadTicketByProperty(item[0]['_model'].label, propertyValue)
-                            },
-                        }
-                        var chart = new Chart(ticketChart, {
-                            type: 'doughnut',
-                            data: ticketData,
-                            options: options,
-
-                        });
-                    },
-                    error: function () {
-                        alert("Error while inserting data");
-                    }
-                });
-            };
+            }
         }
         function getRandomColorList(length) {
             var colors = [
@@ -571,87 +586,109 @@
             return colorList;
         }
         function loadTicketsTableByProperty(label, url, projects) {
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: JSON.stringify({ 'PropertyName':label, 'projectIds': projects }),
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8",
-                success: function (response) {
-                    var table = $('#TicketTable').DataTable();
-                    table.clear();
-                    response.forEach(function (response) {
-                        table.row.add([
-                            response.ProjectName, response.Issue, response.SubmitterName, response.DeveloperName,'<a href="/Tickets/Dashboard/' + response.Id + '" >Details</a>'
+            if (typeof projects != "undefined" && projects != null && projects.length != null && projects.length > 0) {
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: JSON.stringify({ 'PropertyName': label, 'projectIds': projects }),
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        if (response != null && response.length > 0) {
+
+                            var table = $('#TicketTable').DataTable();
+                            table.clear();
+                            response.forEach(function (response) {
+                                table.row.add([
+                                    response.ProjectName, response.Issue, response.SubmitterName, response.DeveloperName, '<a href="/Tickets/Dashboard/' + response.Id + '" >Details</a>'
 
 
-                        ]).draw().node().id = response.Id;
-                    })
+                                ]).draw().node().id = response.Id;
+                            })
 
-                    $(".ticketTableDisplay").show();
+                            $(".ticketTableDisplay").show();
+                        }
+                        else {
+                            $('.projectTableDisplayInfo').empty();
+                            $('.projectTableDisplayInfo').append("No data!");
 
-                },
-                error: function (response) {
+                        }
+                    },
+                    error: function (response) {
 
-                    alert("Error while inserting data");
-                }
-            });
-        }
+                        alert("Error while inserting data");
+                    }
+                });
+            }
+            else {
+                $('.projectTableDisplayInfo').empty();
+                $('.projectTableDisplayInfo').append("No data!");
+
+            }
+        } 
         function loadTicketsTable(projects) {
+            if (typeof projects != "undefined" && projects != null && projects.length != null && projects.length > 0) {
 
 
-            var url = '@Url.Action("GetProjectTickets", "HomeTableChart")'
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: JSON.stringify({ 'projectIds': projects }),
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8",
-                success: function (response) {
-                    var table = $('#TicketTable').DataTable();
-                    table.clear();
-                    response.forEach(function (response) {
-                         table.row.add([
-                            response.ProjectName, response.Issue, response.SubmitterName, response.DeveloperName,  '<a href="/Tickets/Dashboard/' + response.Id + '" >Details</a>'
-                        ]).draw().node().id = response.Id;
-                    })
+                var url = '@Url.Action("GetProjectTickets", "HomeTableChart")'
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: JSON.stringify({ 'projectIds': projects }),
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+
+                            var table = $('#TicketTable').DataTable();
+                            table.clear();
+                            response.forEach(function (response) {
+                                table.row.add([
+                                    response.ProjectName, response.Issue, response.SubmitterName, response.DeveloperName, '<a href="/Tickets/Dashboard/' + response.Id + '" >Details</a>'
+                                ]).draw().node().id = response.Id;
+                            })
 
 
-                    $(".ticketTableDisplay").show();
-                },
-                error: function (response) {
+                            $(".ticketTableDisplay").show();
+                        
+                       
+                    },
+                    error: function (response) {
 
-                    alert("Error while inserting data");
-                }
-            });
+                        alert("Error while inserting data");
+                    }
+                });
 
-
+         
+            }
         };
         function loadUserTable(projects) {
+            if (typeof projects != "undefined" && projects != null && projects.length != null && projects.length > 0) {
 
 
-            var url = '@Url.Action("GetUsersByProjects", "HomeTableChart")'
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: JSON.stringify({ 'projectIds': projects }),
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8",
-                success: function (response) {
-                    var table = $('#UserTable').DataTable();
-                    table.clear();
+                var url = '@Url.Action("GetUsersByProjects", "HomeTableChart")'
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: JSON.stringify({ 'projectIds': projects }),
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        var table = $('#UserTable').DataTable();
+                        table.clear();
 
 
-                    response.forEach(function (response) {
-                        table.row.add([
-                            '<img src="' + response.AvatarPath + '" alt="user"width="40"class="img-circle" />'+response.FullName, response.Email, response.PhoneNumber, response.UserRole, response.TicketCount,'<a href="/UserManagment/UserProfile/' + response.Id + '" >Details</a>'
-                        ]).draw().node().id = response.Id;
-                    })
-                },
-                error: function (response) {
-                    alert("Error while inserting data");
-                }
-            });
+                        response.forEach(function (response) {
+                            table.row.add([
+                                '<img src="' + response.AvatarPath + '" alt="user"width="40"class="img-circle" />' + response.FullName, response.Email, response.PhoneNumber, response.UserRole, response.TicketCount, '<a href="/UserManagment/UserProfile/' + response.Id + '" >Details</a>'
+                            ]).draw().node().id = response.Id;
+                        })
+                    },
+                    error: function (response) {
+                        alert("Error while inserting data");
+                    }
+                });
+            }
 
         };
         function getTicketInfo(ticketId) {
@@ -663,8 +700,8 @@
                 dataType: 'json',
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
-                    $(".ticketInfo").append(
-                        `
+                        $(".ticketInfo").append(
+                            `
                             <div class="row p-t-20">
                                 <div class="col-md-6">
                                     <div class="form-group ">
@@ -742,8 +779,10 @@
 
                         </div>`
 
-                    )
-                    $(".ticketInfoDisplay").show();
+                        )
+                        $(".ticketInfoDisplay").show();
+                    
+                 
                 },
                 error: function (response) {
                     alert("Error while inserting data");
@@ -802,7 +841,6 @@
                 success: function (response) {
 
 
-                    if ( response != "undefined" && response != null && response.length > 0) {
                         var table = $('#AttachmentTable').DataTable();
                         table.clear();
                         response.forEach(function (response) {
@@ -810,9 +848,7 @@
                                 response.Name, response.Uploader, response.Description, response.Created, response.FilePath
                             ]).draw()
                         })
-                    } else {
-                        $(".chat-list").append(` <h4 class= "card-title"> No Attachments on The Ticket</h4>`)
-                    }
+                   
                     $(".ticketAttachments").show();
                 },
                 error: function (response) {
@@ -822,7 +858,7 @@
             });
         }
         function getUserNotifications() {
-             var url = '@Url.Action("getUserNotificationS", "HomeTableChart")'
+             var url = '@Url.Action("GetNotification", "HomeTableChart")'
             $.ajax({
                 type: "POST",
                 url: url,
@@ -832,20 +868,28 @@
                 success: function (response) {
                     $(".notificationList").empty();
 
-                    if (typeof response != "undefined" && response != null && response.length != null && response.length > 0) {
+                    if (response != null && response.length > 0) { 
                         response.forEach(function (response) {
+                            var milli = `${response.Created}`.replace(/\/Date\((-?\d+)\)\//, '$1');
+                            var d = new Date(parseInt(milli));
+                            var date = ((d.getMonth() > 8) ? (d.getMonth() + 1) : ('0' + (d.getMonth() + 1))) + '/' + ((d.getDate() > 9) ? d.getDate() : ('0' + d.getDate())) + '/' + d.getFullYear();
+
                             $(".notificationList").append(
-                                `<div class="alert alert-${response.Type}">
-                                         <h6>${response.Created}</h6>
-                                            <button type="button" value="${response.Id},${response.notificationVersion}" class="close notificaionClose" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
-                                            <h3 class="text-${response.Type}"><i class="fa ${response.Icon}"></i> ${response.Subject}</h3> ${response.Message}
+                                `<div class="alert alert-${response.NotificationType}">
+                                         <h6>${date}</h6>
+                                            <button type="button" value="${response.Id}" class="close notificaionClose" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+                                            <h3 class="text-${response.NotificationType}"><i class="fa ${response.Icon}"></i> ${response.Subject}</h3> ${response.Message}
                                         </div>`
                             )
-                        })
+                        });
+                        $(".noNotificationsDisplay").hide();
+
+                        $('.notificationListBox').show();
 
 
                     } else {
-                        $(".chat-list").append(` <h4 class= "card-title"> No Comments on The Ticket</h4>`)
+                        $('.notificationListBox').hide();
+                        $(".noNotificationsDisplay").show();
                     }
                     $(".NotificationDisplay").show();
                 },
@@ -855,7 +899,7 @@
 
             });
         }
-
+        });
     </script>
 
 }

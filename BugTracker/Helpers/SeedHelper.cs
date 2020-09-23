@@ -167,11 +167,15 @@ namespace BugTracker.Helpers
                     ProjectId = project.Id,
                     UserId = user.Id,
                     Created = DateTime.Now,
+                    Icon = "fa-sitemap",
+                    NotificationType = "success",
                     Subject = $"Added to Project Id: {project.Id}",
                     Message = $"Hello, {user.FullName} you have been Added to the project: {project.Name}",
+                   
+
 
                 };
-                db.ProjectNotifications.Add(newNotification);
+                db.Notifications.Add(newNotification);
 
             }
 
@@ -186,10 +190,12 @@ namespace BugTracker.Helpers
                     TicketId = newComment.TicketId,
                     UserId = user.Id,
                     Created = DateTime.Now,
+                    Icon = "fa-ticket",
+                    NotificationType = "success",
                     Subject = $"New Comment Added to  {newComment.TicketId}",
                     Message = $"Hello {user.FullName}, A new Comment has been added to the Ticket: {newComment.TicketId}, by {CurrUser.FullName}",
                 };
-                db.TicketNotifications.Add(newNotification);
+                db.Notifications.Add(newNotification);
             }
 
 
@@ -205,10 +211,12 @@ namespace BugTracker.Helpers
                     TicketId = newAttachment.TicketId,
                     UserId = user.Id,
                     Created = DateTime.Now,
+                    Icon = "fa-ticket",
+                    NotificationType = "success",
                     Subject = $"New Comment Added to  {newAttachment.TicketId}",
                     Message = $"Hello {user.FullName}, A new Comment has been added to the Ticket: {newAttachment.TicketId}, by {CurrUser.FullName}",
                 };
-                db.TicketNotifications.Add(newNotification);
+                db.Notifications.Add(newNotification);
             }
 
         }
@@ -228,10 +236,12 @@ namespace BugTracker.Helpers
                     ProjectId = project.Id,
                     UserId = user.Id,
                     Created = DateTime.Now,
+                    Icon = "fa-sitemap",
+                    NotificationType = "success",
                     Subject = $"Added to Project: {project.Name}",
                     Message = $"Hello, {user.FullName} you have been Added to the project: {project.Name}",
                 };
-                db.ProjectNotifications.Add(newNotification);
+                db.Notifications.Add(newNotification);
             }
             foreach (var user in removedUsers)
             {
@@ -240,10 +250,12 @@ namespace BugTracker.Helpers
                     ProjectId = project.Id,
                     UserId = user.Id,
                     Created = DateTime.Now,
+                    Icon = "fa-sitemap",
+                    NotificationType = "warning",
                     Subject = $"Removed from Project: {project.Name}",
                     Message = $"Hello, {user.FullName} you have been removed from the project: {project.Name}",
                 };
-                db.ProjectNotifications.Add(newNotification);
+                db.Notifications.Add(newNotification);
             }
 
 
@@ -271,10 +283,13 @@ namespace BugTracker.Helpers
                         TicketId = ticket.Id,
                         UserId = user.Id,
                         Created = DateTime.Now,
+                        Icon = "fa-ticket",
                         Subject = $"Ticket Id: {ticket.Id} Has been Closed",
+                        NotificationType = "info",
+
                         Message = $"Hello, {user.FullName} you have been assigned to Ticket: {ticket.Issue} on Project {ticket.project.Name}",
                     };
-                    db.TicketNotifications.Add(newNotification);
+                    db.Notifications.Add(newNotification);
                 }
              
             }
@@ -289,10 +304,12 @@ namespace BugTracker.Helpers
                     TicketId = newTicket.Id,
                     UserId = newTicket.DeveloperId,
                     Created = DateTime.Now,
+                    Icon = "fa-ticket",
+                    NotificationType = "success",
                     Subject = $"New Assignment to Ticket Id: {newTicket.Id}",
                     Message = $"Hello, {newTicket.Developer.FullName} you have been assigned to Ticket: {newTicket.Issue} on Project {newTicket.project.Name}",
                 };
-                db.TicketNotifications.Add(newNotification);
+                db.Notifications.Add(newNotification);
             }
 
             if (oldTicket.DeveloperId != null)
@@ -302,10 +319,12 @@ namespace BugTracker.Helpers
                     TicketId = newTicket.Id,
                     UserId = oldTicket.DeveloperId,
                     Created = DateTime.Now,
+                    Icon = "fa-ticket",
+                    NotificationType = "warning",
                     Subject = $"Removed from Id: {newTicket.Id}",
                     Message = $"Hello, {oldTicket.Developer.FullName} you have been Removed from Ticket: {newTicket.Issue} on Project {newTicket.project.Name}",
                 };
-                db.TicketNotifications.Add(newNotification);
+                db.Notifications.Add(newNotification);
             }
 
 
@@ -320,10 +339,12 @@ namespace BugTracker.Helpers
                 TicketId = newTicket.Id,
                 UserId = projectManager.Id,
                 Created = DateTime.Now,
+                Icon = "fa-ticket",
+                NotificationType = "success",
                 Subject = $"New Ticket has been Created Id: {newTicket.Id}",
                 Message = $"Hello {projectManager.FullName}, A New Ticket new Ticket has been Created {newTicket.Issue} on Project {newTicket.project.Name}"
             };
-            db.TicketNotifications.Add(newNotification);
+            db.Notifications.Add(newNotification);
            
         }
         #endregion

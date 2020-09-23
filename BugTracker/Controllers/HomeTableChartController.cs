@@ -22,47 +22,80 @@ namespace BugTracker.Controllers
         // GET: HomeTableChart
         public JsonResult GetTicketPriorityData(List<int> projectIds)
         {
-            var response = new JSChartData();
-            var tickets = ticketHelper.ListProjectsTickets(projectIds);
-            foreach (var priority in db.TicketPriorities.ToList())
+            if (projectIds != null && projectIds.Count > 0)
             {
-                response.label.Add(priority.Name);
-                response.data.Add(tickets.Where(t => t.TicketPriorityId == priority.Id).Count());
+                var response = new JSChartData();
+                var tickets = ticketHelper.ListProjectsTickets(projectIds);
+                foreach (var priority in db.TicketPriorities.ToList())
+                {
+                    response.label.Add(priority.Name);
+                    response.data.Add(tickets.Where(t => t.TicketPriorityId == priority.Id).Count());
+                }
+                return Json(response);
             }
-            return Json(response);
+            else
+            {
+                return Json(null);
+
+            }
         }
         public JsonResult GetTicketStatusData(List<int> projectIds)
         {
-            var response = new JSChartData();
-            var tickets = ticketHelper.ListProjectsTickets(projectIds);
-            foreach (var Status in db.TicketStatuses.ToList())
+            if (projectIds != null && projectIds.Count > 0)
             {
-                response.label.Add(Status.Name);
-                response.data.Add(tickets.Where(t => t.TicketStatusId == Status.Id).Count());
+                var response = new JSChartData();
+                var tickets = ticketHelper.ListProjectsTickets(projectIds);
+                foreach (var Status in db.TicketStatuses.ToList())
+                {
+                    response.label.Add(Status.Name);
+                    response.data.Add(tickets.Where(t => t.TicketStatusId == Status.Id).Count());
+                }
+                return Json(response);
             }
-            return Json(response);
+            else
+            {
+                return Json(null);
+
+            }
         }
         public JsonResult GetTicketTypeData(List<int> projectIds)
         {
-            var response = new JSChartData();
-            var tickets = ticketHelper.ListProjectsTickets(projectIds);
-            foreach (var type in db.TicketTypes.ToList())
+            if (projectIds != null && projectIds.Count > 0)
             {
-                response.label.Add(type.Name);
-                response.data.Add(tickets.Where(t => t.TicketTypeId == type.Id).Count());
+                var response = new JSChartData();
+                var tickets = ticketHelper.ListProjectsTickets(projectIds);
+                foreach (var type in db.TicketTypes.ToList())
+                {
+                    response.label.Add(type.Name);
+                    response.data.Add(tickets.Where(t => t.TicketTypeId == type.Id).Count());
+                }
+                return Json(response);
             }
-            return Json(response);
+            else
+            {
+                return Json(null);
+
+            }
         }
         public JsonResult GetProjectTickets(List<int> projectIds)
         {
+            if (projectIds != null && projectIds.Count > 0)
+            {
+                var projectIdList = ticketHelper.ListProjectsTickets(projectIds);
+                List<HomeTicketsTable> response = CreateHomeTicketsTable(projectIdList);
+                return Json(response);
+            }
+            else
+            {
+                return Json(null);
 
-            var projectIdList = ticketHelper.ListProjectsTickets(projectIds);
-            List<HomeTicketsTable> response = CreateHomeTicketsTable(projectIdList);
-            return Json(response);
+            }
         }
         private List<HomeTicketsTable> CreateHomeTicketsTable(List<Ticket> Tickets)
         {
             List<HomeTicketsTable> TicketList = new List<HomeTicketsTable>();
+
+
             foreach (var ticket in Tickets)
             {
                 HomeTicketsTable homeTicket = new HomeTicketsTable();
@@ -89,42 +122,76 @@ namespace BugTracker.Controllers
                 homeTicket.NumberOfComments = ticket.Comments.Count;
                 TicketList.Add(homeTicket);
             }
+
             return TicketList;
+
+
         }
         public JsonResult GetTicketByPriority(string PropertyName, List<int> projectIds)
         {
-            var projectIdList = ticketHelper.ListProjectsTickets(projectIds).Where(t => t.TicketPriority.Name == PropertyName).ToList();
+            if (projectIds != null && projectIds.Count > 0)
+            {
+                var projectIdList = ticketHelper.ListProjectsTickets(projectIds).Where(t => t.TicketPriority.Name == PropertyName).ToList();
 
-            List<HomeTicketsTable> response = CreateHomeTicketsTable(projectIdList);
+                List<HomeTicketsTable> response = CreateHomeTicketsTable(projectIdList);
 
-            return Json(response);
+                return Json(response);
+            }
+            else
+            {
+                return Json(null);
+
+            }
         }
         public JsonResult GetTicketByStatus(string PropertyName, List<int> projectIds)
         {
-            var projectIdList = ticketHelper.ListProjectsTickets(projectIds).Where(t => t.TicketStatus.Name == PropertyName).ToList();
+            if (projectIds != null && projectIds.Count > 0)
+            {
+                var projectIdList = ticketHelper.ListProjectsTickets(projectIds).Where(t => t.TicketStatus.Name == PropertyName).ToList();
 
-            List<HomeTicketsTable> response = CreateHomeTicketsTable(projectIdList);
+                List<HomeTicketsTable> response = CreateHomeTicketsTable(projectIdList);
 
-            return Json(response);
+                return Json(response);
+            }
+            else
+            {
+                return Json(null);
+
+            }
         }
         public JsonResult GetTicketByType(string PropertyName, List<int> projectIds)
         {
-            var projectIdList = ticketHelper.ListProjectsTickets(projectIds).Where(t => t.TicketType.Name == PropertyName).ToList();
+            if (projectIds != null && projectIds.Count > 0)
+            {
+                var projectIdList = ticketHelper.ListProjectsTickets(projectIds).Where(t => t.TicketType.Name == PropertyName).ToList();
 
             List<HomeTicketsTable> response = CreateHomeTicketsTable(projectIdList);
 
             return Json(response);
+            }
+            else
+            {
+                return Json(null);
+
+            }
         }
         public JsonResult GetUsersByProjects(List<int> projectIds)
-
         {
-            List<ApplicationUser> UserList = new List<ApplicationUser>();
+            if (projectIds != null && projectIds.Count > 0)
+            {
+                List<ApplicationUser> UserList = new List<ApplicationUser>();
             foreach (var projectId in projectIds)
             {
                 UserList.AddRange(projectHelper.ListUsersOnProject(projectId).Except(UserList));
             }
             List<HomeUserTable> response = CreateHomeUserTable(UserList);
             return Json(response);
+            }
+            else
+            {
+                return Json(null);
+
+            }
         }
         public List<HomeUserTable> CreateHomeUserTable(List<ApplicationUser> UserList)
         {
@@ -145,7 +212,8 @@ namespace BugTracker.Controllers
         }
         public JsonResult GetTicketInfo(int ticketId)
         {
-            Ticket ticket = db.Tickets.Find(ticketId);
+          
+                Ticket ticket = db.Tickets.Find(ticketId);
             TicketInfoHomeVM homeTicket = new TicketInfoHomeVM();
             homeTicket.Issue = ticket.Issue;
             homeTicket.IssueDescription = ticket.IssueDescription;
@@ -156,8 +224,6 @@ namespace BugTracker.Controllers
 
             homeTicket.TicketType = ticket.TicketType.Name;
             homeTicket.Created = ticket.Created.ToString("MMM dd yyyy");
-
-
             return Json(homeTicket);
         }
         public JsonResult GetTicketComments(int ticketId)
@@ -207,71 +273,56 @@ namespace BugTracker.Controllers
 
             return Json(response);
         }
-        public JsonResult getUserNotificationS()
+        public JsonResult GetNotification()
         {
-            Dictionary<string, string> Type = new Dictionary<string, string> { { "new", "danger" }, { "added", "success" }, { "removed", "warning" }, { "newComment", "info" }, { "Closed", "info" } };
-            List<HomeNotificationVM> response = new List<HomeNotificationVM>();
-            var userId = User.Identity.GetUserId();
-            foreach (var ticketNotfication in db.TicketNotifications.Where(tn => tn.UserId == userId))
-            {
-
-                if (!ticketNotfication.IsRead)
-                {
-                    var notType = ticketNotfication.NotificationType;
-                    if (!Type.TryGetValue("XML_File", out notType))
-                    {
-                        notType = "info";
-                    }
-                    HomeNotificationVM newNotificationVM = new HomeNotificationVM();
-                    newNotificationVM.notificationVersion = "ticket";
-
-                    newNotificationVM.Id = ticketNotfication.Id;
-                    newNotificationVM.Type = notType;
-                    newNotificationVM.Subject = ticketNotfication.Subject;
-                    newNotificationVM.Message = ticketNotfication.Message;
-                    newNotificationVM.Icon = "fa-ticket";
-                    newNotificationVM.Created = ticketNotfication.Created.ToString("MMM dd yyyy"); ;
-                    response.Add(newNotificationVM);
-                }
-            }
-            foreach (var projectNotification in db.ProjectNotifications.Where(tn => tn.UserId == userId))
-            {
-                if (!projectNotification.IsRead)
-                {
-                    var notType = projectNotification.NotificationType;
-                    if (!Type.TryGetValue("XML_File", out notType))
-                    {
-                        notType = "info";
-                    }
-                    HomeNotificationVM newNotificationVM = new HomeNotificationVM();
-                    newNotificationVM.notificationVersion = "project";
-
-                    newNotificationVM.Id = projectNotification.Id;
-                    newNotificationVM.Type = notType;
-                    newNotificationVM.Subject = projectNotification.Subject;
-                    newNotificationVM.Message = projectNotification.Message;
-                    newNotificationVM.Icon = "fa-sitemap";
-                    newNotificationVM.Created = projectNotification.Created.ToString("MMM dd yyyy"); ;
-                    response.Add(newNotificationVM);
-                }
-            }
-            response = response.OrderByDescending(r => r.Id).ToList();
+            var response = notificationHelper.GetNotifications();
             return Json(response);
         }
-        public JsonResult setNotificationIsRead(string notificationId)
+        public JsonResult DeleteNotification(int notificationId)
         {
-            var list = notificationId.Split(',');
-            if (list[1] == "ticket")
-            {
-                db.TicketNotifications.Find(int.Parse(list[0])).IsRead = true;
-            }
-            if (list[1] == "project")
-            {
-                db.TicketNotifications.Find(int.Parse(list[0])).IsRead = true;
-            }
+            var notification = db.Notifications.Find(notificationId);
+            notification.IsRead = true;
             db.SaveChanges();
-            return Json(true);
+            return Json(notification.TicketId);
         }
+
+        //public JsonResult getUserNotificationS()
+        //{
+        //    Dictionary<string, string> Type = new Dictionary<string, string> { { "new", "danger" }, { "added", "success" }, { "removed", "warning" }, { "newComment", "info" }, { "Closed", "info" } };
+        //    List<HomeNotificationVM> response = new List<HomeNotificationVM>();
+        //    var userId = User.Identity.GetUserId();
+        //    foreach (var notification in db.Notifications.Where(tn => tn.UserId == userId))
+        //    {
+
+        //        if (!notification.IsRead)
+        //        {
+        //            var notType = notification.NotificationType;
+        //            var value = "";
+        //            if (Type.TryGetValue(notType, out value))
+        //            {
+        //                notType = value;
+        //            }
+        //            HomeNotificationVM newNotificationVM = new HomeNotificationVM();
+
+        //            newNotificationVM.Id = notification.Id;
+        //            newNotificationVM.Type = notType;
+        //            newNotificationVM.Subject = notification.Subject;
+        //            newNotificationVM.Message = notification.Message;
+        //            newNotificationVM.Icon = notification.Icon;
+        //            newNotificationVM.Created = notification.Created.ToString("MMM dd yyyy"); ;
+        //            response.Add(newNotificationVM);
+        //        }
+        //    }
+
+        //    response = response.OrderByDescending(r => r.Id).ToList();
+        //    return Json(response);
+        //}
+        //public JsonResult setNotificationIsRead(string notificationId)
+        //{
+
+        //    db.SaveChanges();
+        //    return Json(true);
+        //}
     }
 }
 

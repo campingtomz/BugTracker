@@ -13,7 +13,6 @@ namespace BugTracker.ViewModels
         public string Subject { get; set; }
         public string Message { get; set; }
         public string Created { get; set; }
-        public string notificationVersion { get; set; }
 
     }
 }

@@ -20,6 +20,7 @@ namespace BugTracker.Controllers
         private HistoryHelper historyHelper = new HistoryHelper();
         private TicketHelper ticketHelper = new TicketHelper();
         private HomeViewHelper homeHelper = new HomeViewHelper();
+        private NotificationHelper notificationHelper = new NotificationHelper();
         public ActionResult Index()
         {
             var user = userHelper.getUser(User.Identity.GetUserId());
@@ -31,7 +32,7 @@ namespace BugTracker.Controllers
             model.UserId = user.Id;
             model.User = user;
             model.TicketsCount = ticketHelper.GetMyTickets().ToList().Count;
-            model.TotalNotificationsCount = user.TicketNotifications.Count + user.ProjectNotifications.Count;
+            model.TotalNotificationsCount = notificationHelper.NotificationCount();
             model.UsersCount = projectHelper.GetUsersOnMyProjects().Count;
             List<int> ProjectIds = new List<int>();
 
