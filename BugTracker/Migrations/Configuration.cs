@@ -376,6 +376,7 @@ namespace BugTracker.Migrations
             }
             #endregion
             context.SaveChanges();
+            
             #region add users to projects
             List<ApplicationUser> ProjectManagers = roleHelper.UsersInRole("ProjectManager").ToList();
             List<ApplicationUser> Developers = roleHelper.UsersInRole("Developer").ToList();

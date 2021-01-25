@@ -1,4 +1,5 @@
-﻿using BugTracker.Helpers;
+﻿
+using BugTracker.Helpers;
 using BugTracker.Models;
 using System;
 using System.Collections.Generic;
